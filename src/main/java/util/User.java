@@ -4,10 +4,10 @@ public class User {
 	private String username;
 	private String email;
 	private char[] password;
-	private SkillLevel skillLevel;
+	private String skillLevel;
 	private boolean isAdmin;
 
-	public User(String username, String email, char[] password, SkillLevel skillLevel, boolean isAdmin) {
+	public User(String username, String email, char[] password, String skillLevel, boolean isAdmin) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
@@ -31,11 +31,11 @@ public class User {
 		this.password = password;
 	}
 
-	public SkillLevel getSkillLevel() {
+	public String getSkillLevel() {
 		return skillLevel;
 	}
 
-	public void setSkillLevel(SkillLevel skillLevel) {
+	public void setSkillLevel(String skillLevel) {
 		this.skillLevel = skillLevel;
 	}
 
