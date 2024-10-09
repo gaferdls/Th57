@@ -1,10 +1,10 @@
 package GUI;
 
-import java.awt.TextField;
-
+import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ComboBox;
 import database.Database;
 import javafx.collections.FXCollections;
-import javafx.scene.control.*;
 import util.SkillLevel;
 import util.User;
 
@@ -13,30 +13,32 @@ public class SignupController {
     private TextField usernameField;
     private PasswordField passwordField;
     private PasswordField confirmPasswordField;
-    ComboBox<String> skillLevelBox = new ComboBox<>();
-//    skillLevelBox.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
+    private ComboBox<String> skillLevelBox = new ComboBox<>();
+
 
     public void initialize() {
-//        skillLevelBox.setItems(FXCollections.observableArrayList(SkillLevel.values()));
-//        skillLevelBox.setValue(SkillLevel.INTERMEDIATE); // default
+        skillLevelBox.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
+        skillLevelBox.setValue("Intermediate"); // default
     }
 
     public void handleSignup() {
-        // validate fields and password confirmation
+        if (usernameField.getText().isEmpty() || emailField.getText().isEmpty() ||
+                passwordField.getText().isEmpty() || confirmPasswordField.getText().isEmpty()) {
+            return;
+        }
+
         if (passwordField.getText().equals(confirmPasswordField.getText())) {
             char[] password = passwordField.getText().toCharArray();
-            // if the database is empty, this user becomes the admin
             boolean isFirstUser = Database.isEmpty();
-            User newUser = new User(usernameField.getText(), emailField.getText(), passwordField.getText().toCharArray(), skillLevelBox.getValue(), false);
+            User newUser = new User(usernameField.getText(), emailField.getText(), password, skillLevelBox.getValue(), isFirstUser);
+
             newUser.setEmail(emailField.getText());
             newUser.setUsername(usernameField.getText());
-//            newUser.setSkillLevel(skillLevelBox.getValue().name());
-
+            newUser.setSkillLevel(skillLevelBox.getValue());
 
             Database.addUser(newUser);
+        } else {
+
         }
     }
 }
-
-
-
