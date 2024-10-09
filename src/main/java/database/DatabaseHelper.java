@@ -1,6 +1,6 @@
 package database;
-import java.security.InvalidKeyException;
 import java.sql.*;
+import java.util.Arrays;
 
 // Code modified from FirstDatabaseMaven
 public class DatabaseHelper {
@@ -71,11 +71,11 @@ public class DatabaseHelper {
      * @param level How experienced the user is  (0 = beginner, 1 = intermediate, 2 = advanced, 3 = expert)
      * @throws SQLException
      */
-    public void register(String email, String password, boolean isOneTimePassword, Time expirationTime, Date expirationDate, String name, int level) throws SQLException {
+    public void register(String email, char[] password, boolean isOneTimePassword, Time expirationTime, Date expirationDate, String name, int level) throws SQLException {
         String insertUser = "INSERT INTO users (email, password, onetimepassword, expirationtime, expirationdate, name, level) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertUser)) {
             pstmt.setString(1, email);
-            pstmt.setString(2, password);
+            pstmt.setString(2, String.valueOf(password));
             pstmt.setBoolean(3, isOneTimePassword);
             pstmt.setTime(4, expirationTime);
             pstmt.setDate(5, expirationDate);
@@ -92,11 +92,11 @@ public class DatabaseHelper {
      * @return true if the login was successful
      * @throws SQLException
      */
-    public boolean login(String email, String password) throws SQLException {
+    public boolean login(String email, char[] password) throws SQLException {
         String query = "SELECT * FROM users WHERE email = ? AND password = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, email);
-            pstmt.setString(2, password);
+            pstmt.setString(2, String.valueOf(password));
             try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.next();
             }
@@ -138,7 +138,7 @@ public class DatabaseHelper {
             // Retrieve by column name
             int id  = rs.getInt("id");
             String  email = rs.getString("email");
-            String password = rs.getString("password");
+            char[] password = rs.getString("password").toCharArray();
             boolean otp = rs.getBoolean("onetimepassword");
             Time otpTime = rs.getTime("expirationtime");
             Date otpDate = rs.getDate("expirationdate");
@@ -148,7 +148,7 @@ public class DatabaseHelper {
             // Display values
             System.out.print("ID: " + id);
             System.out.print(", Email: " + email);
-            System.out.print(", Password: " + password);
+            System.out.print(", Password: " + String.valueOf(password));
             System.out.print(", One-Time Password: " + otp);
             System.out.print(", Expiration Time for OTP:" + otpTime.toString());
             System.out.print(", Expiration Date for OTP:" + otpDate.toString());
@@ -157,20 +157,21 @@ public class DatabaseHelper {
         }
     }
 
-    public String getUserPassword(String email) throws SQLException {
+    public char[] getUserPassword(String email) throws SQLException {
         String sql = "SELECT password FROM users WHERE email='" + email + "'";
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         if (rs.next()) {
-            return rs.getString("password");
+            return rs.getString("password").toCharArray();
         }
-        return "";
+        return new char[0];
     }
 
-    public boolean changeUserPassword(String email, String newPassword) throws SQLException {
-        String sql = "UPDATE users SET password = '" + newPassword + "' WHERE email = '" + email + "'";
+    public boolean changeUserPassword(String email, char[] newPassword) throws SQLException {
+        StringBuilder sql = new StringBuilder();
+        sql.append("UPDATE users SET password = '").append(newPassword).append("' WHERE email = '").append(email).append("'");
         Statement stmt = connection.createStatement();
-        return stmt.executeUpdate(sql) != 0;
+        return stmt.executeUpdate(sql.toString()) != 0;
     }
 
     /**
