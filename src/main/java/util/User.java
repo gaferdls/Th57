@@ -1,11 +1,15 @@
 package util;
 
+import java.time.LocalDateTime;
+
 public class User {
 	private String username;
 	private String email;
 	private char[] password;
 	private SkillLevel skillLevel;
 	private boolean isAdmin;
+	private boolean isOneTimePassword;
+	private LocalDateTime passwordExpiration;
 
 	public User(String username, String email, char[] password, SkillLevel skillLevel, boolean isAdmin) {
 		this.username = username;
@@ -17,6 +21,10 @@ public class User {
 
 	public void setUsername(String firstName) {
 		this.username = firstName;
+	}
+
+	public String getUsername() {
+		return username;
 	}
 
 	public String getEmail() {
@@ -31,6 +39,10 @@ public class User {
 		this.password = password;
 	}
 
+	public char[] getPassword() {
+		return password;
+	}
+
 	public SkillLevel getSkillLevel() {
 		return skillLevel;
 	}
@@ -41,5 +53,29 @@ public class User {
 
 	public void setAdmin(boolean admin) {
 		isAdmin = admin;
+	}
+
+	public void setIsOneTimePassword(boolean isOneTimePassword) {
+		isOneTimePassword = isOneTimePassword;
+	}
+
+	public boolean isOneTimePassword() {
+		return isOneTimePassword;
+	}
+
+	public boolean isAdmin() {
+		return isAdmin;
+	}
+
+	public void setOneTimePassword(boolean oneTimePassword) {
+		isOneTimePassword = oneTimePassword;
+	}
+
+	public LocalDateTime getPasswordExpiration() {
+		return passwordExpiration;
+	}
+
+	public void setPasswordExpiration(LocalDateTime passwordExpiration) {
+		this.passwordExpiration = passwordExpiration;
 	}
 }

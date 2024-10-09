@@ -14,7 +14,8 @@ public class Database {
 	private static DatabaseHelper db;
 
 	// Initialize the database
-	private Database() {
+	public static void init() {
+		db = new DatabaseHelper();
 		try {
 			db.connectToDatabase();
 			System.out.println("connected to database!");
@@ -43,7 +44,7 @@ public class Database {
 
 	public static boolean addUser(User user) {
 //		try {
-//			db.register();
+////			db.register(user.getUsername(), user.getPassword(), user.isOneTimePassword());
 //		} catch (SQLException e) {
 //			return false;
 //		}
@@ -54,6 +55,10 @@ public class Database {
 	public static boolean isEmpty() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public static boolean hasUser(String username) {
+		return db.doesUserExist(username);
 	}
 
 }

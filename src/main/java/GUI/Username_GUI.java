@@ -99,9 +99,9 @@ public class Username_GUI extends Application {
             String lastName = lastNameField.getText().trim();
             String email = emailField.getText().trim();
             char[] password = passwordField.getText().toCharArray();
-            SkillLevel skillLevel = skillBox.getValue();
+            SkillLevel skillLevel = skillLevelStringToEnum(skillBox.getValue());
 
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty() || skillLevel == null) {
+            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.length == 0 || skillLevel == null) {
                 showAlert("Please fill out all fields.");
             } else {
                 boolean isAdmin = Database.isEmpty(); // First user becomes admin
@@ -113,6 +113,18 @@ public class Username_GUI extends Application {
         });
     }
 
+    private SkillLevel skillLevelStringToEnum(String level) {
+        switch (level) {
+            case "Beginner":
+                return SkillLevel.BEGINNER;
+            case "Advanced":
+                return SkillLevel.ADVANCED;
+            case "Expert":
+                return SkillLevel.EXPERT;
+            default:
+                return SkillLevel.INTERMEDIATE;
+        }
+    }
    
     private void showSigninPage(Stage primaryStage, String username) {
         GridPane signinPane = new GridPane();
@@ -135,7 +147,7 @@ public class Username_GUI extends Application {
             String password = passwordField.getText();
             User user = Database.findUserByUsername(username);
             if (user != null && user.getPassword().equals(password)) {
-                showAlert("Welcome " + user.getFirstName() + "! You are now logged in.");
+                showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
                
             } else {
                 showAlert("Incorrect password. Please try again.");
