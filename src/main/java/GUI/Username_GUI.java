@@ -11,6 +11,9 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 
+import util.SkillLevel;
+import util.User;
+
 public class Username_GUI extends Application {
 
     private static Map<String, User> database = new HashMap<>();
@@ -72,7 +75,7 @@ public class Username_GUI extends Application {
         PasswordField passwordField = new PasswordField();
         Label skillLabel = new Label("Skill Level:");
         ComboBox<String> skillBox = new ComboBox<>();
-        skillBox.getItems().addAll("Beginner", "Intermediate", "Advanced");
+        skillBox.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
 
         Button signupButton = new Button("Sign Up");
 
@@ -95,15 +98,15 @@ public class Username_GUI extends Application {
             String firstName = firstNameField.getText().trim();
             String lastName = lastNameField.getText().trim();
             String email = emailField.getText().trim();
-            String password = passwordField.getText();
-            String skillLevel = skillBox.getValue();
+            char[] password = passwordField.getText().toCharArray();
+            SkillLevel skillLevel = skillBox.getValue();
 
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty() || skillLevel == null) {
                 showAlert("Please fill out all fields.");
             } else {
                 boolean isAdmin = Database.isEmpty(); // First user becomes admin
-                User newUser = new User(firstName, lastName, email, password, skillLevel, isAdmin);
-                Database.addUser(email, newUser);
+                User newUser = new User(username, email, password, skillLevel, isAdmin);
+                Database.addUser(newUser);
                 showAlert("Sign up successful! You are now registered.");
                 showSigninPage(primaryStage, email); // Redirect to login page
             }
@@ -147,39 +150,5 @@ public class Username_GUI extends Application {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    
-   
-    static class User {
-        private String firstName;
-        private String lastName;
-        private String email;
-        private String password;
-        private String skillLevel;
-        private boolean isAdmin;
 
-        public User(String firstName, String lastName, String email, String password, String skillLevel, boolean isAdmin) {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.email = email;
-            this.password = password;
-            this.skillLevel = skillLevel;
-            this.isAdmin = isAdmin;
-        }
-
-        public String getFirstName() {
-            return firstName;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public boolean isAdmin() {
-            return isAdmin;
-        }
-    }
 }

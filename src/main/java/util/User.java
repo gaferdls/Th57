@@ -27,11 +27,11 @@ public class User {
 		this.email = email;
 	}
 
-	public void setPassword(String password) {
+	public void setPassword(char[] password) {
 		this.password = password;
 	}
 
-	public String getSkillLevel() {
+	public SkillLevel getSkillLevel() {
 		return skillLevel;
 	}
 
