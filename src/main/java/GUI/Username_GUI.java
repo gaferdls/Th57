@@ -99,7 +99,7 @@ public class Username_GUI extends Application {
             String lastName = lastNameField.getText().trim();
             String email = emailField.getText().trim();
             char[] password = passwordField.getText().toCharArray();
-            SkillLevel skillLevel = skillLevelStringToEnum(skillBox.getValue());
+            String skillLevel = skillBox.getValue();
 
             if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.length == 0 || skillLevel == null) {
                 showAlert("Please fill out all fields.");
@@ -113,18 +113,6 @@ public class Username_GUI extends Application {
         });
     }
 
-    private SkillLevel skillLevelStringToEnum(String level) {
-        switch (level) {
-            case "Beginner":
-                return SkillLevel.BEGINNER;
-            case "Advanced":
-                return SkillLevel.ADVANCED;
-            case "Expert":
-                return SkillLevel.EXPERT;
-            default:
-                return SkillLevel.INTERMEDIATE;
-        }
-    }
    
     private void showSigninPage(Stage primaryStage, String username) {
         GridPane signinPane = new GridPane();
