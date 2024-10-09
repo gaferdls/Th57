@@ -4,8 +4,7 @@ import java.awt.TextField;
 
 import database.Database;
 import javafx.collections.FXCollections;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
+import javafx.scene.control.*;
 import util.SkillLevel;
 import util.User;
 
@@ -14,11 +13,12 @@ public class SignupController {
     private TextField usernameField;
     private PasswordField passwordField;
     private PasswordField confirmPasswordField;
-    private ComboBox<SkillLevel> skillLevelBox;
+    ComboBox<String> skillLevelBox = new ComboBox<>();
+//    skillLevelBox.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
 
     public void initialize() {
-        skillLevelBox.setItems(FXCollections.observableArrayList(SkillLevel.values()));
-        skillLevelBox.setValue(SkillLevel.INTERMEDIATE); // default
+//        skillLevelBox.setItems(FXCollections.observableArrayList(SkillLevel.values()));
+//        skillLevelBox.setValue(SkillLevel.INTERMEDIATE); // default
     }
 
     public void handleSignup() {
@@ -30,7 +30,7 @@ public class SignupController {
             User newUser = new User(usernameField.getText(), emailField.getText(), passwordField.getText().toCharArray(), skillLevelBox.getValue(), false);
             newUser.setEmail(emailField.getText());
             newUser.setUsername(usernameField.getText());
-            newUser.setSkillLevel(skillLevelBox.getValue());
+//            newUser.setSkillLevel(skillLevelBox.getValue().name());
 
 
             Database.addUser(newUser);
