@@ -3,6 +3,7 @@ package util;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class User {
 	private String username;
@@ -30,8 +31,8 @@ public class User {
 		this.preferredName = preferredName;
 	}
 
-	public void setUsername(String firstName) {
-		this.username = firstName;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getUsername() {
@@ -136,5 +137,24 @@ public class User {
 
 	public void setPreferredName(String preferredName) {
 		this.preferredName = preferredName;
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"username='" + username + '\'' +
+				", email='" + email + '\'' +
+				", password=" + Arrays.toString(password) +
+				", skillLevel='" + skillLevel + '\'' +
+				", isAdmin=" + isAdmin +
+				", isOneTimePassword=" + isOneTimePassword +
+				", passwordExpiration=" + passwordExpiration +
+				", isStudent=" + isStudent +
+				", isInstructor=" + isInstructor +
+				", firstName='" + firstName + '\'' +
+				", middleName='" + middleName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", preferredName='" + preferredName + '\'' +
+				'}';
 	}
 }

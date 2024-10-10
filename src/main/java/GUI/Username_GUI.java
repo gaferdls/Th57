@@ -99,6 +99,7 @@ public class Username_GUI extends Application {
                 boolean isAdmin = Database.isEmpty(); // First user becomes admin
                 System.out.println("empty: " + isAdmin);
                 User newUser = new User(username, null, null, null, null, null, password, false, null, null, isAdmin, false, false);
+                System.out.println(newUser.toString());;
                 Database.addUser(newUser);
                 showAlert("Sign up successful! You are now registered.");
                 start(primaryStage); // Redirect to login page
@@ -180,6 +181,8 @@ public class Username_GUI extends Application {
             if(user.getPreferredName() == null) {
                 user.setPreferredName(preferredNameField.getText());
             }
+
+            Database.updateUser(user);
         });
 
     }
@@ -263,6 +266,9 @@ public class Username_GUI extends Application {
 
         adminButton.setOnAction(e -> {
             // TODO: go to admin page
+            AdminPage admin = new AdminPage();
+            admin.initialize();
+            admin.show(primaryStage);
         });
 
         studentButton.setOnAction(e -> {

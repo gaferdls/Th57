@@ -37,15 +37,18 @@ public class Database {
 
 	public static User findUserByUsername(String username) {
 		// TODO Auto-generated method stub
-		return db.getUserInformationFromEmail(username);
+		return db.getUserInformationFromUsername(username);
 	}
 
-
+	public static boolean updateUser(User user) {
+		return db.updateUser(user);
+	}
 
 	public static boolean addUser(User user) {
 		try {
-			db.register(user.getUsername(), user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getPreferredName(), user.getPassword(), user.isOneTimePassword(), null, user.getUsername(), user.getSkillLevel(), user.isAdmin(), user.isStudent(), user.isInstructor());
+			db.register(user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getPreferredName(), user.getPassword(), user.isOneTimePassword(), null, user.getUsername(), user.getSkillLevel(), user.isAdmin(), user.isStudent(), user.isInstructor());
 			System.out.println("added user " + user.getUsername());
+			db.displayUsers();
 		} catch (SQLException e) {
 			System.out.println("could not add user: " + e.getMessage());
 			return false;

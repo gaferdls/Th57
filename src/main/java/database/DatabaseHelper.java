@@ -37,7 +37,7 @@ public class DatabaseHelper {
     private void createTables() throws SQLException {
         String userTable = "CREATE TABLE IF NOT EXISTS users ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
-                + "email VARCHAR(255) UNIQUE, "
+                + "email VARCHAR(255), "
                 + "firstName VARCHAR(255), "
                 + "middleName VARCHAR(255), "
                 + "lastName VARCHAR(255), "
@@ -45,8 +45,7 @@ public class DatabaseHelper {
                 + "password VARCHAR(255), "
                 + "onetimepassword BIT, "
                 + "expirationtime TIME, "
-                + "expirationdate DATE, "
-                + "username VARCHAR(255), "
+                + "username VARCHAR(255) UNIQUE, "
                 + "level VARCHAR(255), "
                 + "admin BIT, "
                 + "student BIT, "
@@ -124,7 +123,7 @@ public class DatabaseHelper {
      * @return
      */
     public boolean doesUserExist(String email) {
-        String query = "SELECT COUNT(*) FROM users WHERE email = ?";
+        String query = "SELECT COUNT(*) FROM users WHERE username = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
 
             pstmt.setString(1, email);
@@ -161,7 +160,7 @@ public class DatabaseHelper {
             boolean otp = rs.getBoolean("onetimepassword");
             Time otpTime = rs.getTime("expirationtime");
 //            Date otpDate = rs.getDate("expirationdate");
-//            String name = rs.getString("name");
+            String name = rs.getString("username");
             String level = rs.getString("level");
             boolean admin = rs.getBoolean("admin");
             boolean student = rs.getBoolean("student");
@@ -197,7 +196,27 @@ public class DatabaseHelper {
         return stmt.executeUpdate(sql.toString()) != 0;
     }
 
-    public User getUserInformationFromEmail(String username) {
+    public boolean updateUser(User user) {
+        String sql =
+                "UPDATE users SET username = '" + user.getUsername()
+                + "', firstName = '" + user.getFirstName()
+                + "', middleName = '" + user.getMiddleName()
+                + "', lastName = '" + user.getLastName()
+                + "', admin = '" + user.isAdmin()
+                + "', student = '" + user.isStudent()
+                + "', instructor = '" + user.isInstructor()
+                + "', level = '" + user.getSkillLevel()
+                + "' WHERE email = '" + user.getEmail() + "'";
+        try {
+            Statement stmt = connection.createStatement();
+            return stmt.executeUpdate(sql) != 0;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
+    public User getUserInformationFromUsername(String username) {
         String sql = "SELECT * FROM users WHERE username='" + username + "'";
         ResultSet rs;
         try {
@@ -213,7 +232,7 @@ public class DatabaseHelper {
                 char[] password = rs.getString("password").toCharArray();
                 boolean otp = rs.getBoolean("onetimepassword");
                 Time otpTime = rs.getTime("expirationtime");
-                Date otpDate = rs.getDate("expirationdate");
+//                Date otpDate = rs.getDate("expirationdate");
 //                String name = rs.getString("username");
                 String level = rs.getString("level");
                 boolean admin = rs.getBoolean("admin");
