@@ -13,9 +13,9 @@ public class LoginController {
 
     public void handleLogin() {
         String username = usernameField.getText();
-        User user = Database.findUserByUsername(username);
+        User user = Database.findUserByEmail(username);
         if (user != null) {
-            if (user.isOneTimePassword() && LocalDateTime.now().isBefore(user.getPasswordExpiration())) {
+            if (user.isOneTimePassword() && System.currentTimeMillis() > user.getPasswordExpiration().getTime()) {
                 // Redirect to password reset page
             } else {
                 if (Arrays.equals(user.getPassword(), passwordField.getText().toCharArray())) {

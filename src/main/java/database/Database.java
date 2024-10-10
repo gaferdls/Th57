@@ -27,7 +27,7 @@ public class Database {
 
 	public static boolean inviteUser(String username, Role role, char[] oneTimeCode) {
 		try {
-			db.register(username, oneTimeCode, true, new Time(Time.from(Instant.now()).getTime()), new Date(Date.from(Instant.now().plusSeconds(86400 * 3)).getTime()), "", 1);
+			db.register(username, oneTimeCode, true, new Time(Time.from(Instant.now()).getTime()), new Date(Date.from(Instant.now().plusSeconds(86400 * 3)).getTime()), "", "Intermediate", false, false, false);
 		} catch (SQLException e) {
 			return false;
 		}
@@ -35,21 +35,22 @@ public class Database {
 	}
 
 
-	public static User findUserByUsername(String username) {
+	public static User findUserByEmail(String email) {
 		// TODO Auto-generated method stub
-		return null;
+		return db.getUserInformationFromEmail(email);
 	}
 
 
 
 	public static boolean addUser(User user) {
-//		try {
-////			db.register(user.getUsername(), user.getPassword(), user.isOneTimePassword());
-//		} catch (SQLException e) {
-//			return false;
-//		}
+		try {
+			db.register(user.getUsername(), user.getPassword(), user.isOneTimePassword(), null, null, user.getUsername(), user.getSkillLevel(), user.isAdmin(), user.isStudent(), user.isInstructor());
+			System.out.println("added user " + user.getUsername());
+		} catch (SQLException e) {
+			System.out.println("could not add user: " + e.getMessage());
+			return false;
+		}
 		return true;
-		
 	}
 
 	public static boolean isEmpty() {

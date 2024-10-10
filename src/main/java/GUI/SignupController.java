@@ -30,7 +30,7 @@ public class SignupController {
         if (passwordField.getText().equals(confirmPasswordField.getText())) {
             char[] password = passwordField.getText().toCharArray();
             boolean isFirstUser = Database.isEmpty();
-            User newUser = new User(usernameField.getText(), emailField.getText(), password, skillLevelBox.getValue(), isFirstUser);
+            User newUser = new User(usernameField.getText(), emailField.getText(), password, false, null, skillLevelBox.getValue(), isFirstUser, false, false);
 
             newUser.setEmail(emailField.getText());
             newUser.setUsername(usernameField.getText());

@@ -1,5 +1,7 @@
 package util;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 public class User {
@@ -9,14 +11,18 @@ public class User {
 	private String skillLevel;
 	private boolean isAdmin;
 	private boolean isOneTimePassword;
-	private LocalDateTime passwordExpiration;
+	private Time passwordExpiration;
+	private boolean isStudent, isInstructor;
 
-	public User(String username, String email, char[] password, String skillLevel, boolean isAdmin) {
+	public User(String username, String email, char[] password, boolean isOneTimePassword, Time passwordExpiration, String skillLevel, boolean isAdmin, boolean isStudent, boolean isInstructor) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
 		this.skillLevel = skillLevel;
 		this.isAdmin = isAdmin;
+		this.isStudent = isStudent;
+		this.isInstructor = isInstructor;
+		this.passwordExpiration = passwordExpiration;
 	}
 
 	public void setUsername(String firstName) {
@@ -71,11 +77,27 @@ public class User {
 		isOneTimePassword = oneTimePassword;
 	}
 
-	public LocalDateTime getPasswordExpiration() {
+	public Time getPasswordExpiration() {
 		return passwordExpiration;
 	}
 
-	public void setPasswordExpiration(LocalDateTime passwordExpiration) {
+	public void setPasswordExpiration(Time passwordExpiration) {
 		this.passwordExpiration = passwordExpiration;
+	}
+
+	public boolean isStudent() {
+		return isStudent;
+	}
+
+	public void setStudent(boolean student) {
+		isStudent = student;
+	}
+
+	public boolean isInstructor() {
+		return isInstructor;
+	}
+
+	public void setInstructor(boolean instructor) {
+		isInstructor = instructor;
 	}
 }

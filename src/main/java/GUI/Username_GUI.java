@@ -8,10 +8,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import util.SkillLevel;
 import util.User;
 
 public class Username_GUI extends Application {
@@ -46,14 +46,11 @@ public class Username_GUI extends Application {
 
         nextButton.setOnAction(e -> {
             String username = usernameField.getText().trim();
-            if (Database.isEmpty()) {
-              
-                showSignupPage(primaryStage, username);
-            } else if (Database.hasUser(username)) {
+            if (Database.hasUser(username)) {
                
                 showSigninPage(primaryStage, username);
             } else {
-                showAlert("Username not found. Please try again.");
+                showSignupPage(primaryStage, username);
             }
         });
     }
@@ -105,7 +102,7 @@ public class Username_GUI extends Application {
                 showAlert("Please fill out all fields.");
             } else {
                 boolean isAdmin = Database.isEmpty(); // First user becomes admin
-                User newUser = new User(username, email, password, skillLevel, isAdmin);
+                User newUser = new User(username, email, password, false, null, skillLevel, isAdmin, false, false);
                 Database.addUser(newUser);
                 showAlert("Sign up successful! You are now registered.");
                 showSigninPage(primaryStage, email); // Redirect to login page
@@ -132,9 +129,9 @@ public class Username_GUI extends Application {
         primaryStage.setScene(signinScene);
 
         signinButton.setOnAction(e -> {
-            String password = passwordField.getText();
-            User user = Database.findUserByUsername(username);
-            if (user != null && user.getPassword().equals(password)) {
+            char[] password = passwordField.getText().toCharArray();
+            User user = Database.findUserByEmail(username);
+            if (user != null && Arrays.equals(user.getPassword(), password)) {
                 showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
                
             } else {
