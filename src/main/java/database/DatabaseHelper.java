@@ -80,8 +80,8 @@ public class DatabaseHelper {
      * @param level How experienced the user is  (0 = beginner, 1 = intermediate, 2 = advanced, 3 = expert)
      * @throws SQLException
      */
-    public void register(String email, String firstName, String middleName, String lastName, String preferredName, char[] password, boolean isOneTimePassword, Time expirationTime, Date expirationDate, String username, String level, boolean admin, boolean student, boolean instructor) throws SQLException {
-        String insertUser = "INSERT INTO users (email, firstName, middleName, lastName, preferredName, password, onetimepassword, expirationtime, expirationdate, username, level, admin, student, instructor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void register(String email, String firstName, String middleName, String lastName, String preferredName, char[] password, boolean isOneTimePassword, Time expirationTime, String username, String level, boolean admin, boolean student, boolean instructor) throws SQLException {
+        String insertUser = "INSERT INTO users (email, firstName, middleName, lastName, preferredName, password, onetimepassword, expirationtime, username, level, admin, student, instructor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertUser)) {
             pstmt.setString(1, email);
             pstmt.setString(2, firstName);
@@ -91,12 +91,11 @@ public class DatabaseHelper {
             pstmt.setString(6, String.valueOf(password));
             pstmt.setBoolean(7, isOneTimePassword);
             pstmt.setTime(8, expirationTime);
-            pstmt.setDate(9, expirationDate);
-            pstmt.setString(10, username);
-            pstmt.setString(11, level);
-            pstmt.setBoolean(12, admin);
-            pstmt.setBoolean(13, student);
-            pstmt.setBoolean(14, instructor);
+            pstmt.setString(9, username);
+            pstmt.setString(10, level);
+            pstmt.setBoolean(11, admin);
+            pstmt.setBoolean(12, student);
+            pstmt.setBoolean(13, instructor);
             pstmt.executeUpdate();
         }
     }
@@ -161,7 +160,7 @@ public class DatabaseHelper {
             char[] password = rs.getString("password").toCharArray();
             boolean otp = rs.getBoolean("onetimepassword");
             Time otpTime = rs.getTime("expirationtime");
-            Date otpDate = rs.getDate("expirationdate");
+//            Date otpDate = rs.getDate("expirationdate");
 //            String name = rs.getString("name");
             String level = rs.getString("level");
             boolean admin = rs.getBoolean("admin");
@@ -198,15 +197,15 @@ public class DatabaseHelper {
         return stmt.executeUpdate(sql.toString()) != 0;
     }
 
-    public User getUserInformationFromEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email='" + email + "'";
+    public User getUserInformationFromEmail(String username) {
+        String sql = "SELECT * FROM users WHERE username='" + username + "'";
         ResultSet rs;
         try {
             Statement stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
             if (rs.next()) {
                 int id  = rs.getInt("id");
-//                String  email = rs.getString("email");
+                String  email = rs.getString("email");
                 String firstName = rs.getString("firstName");
                 String middleName = rs.getString("middleName");
                 String lastName = rs.getString("lastName");
@@ -215,15 +214,15 @@ public class DatabaseHelper {
                 boolean otp = rs.getBoolean("onetimepassword");
                 Time otpTime = rs.getTime("expirationtime");
                 Date otpDate = rs.getDate("expirationdate");
-                String name = rs.getString("username");
+//                String name = rs.getString("username");
                 String level = rs.getString("level");
                 boolean admin = rs.getBoolean("admin");
                 boolean student = rs.getBoolean("student");
                 boolean instructor = rs.getBoolean("instructor");
-                return new User(name, firstName, middleName, lastName, preferredName, email, password, otp, otpTime, level, admin, student, instructor);
+                return new User(username, firstName, middleName, lastName, preferredName, email, password, otp, otpTime, level, admin, student, instructor);
             }
         } catch (SQLException e) {
-            System.out.println("could not find user for " + email);
+            System.out.println("could not find user for " + username);
         }
         return null;
     }

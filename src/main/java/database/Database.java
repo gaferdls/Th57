@@ -27,7 +27,7 @@ public class Database {
 
 	public static boolean inviteUser(String username, Role role, char[] oneTimeCode) {
 		try {
-			db.register(username,"", "", "", "", oneTimeCode, true, new Time(Time.from(Instant.now()).getTime()), new Date(Date.from(Instant.now().plusSeconds(86400 * 3)).getTime()), "", "Intermediate", false, false, false);
+			db.register(username,"", "", "", "", oneTimeCode, true, new Time(Time.from(Instant.now()).getTime()), "", "Intermediate", false, false, false);
 		} catch (SQLException e) {
 			return false;
 		}
@@ -35,16 +35,16 @@ public class Database {
 	}
 
 
-	public static User findUserByEmail(String email) {
+	public static User findUserByUsername(String username) {
 		// TODO Auto-generated method stub
-		return db.getUserInformationFromEmail(email);
+		return db.getUserInformationFromEmail(username);
 	}
 
 
 
 	public static boolean addUser(User user) {
 		try {
-			db.register(user.getUsername(), user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getPreferredName(), user.getPassword(), user.isOneTimePassword(), null, null, user.getUsername(), user.getSkillLevel(), user.isAdmin(), user.isStudent(), user.isInstructor());
+			db.register(user.getUsername(), user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getPreferredName(), user.getPassword(), user.isOneTimePassword(), null, user.getUsername(), user.getSkillLevel(), user.isAdmin(), user.isStudent(), user.isInstructor());
 			System.out.println("added user " + user.getUsername());
 		} catch (SQLException e) {
 			System.out.println("could not add user: " + e.getMessage());

@@ -27,17 +27,17 @@ public class Username_GUI extends Application {
         loginPane.setPadding(new Insets(10));
         loginPane.setVgap(8);
         loginPane.setHgap(10);
-        Label userLabel = new Label("Email:");
+        Label usernameLabel = new Label("Username:");
         Label passwordLabel = new Label("Password:");
-        TextField emailField = new TextField();
+        TextField usernameField = new TextField();
         PasswordField passwordField = new PasswordField();
 
         Button loginButton = new Button("Login");
         Button signUpButton = new Button("Sign Up");
 
-        loginPane.add(userLabel, 0, 0);
+        loginPane.add(usernameLabel, 0, 0);
         loginPane.add(passwordLabel, 0, 1);
-        loginPane.add(emailField, 1, 0);
+        loginPane.add(usernameField, 1, 0);
         loginPane.add(passwordField, 1, 1);
         loginPane.add(loginButton, 1, 2);
         loginPane.add(signUpButton, 1, 3);
@@ -47,10 +47,10 @@ public class Username_GUI extends Application {
         primaryStage.show();
 
         loginButton.setOnAction(e -> {
-            String email = emailField.getText().trim();
+            String username = usernameField.getText().trim();
             char[] password = passwordField.getText().toCharArray();
-            if (Database.hasUser(email)) {
-                showSigninPage(primaryStage, email, password);
+            if (Database.hasUser(username)) {
+                showSigninPage(primaryStage, username, password);
             } else {
                 showAlert("Username not Found");
                 start(primaryStage);
@@ -184,8 +184,8 @@ public class Username_GUI extends Application {
 
     }
 
-   
-    private void showSigninPage(Stage primaryStage, String email, char[] password) {
+
+    private void showSigninPage(Stage primaryStage, String username, char[] password) {
        /* GridPane signinPane = new GridPane();
         signinPane.setPadding(new Insets(10));
         signinPane.setVgap(8);
@@ -206,7 +206,8 @@ public class Username_GUI extends Application {
 
         signinButton.setOnAction(e -> {
             char[] password = passwordField.getText().toCharArray();
-            */User user = Database.findUserByEmail(email);
+            */
+            User user = Database.findUserByUsername(username);
             if (user != null && Arrays.equals(user.getPassword(), password)) {
                 showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
                 if(user.getEmail() == null || user.getFirstName() == null || user.getLastName() == null || user.getSkillLevel() == null) {

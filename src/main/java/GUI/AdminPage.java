@@ -1,9 +1,16 @@
+package GUI;
+
+
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import database.Database;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import util.Role;
+import util.User;
 
 public class AdminPage {
     private TextField inviteUsernameField;
@@ -19,8 +26,13 @@ public class AdminPage {
         Role role = inviteRoleBox.getValue();
         String oneTimeCode = generateOneTimeCode();
 
-        User newUser = new User(username, null, true, LocalDateTime.now().plusHours(24));
-        newUser.addRole(role);
+        User newUser = new User(username, "", "", "", "", "", new char[0], true, null, "Intermediate", false, false, false);
+
+        // assign the user to a role
+        if (role.equals(Role.ADMIN)) newUser.setAdmin(true);
+        if (role.equals(Role.INSTRUCTOR)) newUser.setInstructor(true);
+        if (role.equals(Role.STUDENT)) newUser.setStudent(true);
+
         Database.addUser(newUser);
         
         invitationCodeLabel.setText("Invite Code: " + oneTimeCode);
