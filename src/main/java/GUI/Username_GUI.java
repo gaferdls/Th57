@@ -27,17 +27,17 @@ public class Username_GUI extends Application {
         loginPane.setPadding(new Insets(10));
         loginPane.setVgap(8);
         loginPane.setHgap(10);
-        Label usernameLabel = new Label("Username:");
+        Label userLabel = new Label("Email:");
         Label passwordLabel = new Label("Password:");
-        TextField usernameField = new TextField();
+        TextField emailField = new TextField();
         PasswordField passwordField = new PasswordField();
 
         Button loginButton = new Button("Login");
         Button signUpButton = new Button("Sign Up");
 
-        loginPane.add(usernameLabel, 0, 0);
+        loginPane.add(userLabel, 0, 0);
         loginPane.add(passwordLabel, 0, 1);
-        loginPane.add(usernameField, 1, 0);
+        loginPane.add(emailField, 1, 0);
         loginPane.add(passwordField, 1, 1);
         loginPane.add(loginButton, 1, 2);
         loginPane.add(signUpButton, 1, 3);
@@ -47,10 +47,10 @@ public class Username_GUI extends Application {
         primaryStage.show();
 
         loginButton.setOnAction(e -> {
-            String username = usernameField.getText().trim();
+            String email = emailField.getText().trim();
             char[] password = passwordField.getText().toCharArray();
-            if (Database.hasUser(username)) {
-                showSigninPage(primaryStage, username, password);
+            if (Database.hasUser(email)) {
+                showSigninPage(primaryStage, email, password);
             } else {
                 showAlert("Username not Found");
                 start(primaryStage);
@@ -126,37 +126,38 @@ public class Username_GUI extends Application {
         int i = 0;
         if (user.getEmail() == null) {
             i++;
-            finishSetUpPane.add(emailLabel, 0, 0);
-            finishSetUpPane.add(emailField, i, 0);
+            finishSetUpPane.add(emailLabel, 0, i);
+            finishSetUpPane.add(emailField, 1, 0);
         }
         if (user.getFirstName() == null){
             i++;
             finishSetUpPane.add(firstNameLabel, 0, i);
-            finishSetUpPane.add(firstNameField, i, i);
+            finishSetUpPane.add(firstNameField, 1, i);
         }
         if(user.getMiddleName() == null){
             i++;
             finishSetUpPane.add(middleNameLabel, 0, i);
-            finishSetUpPane.add(middleNameField, i, i);
+            finishSetUpPane.add(middleNameField, 1, i);
         }
         if(user.getLastName() == null){
             i++;
-            finishSetUpPane.add(lastNameLabel, 0, 3);
-            finishSetUpPane.add(lastNameField, 1, 3);
+            finishSetUpPane.add(lastNameLabel, 0, i);
+            finishSetUpPane.add(lastNameField, 1, i);
         }
         if(user.getPreferredName() == null){
             i++;
-            finishSetUpPane.add(preferredNameLabel, 0, 4);
-            finishSetUpPane.add(preferredNameField, 1, 4);
+            finishSetUpPane.add(preferredNameLabel, 0, i);
+            finishSetUpPane.add(preferredNameField, 1, i);
         }
         if(user.getSkillLevel() == null){
+            i++;
             skillBox.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
-            finishSetUpPane.add(skillLabel, 0, 8);
-            finishSetUpPane.add(skillBox, 1, 8);
+            finishSetUpPane.add(skillLabel, 0, i);
+            finishSetUpPane.add(skillBox, 1, i);
         }
 
         Button finishUpButton = new Button("Next");
-        finishSetUpPane.add(finishUpButton, 1, 9);
+        finishSetUpPane.add(finishUpButton, 1, i+1);
 
         Scene signupScene = new Scene(finishSetUpPane, 400, 400);
         primaryStage.setScene(signupScene);
@@ -184,46 +185,20 @@ public class Username_GUI extends Application {
 
     }
 
-
+   
     private void showSigninPage(Stage primaryStage, String username, char[] password) {
-       /* GridPane signinPane = new GridPane();
-        signinPane.setPadding(new Insets(10));
-        signinPane.setVgap(8);
-        signinPane.setHgap(10);
-
-        Label passwordLabel = new Label("Password:");
-        PasswordField passwordField = new PasswordField();
-        Button signinButton = new Button("Sign In");
-        Button cancelButton = new Button("Cancel");
-
-        signinPane.add(passwordLabel, 0, 0);
-        signinPane.add(passwordField, 1, 0);
-        signinPane.add(signinButton, 1, 1);
-        signinPane.add(cancelButton, 0, 3);
-
-        Scene signinScene = new Scene(signinPane, 300, 150);
-        primaryStage.setScene(signinScene);
-
-        signinButton.setOnAction(e -> {
-            char[] password = passwordField.getText().toCharArray();
-            */
-            User user = Database.findUserByUsername(username);
+        User user = Database.findUserByUsername(username);
             if (user != null && Arrays.equals(user.getPassword(), password)) {
-                showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
                 if(user.getEmail() == null || user.getFirstName() == null || user.getLastName() == null || user.getSkillLevel() == null) {
+                    showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
                     finishSetUP(primaryStage, user);
+                }else{
+                    showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
                 }
                 showRolePage(primaryStage, user);
             } else {
                 showAlert("Incorrect password. Please try again.");
             }
-        /*});
-
-        cancelButton.setOnAction(e -> {
-            start(primaryStage);
-        });
-
-         */
     }
 
   
@@ -234,9 +209,15 @@ public class Username_GUI extends Application {
         alert.showAndWait();
     }
 
+    private void showAdminPage(Stage primaryStage) {
+
+    }
+
     private void showRolePage(Stage primaryStage, User user) {
 
-        if (!user.isAdmin() && !user.isStudent() && !user.isInstructor()) {
+        if (user.isAdmin()){
+            showAdminPage(primaryStage);
+        } else if(!user.isAdmin() && !user.isStudent() && !user.isInstructor()){
             showAlert("You do not have any roles, please contact your administrator");
         }
 
