@@ -213,6 +213,52 @@ public class Username_GUI extends Application {
     }
 
     private void showAdminPage(Stage primaryStage) {
+        GridPane adminPane = new GridPane();
+        adminPane.setPadding(new Insets(10));
+        adminPane.setVgap(8);
+        adminPane.setHgap(10);
+        Button inviteButton = new Button("Invite");
+        Button resetButton = new Button("Reset");
+        Button deleteButton = new Button("Delete");
+        Button listButton = new Button("List");
+        Button rolesButton = new Button("Roles");
+        Button logoutButton = new Button("Logout");
+        Label spacer = new Label(" ");
+        adminPane.add(spacer, 0, 0);
+        adminPane.add(inviteButton, 0, 1);
+
+        adminPane.add(resetButton, 0, 3);
+
+        adminPane.add(deleteButton, 0, 5);
+
+        adminPane.add(listButton, 0, 7);
+
+        adminPane.add(rolesButton, 0, 9);
+
+        adminPane.add(logoutButton, 0, 11);
+
+        Scene setUpScene = new Scene(adminPane, 400, 400);
+        primaryStage.setScene(setUpScene);
+
+        inviteButton.setOnAction(e -> {
+           //Invite button
+        });
+        resetButton.setOnAction(e -> {
+           //Reset button
+        });
+        deleteButton.setOnAction(e -> {
+           //delete button
+        });
+        listButton.setOnAction(e -> {
+           //list button
+        });
+        rolesButton.setOnAction(e -> {
+            //roles button
+        });
+        logoutButton.setOnAction(e -> {
+            //logout button
+            start(primaryStage);
+        });
 
     }
 
@@ -222,9 +268,10 @@ public class Username_GUI extends Application {
             showAdminPage(primaryStage);
         } else if(!user.isAdmin() && !user.isStudent() && !user.isInstructor()){
             showAlert("You do not have any roles, please contact your administrator");
+            showAdminPage(primaryStage);
         }
 
-        GridPane rolePane = new GridPane();
+       /* GridPane rolePane = new GridPane();
         rolePane.setPadding(new Insets(10));
         rolePane.setVgap(8);
         rolePane.setHgap(10);
@@ -263,7 +310,7 @@ public class Username_GUI extends Application {
         logoutButton.setOnAction(e -> {
             start(primaryStage);
         });
-
+        */
     }
 
 }
