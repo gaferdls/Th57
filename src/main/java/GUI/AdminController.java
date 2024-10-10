@@ -1,11 +1,8 @@
-package GUI;
-
 import java.awt.TextField;
 
-import database.Database;
 import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
-import util.Role;
 
 public class AdminController {
     private TextField inviteUsernameField;
@@ -18,12 +15,15 @@ public class AdminController {
     public void handleInviteUser() {
         String username = inviteUsernameField.getText();
         Role role = inviteRoleBox.getValue();
-        Database.inviteUser(username, role, generateOneTimeCode());
+        String oneTimeCode = (String) generateOneTimeCode();
+        Database.inviteUser(username, role, oneTimeCode);
         // Provide the code to the invited user
     }
 
-    private char[] generateOneTimeCode() {
+    private String generateOneTimeCode() {
 		return null;
         // Implement one-time code generation logic
     }
 }
+
+
