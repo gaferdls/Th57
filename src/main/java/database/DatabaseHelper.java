@@ -2,7 +2,6 @@ package database;
 import util.User;
 
 import java.sql.*;
-import java.util.Arrays;
 
 // Code modified from FirstDatabaseMaven
 public class DatabaseHelper {
@@ -122,22 +121,20 @@ public class DatabaseHelper {
      * @param email
      * @return
      */
-    public boolean doesUserExist(String email) {
+    public boolean doesUserExist(String username) {
         String query = "SELECT COUNT(*) FROM users WHERE username = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-
-            pstmt.setString(1, email);
+            pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
-
             if (rs.next()) {
-                // If the count is greater than 0, the user exists
-                return rs.getInt(1) > 0;
+                return rs.getInt(1) > 0;  // True if user exists
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false; // If an error occurs, assume user doesn't exist
+        return false;  // Default to false if the query fails
     }
+
 
     /**
      * Lists information about all users registered in the database.
@@ -197,24 +194,30 @@ public class DatabaseHelper {
     }
 
     public boolean updateUser(User user) {
-        String sql =
-                "UPDATE users SET username = '" + user.getUsername()
-                + "', firstName = '" + user.getFirstName()
-                + "', middleName = '" + user.getMiddleName()
-                + "', lastName = '" + user.getLastName()
-                + "', admin = '" + user.isAdmin()
-                + "', student = '" + user.isStudent()
-                + "', instructor = '" + user.isInstructor()
-                + "', level = '" + user.getSkillLevel()
-                + "' WHERE email = '" + user.getEmail() + "'";
-        try {
-            Statement stmt = connection.createStatement();
-            return stmt.executeUpdate(sql) != 0;
+        String sql = "UPDATE users SET username = ?, firstName = ?, middleName = ?, lastName = ?, admin = ?, student = ?, instructor = ?, level = ?, password = ? WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getFirstName());
+            pstmt.setString(3, user.getMiddleName());
+            pstmt.setString(4, user.getLastName());
+            pstmt.setBoolean(5, user.isAdmin());
+            pstmt.setBoolean(6, user.isStudent());
+            pstmt.setBoolean(7, user.isInstructor());
+            pstmt.setString(8, user.getSkillLevel());
+            pstmt.setString(9, String.valueOf(user.getPassword()));  // Ensure the password is being updated
+            pstmt.setString(10, user.getUsername());  // Assuming username is used for identification
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Update failed. Error: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
+
+
+
 
     public User getUserInformationFromUsername(String username) {
         String sql = "SELECT * FROM users WHERE username='" + username + "'";

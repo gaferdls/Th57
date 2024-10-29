@@ -3,7 +3,6 @@ package database;
 import util.Role;
 import util.User;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.Instant;
@@ -41,6 +40,7 @@ public class Database {
 	}
 
 	public static boolean updateUser(User user) {
+		System.out.println("Attempting to update user with email: " + user.getEmail());
 		return db.updateUser(user);
 	}
 
@@ -68,5 +68,13 @@ public class Database {
 	public static boolean hasUser(String username) {
 		return db.doesUserExist(username);
 	}
+	public static void displayAllUsers() {
+		try {
+			db.displayUsers();
+		} catch (SQLException e) {
+			System.out.println("Error displaying users: " + e.getMessage());
+		}
+	}
+
 
 }
