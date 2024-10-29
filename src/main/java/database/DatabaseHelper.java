@@ -194,18 +194,19 @@ public class DatabaseHelper {
     }
 
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET username = ?, firstName = ?, middleName = ?, lastName = ?, admin = ?, student = ?, instructor = ?, level = ?, password = ? WHERE username = ?";
+        String sql = "UPDATE users SET email = ?, username = ?, firstName = ?, middleName = ?, lastName = ?, admin = ?, student = ?, instructor = ?, level = ?, password = ? WHERE username = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, user.getUsername());
-            pstmt.setString(2, user.getFirstName());
-            pstmt.setString(3, user.getMiddleName());
-            pstmt.setString(4, user.getLastName());
-            pstmt.setBoolean(5, user.isAdmin());
-            pstmt.setBoolean(6, user.isStudent());
-            pstmt.setBoolean(7, user.isInstructor());
-            pstmt.setString(8, user.getSkillLevel());
-            pstmt.setString(9, String.valueOf(user.getPassword()));  // Ensure the password is being updated
-            pstmt.setString(10, user.getUsername());  // Assuming username is used for identification
+            pstmt.setString(1, user.getEmail()); // Include the email update
+            pstmt.setString(2, user.getUsername());
+            pstmt.setString(3, user.getFirstName());
+            pstmt.setString(4, user.getMiddleName());
+            pstmt.setString(5, user.getLastName());
+            pstmt.setBoolean(6, user.isAdmin());
+            pstmt.setBoolean(7, user.isStudent());
+            pstmt.setBoolean(8, user.isInstructor());
+            pstmt.setString(9, user.getSkillLevel());
+            pstmt.setString(10, String.valueOf(user.getPassword()));  // Ensure the password is being updated
+            pstmt.setString(11, user.getUsername());  // Assuming username is used for identification
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -215,6 +216,7 @@ public class DatabaseHelper {
             return false;
         }
     }
+
 
 
 

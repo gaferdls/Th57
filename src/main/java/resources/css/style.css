@@ -1,0 +1,69 @@
+/* style.css */
+
+/* Root styles */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif; /* Font style */
+    -fx-background-color: #f7f9fc;          /* Light background color */
+}
+
+/* Label styles */
+.label-text {
+    -fx-font-size: 14px;                     /* Font size for labels */
+    -fx-text-fill: #333;                     /* Text color */
+    -fx-font-weight: bold;                   /* Bold font weight */
+}
+
+/* Input field styles */
+.input-field {
+    -fx-background-color: #ffffff;           /* White background */
+    -fx-background-radius: 8;                /* Rounded corners */
+    -fx-border-color: #cccccc;               /* Light gray border */
+    -fx-border-radius: 8;                    /* Rounded borders */
+    -fx-padding: 10;                         /* Padding inside the field */
+    -fx-font-size: 14px;                     /* Font size */
+}
+
+/* Combo box styles */
+.combo-box {
+    -fx-background-color: #ffffff;           /* White background */
+    -fx-background-radius: 8;                /* Rounded corners */
+    -fx-border-color: #cccccc;               /* Light gray border */
+    -fx-border-radius: 8;                    /* Rounded borders */
+    -fx-font-size: 14px;                     /* Font size */
+}
+
+/* Button styles */
+.primary-button {
+    -fx-background-color: #4CAF50;           /* Green background */
+    -fx-text-fill: white;                    /* White text */
+    -fx-font-weight: bold;                   /* Bold text */
+    -fx-background-radius: 8;                /* Rounded corners */
+    -fx-cursor: hand;                        /* Hand cursor on hover */
+    -fx-padding: 10 20;                      /* Padding around text */
+}
+
+.primary-button:hover {
+    -fx-background-color: #45a049;           /* Darker green on hover */
+}
+
+.secondary-button {
+    -fx-background-color: #2196F3;           /* Blue background */
+    -fx-text-fill: white;                    /* White text */
+    -fx-font-weight: bold;                   /* Bold text */
+    -fx-background-radius: 8;                /* Rounded corners */
+    -fx-cursor: hand;                        /* Hand cursor on hover */
+    -fx-padding: 10 20;                      /* Padding around text */
+}
+
+.secondary-button:hover {
+    -fx-background-color: #1976D2;           /* Darker blue on hover */
+}
+
+/* Alert styles */
+.alert {
+    -fx-font-size: 14px;                     /* Font size for alerts */
+    -fx-text-fill: #333;                     /* Text color */
+}
+
+/* Optional styles for other UI components can be added here */
+

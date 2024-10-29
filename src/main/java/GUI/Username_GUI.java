@@ -9,7 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
 import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -27,59 +29,127 @@ public class Username_GUI extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("User Authentication");
 
-    
         GridPane loginPane = new GridPane();
-        loginPane.setPadding(new Insets(10));
-        loginPane.setVgap(8);
+        loginPane.setPadding(new Insets(20));  // More padding for a cleaner look
+        loginPane.setVgap(15);                 // Increased spacing for better layout
         loginPane.setHgap(10);
+        loginPane.setAlignment(Pos.CENTER);    // Center the grid
+
+        // Labels and input fields
         Label userLabel = new Label("Email:");
+        userLabel.getStyleClass().add("label-text");
+
         Label passwordLabel = new Label("Password:");
+        passwordLabel.getStyleClass().add("label-text");
+
         TextField emailField = new TextField();
+        emailField.setPromptText("Enter your email");  // Placeholder for hint text
+        emailField.getStyleClass().add("input-field");
+
         PasswordField passwordField = new PasswordField();
+        passwordField.setPromptText("Enter your password");
+        passwordField.getStyleClass().add("input-field");
 
+        // Buttons
         Button loginButton = new Button("Login");
-        Button signUpButton = new Button("Sign Up");
+        loginButton.getStyleClass().add("primary-button");
 
+        Button signUpButton = new Button("Sign Up");
+        signUpButton.getStyleClass().add("secondary-button");
+
+        // Layout
         loginPane.add(userLabel, 0, 0);
-        loginPane.add(passwordLabel, 0, 1);
         loginPane.add(emailField, 1, 0);
+        loginPane.add(passwordLabel, 0, 1);
         loginPane.add(passwordField, 1, 1);
         loginPane.add(loginButton, 1, 2);
         loginPane.add(signUpButton, 1, 3);
 
-        Scene loginScene = new Scene(loginPane, 300, 150);
+        Scene loginScene = new Scene(loginPane, 400, 300);
+        loginScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(loginScene);
         primaryStage.show();
 
+        // Fade transition for the login pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), loginPane);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
+
+        // Button actions
         loginButton.setOnAction(e -> {
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), loginButton);
+            scaleTransition.setFromX(1);
+            scaleTransition.setFromY(1);
+            scaleTransition.setToX(1.1); // Scale up
+            scaleTransition.setToY(1.1);  // Scale up
+            scaleTransition.setOnFinished(event -> {
+                // After scaling, revert back to normal size
+                ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), loginButton);
+                revertScale.setFromX(1.1);
+                revertScale.setFromY(1.1);
+                revertScale.setToX(1);
+                revertScale.setToY(1);
+                revertScale.play();
+            });
+            scaleTransition.play(); // Start the scale transition
+
             String email = emailField.getText().trim();
             char[] password = passwordField.getText().toCharArray();
             if (Database.hasUser(email)) {
                 showSigninPage(primaryStage, email, password);
             } else {
-                showAlert("Username not Found");
+                showAlert("Username not found");
                 start(primaryStage);
-                //showSignupPage(primaryStage, email);
             }
         });
+
         signUpButton.setOnAction(e -> {
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), signUpButton);
+            scaleTransition.setFromX(1);
+            scaleTransition.setFromY(1);
+            scaleTransition.setToX(1.1); // Scale up
+            scaleTransition.setToY(1.1);  // Scale up
+            scaleTransition.setOnFinished(event -> {
+                // After scaling, revert back to normal size
+                ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), signUpButton);
+                revertScale.setFromX(1.1);
+                revertScale.setFromY(1.1);
+                revertScale.setToX(1);
+                revertScale.setToY(1);
+                revertScale.play();
+            });
+            scaleTransition.play(); // Start the scale transition
+
             showSetUpPage(primaryStage);
         });
     }
 
+
     private void showSetUpPage(Stage primaryStage) {
         GridPane setUpPane = new GridPane();
-        setUpPane.setPadding(new Insets(10));
-        setUpPane.setVgap(8);
-        setUpPane.setHgap(10);
+        setUpPane.setPadding(new Insets(20));  // Increased padding for a cleaner look
+        setUpPane.setVgap(15);                 // More space between rows
+        setUpPane.setHgap(10);                 // Space between columns
+        setUpPane.setAlignment(Pos.CENTER);    // Center the content
 
         Label usernameLabel = new Label("Username: ");
+        usernameLabel.getStyleClass().add("label-text");
         TextField usernameField = new TextField();
+        usernameField.getStyleClass().add("input-field");
+
         Label passwordLabel = new Label("Password:");
+        passwordLabel.getStyleClass().add("label-text");
         TextField passwordField = new TextField();
+        passwordField.getStyleClass().add("input-field");
+
         Label passwordAgainLabel = new Label("Re-enter Password: ");
+        passwordAgainLabel.getStyleClass().add("label-text");
         TextField passwordAgainField = new TextField();
-        Button loginButton = new Button("SignUp");
+        passwordAgainField.getStyleClass().add("input-field");
+
+        Button loginButton = new Button("Sign Up");
+        loginButton.getStyleClass().add("primary-button");
 
         setUpPane.add(usernameLabel, 0, 0);
         setUpPane.add(usernameField, 1, 0);
@@ -90,22 +160,49 @@ public class Username_GUI extends Application {
         setUpPane.add(loginButton, 1, 3);
 
         Scene setUpScene = new Scene(setUpPane, 400, 400);
+        setUpScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
         primaryStage.setScene(setUpScene);
+        primaryStage.show(); // Ensure the stage is shown
+
+        // Fade transition for the setup pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), setUpPane);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
+
+        // Button action with scale transition
         loginButton.setOnAction(e -> {
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), loginButton);
+            scaleTransition.setFromX(1);
+            scaleTransition.setFromY(1);
+            scaleTransition.setToX(1.1); // Scale up
+            scaleTransition.setToY(1.1);  // Scale up
+            scaleTransition.setOnFinished(event -> {
+                // After scaling, revert back to normal size
+                ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), loginButton);
+                revertScale.setFromX(1.1);
+                revertScale.setFromY(1.1);
+                revertScale.setToX(1);
+                revertScale.setToY(1);
+                revertScale.play();
+            });
+            scaleTransition.play(); // Start the scale transition
+
+            // Validate and process the sign-up
             String username = usernameField.getText().trim();
             char[] password = passwordField.getText().trim().toCharArray();
             char[] passwordAgain = passwordAgainField.getText().trim().toCharArray();
-            if (username.isEmpty() || password.length == 0 || passwordAgain.length == 0 ) {
+            if (username.isEmpty() || password.length == 0 || passwordAgain.length == 0) {
                 showAlert("Please fill out all fields.");
             } else if (!Arrays.toString(password).equals(Arrays.toString(passwordAgain))) {
                 showAlert("Passwords do not match!");
             } else {
-                if(Database.isEmpty()){
+                if (Database.isEmpty()) {
                     User newUser = new User(username, null, null, null, null, null, password, false, null, null, true, false, false);
                     Database.addUser(newUser);
                     showAlert("Sign up successful! You are now registered.");
                     start(primaryStage);
-                }else{
+                } else {
                     User newUser = new User(username, null, null, null, null, null, password, false, null, null, false, true, false);
                     Database.addUser(newUser);
                     showAlert("Sign up successful! You are now registered.");
@@ -115,26 +212,38 @@ public class Username_GUI extends Application {
         });
     }
 
+
     private void showSigninPage(Stage primaryStage, String username, char[] password) {
         User user = Database.findUserByUsername(username);
         if (user != null && Arrays.equals(user.getPassword(), password)) {
-            if(user.getEmail() == null || user.getFirstName() == null || user.getLastName() == null || user.getSkillLevel() == null) {
+            // Check if user details need to be completed
+            if (user.getEmail() == null || user.getFirstName() == null || user.getLastName() == null || user.getSkillLevel() == null) {
                 showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
-                finishSetUp(primaryStage, user);
-            }else{
+                finishSetUp(primaryStage, user); // Redirect to finish setup
+            } else {
                 showAlert("Welcome " + user.getUsername() + "! You are now logged in.");
+                showRolePage(primaryStage, user);
             }
-            showRolePage(primaryStage, user);
         } else {
             showAlert("Incorrect password. Please try again.");
         }
+
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), primaryStage.getScene().getRoot());
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
+
     }
 
+
     private void finishSetUp(Stage primaryStage, User user) {
+        System.out.println("Entering finishSetUp method"); // Debugging line
+
         GridPane finishSetUpPane = new GridPane();
-        finishSetUpPane.setPadding(new Insets(10));
-        finishSetUpPane.setVgap(8);
+        finishSetUpPane.setPadding(new Insets(20));
+        finishSetUpPane.setVgap(15);
         finishSetUpPane.setHgap(10);
+        finishSetUpPane.setAlignment(Pos.CENTER); // Center the content
 
         // Labels and TextFields for user data
         Label emailLabel = new Label("Email:");
@@ -160,30 +269,31 @@ public class Username_GUI extends Application {
         // Adding components to GridPane
         finishSetUpPane.add(emailLabel, 0, 0);
         finishSetUpPane.add(emailField, 1, 0);
-
         finishSetUpPane.add(firstNameLabel, 0, 1);
         finishSetUpPane.add(firstNameField, 1, 1);
-
         finishSetUpPane.add(middleNameLabel, 0, 2);
         finishSetUpPane.add(middleNameField, 1, 2);
-
         finishSetUpPane.add(lastNameLabel, 0, 3);
         finishSetUpPane.add(lastNameField, 1, 3);
-
         finishSetUpPane.add(preferredNameLabel, 0, 4);
         finishSetUpPane.add(preferredNameField, 1, 4);
-
         finishSetUpPane.add(skillLabel, 0, 5);
         finishSetUpPane.add(skillBox, 1, 5);
 
+        // Finish button
         Button finishUpButton = new Button("Next");
+        finishUpButton.getStyleClass().add("primary-button");
         finishSetUpPane.add(finishUpButton, 1, 6);
 
-        Scene signupScene = new Scene(finishSetUpPane, 400, 400);
+        Scene signupScene = new Scene(finishSetUpPane, 400, 500);
+        signupScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
         primaryStage.setScene(signupScene);
+        primaryStage.show(); // Ensure the stage is shown
 
+        // Button action with scale transition
         finishUpButton.setOnAction(e -> {
             if (validateInput(emailField, firstNameField, middleNameField, lastNameField, preferredNameField, skillBox)) {
+                // Update user details
                 user.setEmail(emailField.getText());
                 user.setFirstName(firstNameField.getText());
                 user.setMiddleName(middleNameField.getText());
@@ -191,10 +301,14 @@ public class Username_GUI extends Application {
                 user.setPreferredName(preferredNameField.getText());
                 user.setSkillLevel(skillBox.getValue());
 
+                // Debugging before the update
                 boolean updated = Database.updateUser(user);
                 if (updated) {
                     Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "User successfully updated!");
                     successAlert.showAndWait();
+
+                    // Navigate to the next page after a successful update
+                    showRolePage(primaryStage, user); // Adjust this line as necessary
                 } else {
                     Alert failureAlert = new Alert(Alert.AlertType.ERROR, "Failed to update user. Please check your information and try again.");
                     failureAlert.showAndWait();
@@ -204,8 +318,8 @@ public class Username_GUI extends Application {
                 alert.showAndWait();
             }
         });
-
     }
+
 
     private boolean validateInput(TextField emailField, TextField firstNameField, TextField middleNameField, TextField lastNameField, TextField preferredNameField, ComboBox<String> skillBox) {
         return !emailField.getText().trim().isEmpty() &&
@@ -226,165 +340,299 @@ public class Username_GUI extends Application {
 
     private void showAdminPage(Stage primaryStage) {
         GridPane adminPane = new GridPane();
-        adminPane.setPadding(new Insets(10));
-        adminPane.setVgap(8);
-        adminPane.setHgap(10);
-        Button articlesButton = new Button("Articles");
-        Button inviteButton = new Button("Invite");
-        Button resetButton = new Button("Reset");
-        Button deleteButton = new Button("Delete");
-        Button listButton = new Button("List");
-        Button rolesButton = new Button("Roles");
-        Button logoutButton = new Button("Logout");
-        Label spacer = new Label(" ");
-        adminPane.add(spacer, 0, 0);
-        adminPane.add(articlesButton, 0, 0);
-        adminPane.add(inviteButton, 1, 0);
-        adminPane.add(resetButton, 0, 1);
-        adminPane.add(deleteButton, 1, 1);
-        adminPane.add(listButton, 0, 2);
-        adminPane.add(rolesButton, 1, 2);
-        adminPane.add(logoutButton, 0, 3, 2, 1);
-        GridPane.setHgrow(articlesButton, Priority.ALWAYS);
-        GridPane.setHgrow(inviteButton, Priority.ALWAYS);
-        GridPane.setHgrow(resetButton, Priority.ALWAYS);
-        GridPane.setHgrow(deleteButton, Priority.ALWAYS);
-        GridPane.setHgrow(listButton, Priority.ALWAYS);
-        GridPane.setHgrow(rolesButton, Priority.ALWAYS);
-        GridPane.setHgrow(logoutButton, Priority.ALWAYS);
-        articlesButton.setMaxWidth(Double.MAX_VALUE);
-        inviteButton.setMaxWidth(Double.MAX_VALUE);
-        resetButton.setMaxWidth(Double.MAX_VALUE);
-        deleteButton.setMaxWidth(Double.MAX_VALUE);
-        listButton.setMaxWidth(Double.MAX_VALUE);
-        rolesButton.setMaxWidth(Double.MAX_VALUE);
-        logoutButton.setMaxWidth(Double.MAX_VALUE);
+        adminPane.setPadding(new Insets(20)); // Increased padding for a cleaner look
+        adminPane.setVgap(15);                // More space between rows
+        adminPane.setHgap(10);                // Space between columns
+        adminPane.setAlignment(Pos.CENTER);   // Center the content
+
+        // Array of button labels for easier management
+        String[] buttonLabels = {"Articles", "Invite", "Reset", "Delete", "List", "Roles", "Logout"};
+        Button[] buttons = new Button[buttonLabels.length];
+
+        // Create buttons with styles and add to the grid
+        for (int i = 0; i < buttonLabels.length; i++) {
+            buttons[i] = new Button(buttonLabels[i]);
+            buttons[i].getStyleClass().add(i == buttonLabels.length - 1 ? "secondary-button" : "primary-button"); // Last button is Logout
+            adminPane.add(buttons[i], i % 2, i / 2); // Arrange buttons in two columns
+            GridPane.setHgrow(buttons[i], Priority.ALWAYS);
+            buttons[i].setMaxWidth(Double.MAX_VALUE); // Make buttons stretch
+            int index = i; // Final variable for the lambda expression
+            buttons[i].setOnAction(e -> handleButtonAction(buttons[index], primaryStage)); // Set button actions
+        }
+
+        // Scene setup
         Scene setUpScene = new Scene(adminPane, 400, 400);
+        setUpScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
         primaryStage.setScene(setUpScene);
+        primaryStage.show(); // Ensure the stage is shown
 
-        inviteButton.setOnAction(e -> {
-           //Invite button
-        });
-        resetButton.setOnAction(e -> {
-           //Reset button
-        });
-        deleteButton.setOnAction(e -> {
-           //delete button
-        });
-        listButton.setOnAction(e -> {
-           //list button
-        });
-        rolesButton.setOnAction(e -> {
-            //roles button
-        });
-        logoutButton.setOnAction(e -> {
-            //logout button
-            start(primaryStage);
-        });
+        // Fade transition for the admin pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), adminPane);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
+    }
 
+    private void handleButtonAction(Button button, Stage primaryStage) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), button);
+        scaleTransition.setFromX(1);
+        scaleTransition.setFromY(1);
+        scaleTransition.setToX(1.1); // Scale up
+        scaleTransition.setToY(1.1);  // Scale up
+        scaleTransition.setOnFinished(event -> {
+            ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), button);
+            revertScale.setFromX(1.1);
+            revertScale.setFromY(1.1);
+            revertScale.setToX(1);
+            revertScale.setToY(1);
+            revertScale.play();
+        });
+        scaleTransition.play(); // Start the scale transition
+
+        // Handle button actions with a switch statement
+        switch (button.getText()) {
+            case "Articles":
+                // Logic for articles
+                break;
+            case "Invite":
+                // Logic for invite
+                break;
+            case "Reset":
+                // Logic for reset
+                break;
+            case "Delete":
+                // Logic for delete
+                break;
+            case "List":
+                // Logic for list
+                break;
+            case "Roles":
+                // Logic for roles
+                break;
+            case "Logout":
+                start(primaryStage); // Redirect to login
+                break;
+        }
     }
 
     private void showInstructorPage(Stage primaryStage, User user) {
         GridPane instructorPane = new GridPane();
-        instructorPane.setPadding(new Insets(10));
-        instructorPane.setVgap(8);
+        instructorPane.setPadding(new Insets(20));
+        instructorPane.setVgap(15);
         instructorPane.setHgap(10);
+        instructorPane.setAlignment(Pos.CENTER); // Center the content
+
+        // Create buttons with styles
         Button createArticlesButton = new Button("Create Article");
         Button updateArticleButton = new Button("Update Article");
         Button deleteArticleButton = new Button("Delete Article");
         Button listArticlesButton = new Button("List Articles");
         Button logoutButton = new Button("Logout");
-        instructorPane.add(createArticlesButton, 0, 1); // First row
-        instructorPane.add(updateArticleButton, 0, 2); // Second row
-        instructorPane.add(deleteArticleButton, 0, 3); // Third row
-        instructorPane.add(listArticlesButton, 0, 4); // Fourth row
-        instructorPane.add(logoutButton, 0, 5);       // Fifth row, span optional
+
+        // Add styles to buttons
+        createArticlesButton.getStyleClass().add("primary-button");
+        updateArticleButton.getStyleClass().add("primary-button");
+        deleteArticleButton.getStyleClass().add("primary-button");
+        listArticlesButton.getStyleClass().add("primary-button");
+        logoutButton.getStyleClass().add("secondary-button");
+
+        // Adding buttons to the grid
+        instructorPane.add(createArticlesButton, 0, 1);
+        instructorPane.add(updateArticleButton, 0, 2);
+        instructorPane.add(deleteArticleButton, 0, 3);
+        instructorPane.add(listArticlesButton, 0, 4);
+        instructorPane.add(logoutButton, 0, 5); // Logout button
 
         // Configure buttons to expand to fill space
-        createArticlesButton.setMaxWidth(Double.MAX_VALUE);
-        updateArticleButton.setMaxWidth(Double.MAX_VALUE);
-        deleteArticleButton.setMaxWidth(Double.MAX_VALUE);
-        listArticlesButton.setMaxWidth(Double.MAX_VALUE);
-        logoutButton.setMaxWidth(Double.MAX_VALUE);
+        for (Button button : new Button[]{createArticlesButton, updateArticleButton, deleteArticleButton, listArticlesButton, logoutButton}) {
+            button.setMaxWidth(Double.MAX_VALUE);
+            GridPane.setHgrow(button, Priority.ALWAYS);
+        }
 
-        GridPane.setHgrow(createArticlesButton, Priority.ALWAYS);
-        GridPane.setHgrow(updateArticleButton, Priority.ALWAYS);
-        GridPane.setHgrow(deleteArticleButton, Priority.ALWAYS);
-        GridPane.setHgrow(listArticlesButton, Priority.ALWAYS);
-        GridPane.setHgrow(logoutButton, Priority.ALWAYS);
         Scene instructorScene = new Scene(instructorPane, 400, 400);
+        instructorScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
         primaryStage.setScene(instructorScene);
-        createArticlesButton.setOnAction(e -> {
-            //create article
-        });
-        updateArticleButton.setOnAction(e -> {
-            //update article
-        });
-        deleteArticleButton.setOnAction(e -> {
-            //delete article
-        });
-        listArticlesButton.setOnAction(e -> {
-            //list all articles
-        });
+        primaryStage.show(); // Ensure the stage is shown
+
+        // Fade transition for the instructor pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), instructorPane);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
+
+        // Button actions with scale transition
+        createArticlesButton.setOnAction(e -> handleInstructorButtonAction(createArticlesButton));
+        updateArticleButton.setOnAction(e -> handleInstructorButtonAction(updateArticleButton));
+        deleteArticleButton.setOnAction(e -> handleInstructorButtonAction(deleteArticleButton));
+        listArticlesButton.setOnAction(e -> handleInstructorButtonAction(listArticlesButton));
         logoutButton.setOnAction(e -> {
-            start(primaryStage);
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), logoutButton);
+            scaleTransition.setFromX(1);
+            scaleTransition.setFromY(1);
+            scaleTransition.setToX(1.1); // Scale up
+            scaleTransition.setToY(1.1);  // Scale up
+            scaleTransition.setOnFinished(event -> start(primaryStage)); // Start login screen
+            scaleTransition.play(); // Start the scale transition
         });
     }
+
+    // Handles the button actions with a scale transition
+    private void handleInstructorButtonAction(Button button) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), button);
+        scaleTransition.setFromX(1);
+        scaleTransition.setFromY(1);
+        scaleTransition.setToX(1.1); // Scale up
+        scaleTransition.setToY(1.1);  // Scale up
+        scaleTransition.setOnFinished(event -> {
+            ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), button);
+            revertScale.setFromX(1.1);
+            revertScale.setFromY(1.1);
+            revertScale.setToX(1);
+            revertScale.setToY(1);
+            revertScale.play();
+        });
+        scaleTransition.play(); // Start the scale transition
+
+        // Add logic for each button action here
+        switch (button.getText()) {
+            case "Create Article":
+                // Logic for creating an article
+                break;
+            case "Update Article":
+                // Logic for updating an article
+                break;
+            case "Delete Article":
+                // Logic for deleting an article
+                break;
+            case "List Articles":
+                // Logic for listing all articles
+                break;
+        }
+    }
+
 
     private void showStudentPage(Stage primaryStage, User user) {
         GridPane studentPane = new GridPane();
-        studentPane.setPadding(new Insets(10));
-        studentPane.setVgap(8);
+        studentPane.setPadding(new Insets(20));
+        studentPane.setVgap(15);
         studentPane.setHgap(10);
+        studentPane.setAlignment(Pos.CENTER); // Center the content
+
+        // Create a logout button with styles
         Button logoutButton = new Button("Logout");
+        logoutButton.getStyleClass().add("secondary-button"); // Style for the logout button
+        logoutButton.setMaxWidth(Double.MAX_VALUE); // Ensure the button expands
+
+        // Adding buttons to the grid
         studentPane.add(logoutButton, 0, 0);
+
+        // Scene setup
         Scene studentScene = new Scene(studentPane, 400, 400);
+        studentScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
         primaryStage.setScene(studentScene);
+        primaryStage.show(); // Ensure the stage is shown
+
+        // Fade transition for the student pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), studentPane);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
+
+        // Button action with scale transition
         logoutButton.setOnAction(e -> {
-            start(primaryStage);
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), logoutButton);
+            scaleTransition.setFromX(1);
+            scaleTransition.setFromY(1);
+            scaleTransition.setToX(1.1); // Scale up
+            scaleTransition.setToY(1.1);  // Scale up
+            scaleTransition.setOnFinished(event -> start(primaryStage)); // Start login screen
+            scaleTransition.play(); // Start the scale transition
         });
     }
 
+
     private void showResetPasswordPage(Stage primaryStage, User user) {
         GridPane resetPasswordPane = new GridPane();
-        resetPasswordPane.setPadding(new Insets(10));
-        resetPasswordPane.setVgap(8);
+        resetPasswordPane.setPadding(new Insets(20));
+        resetPasswordPane.setVgap(15);
         resetPasswordPane.setHgap(10);
-        Label spacer = new Label(" ");
-        Label newPasswordLabel = new Label("New Password");
-        TextField newPasswordField = new TextField();
-        Label confirmPasswordLabel = new Label("Confirm Password");
-        TextField confirmPasswordField = new TextField();
+        resetPasswordPane.setAlignment(Pos.CENTER); // Center the content
+
+        // Labels and TextFields for password entry
+        Label newPasswordLabel = new Label("New Password:");
+        newPasswordLabel.getStyleClass().add("label-text"); // Add styles
+        TextField newPasswordField = new PasswordField();
+        newPasswordField.setPromptText("Enter new password");
+        newPasswordField.getStyleClass().add("input-field");
+
+        Label confirmPasswordLabel = new Label("Confirm Password:");
+        confirmPasswordLabel.getStyleClass().add("label-text"); // Add styles
+        TextField confirmPasswordField = new PasswordField();
+        confirmPasswordField.setPromptText("Re-enter password");
+        confirmPasswordField.getStyleClass().add("input-field");
+
+        // Button for continuing password reset
         Button newPasswordButton = new Button("Continue");
+        newPasswordButton.getStyleClass().add("primary-button");
+
+        // Adding components to the grid
         resetPasswordPane.add(newPasswordLabel, 0, 0);
         resetPasswordPane.add(newPasswordField, 0, 1);
         resetPasswordPane.add(confirmPasswordLabel, 0, 2);
         resetPasswordPane.add(confirmPasswordField, 0, 3);
-        resetPasswordPane.add(spacer, 0, 4);
         resetPasswordPane.add(newPasswordButton, 0, 5);
+
+        // Scene setup
         Scene resetPasswordScene = new Scene(resetPasswordPane, 400, 400);
+        resetPasswordScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
         primaryStage.setScene(resetPasswordScene);
+        primaryStage.show(); // Ensure the stage is shown
+
+        // Fade transition for the reset password pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), resetPasswordPane);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
+
+        // Button action with scale transition
         newPasswordButton.setOnAction(e -> {
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), newPasswordButton);
+            scaleTransition.setFromX(1);
+            scaleTransition.setFromY(1);
+            scaleTransition.setToX(1.1); // Scale up
+            scaleTransition.setToY(1.1);  // Scale up
+            scaleTransition.setOnFinished(event -> {
+                // Revert back to normal size after scaling
+                ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), newPasswordButton);
+                revertScale.setFromX(1.1);
+                revertScale.setFromY(1.1);
+                revertScale.setToX(1);
+                revertScale.setToY(1);
+                revertScale.play();
+            });
+            scaleTransition.play(); // Start the scale transition
+
+            // Validate passwords
             char[] password = newPasswordField.getText().trim().toCharArray();
-            char[] confirmpassword = confirmPasswordField.getText().trim().toCharArray();
-            if (password.length == 0 || confirmpassword.length == 0) {
+            char[] confirmPassword = confirmPasswordField.getText().trim().toCharArray();
+            if (password.length == 0 || confirmPassword.length == 0) {
                 showAlert("Please fill out all fields.");
-            } else if (!Arrays.equals(password, confirmpassword)) {
+            } else if (!Arrays.equals(password, confirmPassword)) {
                 showAlert("Passwords do not match!");
             } else {
-                user.setPassword(confirmpassword);
+                user.setPassword(confirmPassword);
                 user.setIsOneTimePassword(false);
                 boolean updated = Database.updateUser(user);
                 if (updated) {
                     showAlert("Password updated successfully");
-                    start(primaryStage);
+                    start(primaryStage); // Navigate back to the login screen
                 } else {
                     showAlert("Failed to update user. Please check your information and try again.");
                 }
             }
         });
-
     }
+
 
     private boolean checkPasswordTime(User user){
         LocalDateTime now = LocalDateTime.now();
@@ -429,18 +677,20 @@ public class Username_GUI extends Application {
 
         // Continue with role selector if multiple roles
         GridPane roleSelector = new GridPane();
-        roleSelector.setPadding(new Insets(10));
-        roleSelector.setVgap(8);
-        roleSelector.setHgap(10);
-        roleSelector.setAlignment(Pos.CENTER);
+        roleSelector.setPadding(new Insets(20));  // Increased padding for a cleaner look
+        roleSelector.setVgap(15);                 // More space between rows
+        roleSelector.setHgap(10);                 // Space between columns
+        roleSelector.setAlignment(Pos.CENTER);     // Center the content
 
         Label roleLabel = new Label("Select Your Role:");
+        roleLabel.getStyleClass().add("label-text"); // Add styles for the label
         roleSelector.add(roleLabel, 0, 0); // Position label at the top
 
         int row = 1; // Start adding buttons from the second row
 
         if (roleManager.isAdmin()) {
             Button adminButton = new Button("Admin");
+            adminButton.getStyleClass().add("primary-button"); // Add button style
             adminButton.setOnAction(e -> {
                 showAdminPage(primaryStage);
                 primaryStage.close(); // Close the selector after selection
@@ -452,6 +702,7 @@ public class Username_GUI extends Application {
 
         if (roleManager.isInstructor()) {
             Button instructorButton = new Button("Instructor");
+            instructorButton.getStyleClass().add("primary-button"); // Add button style
             instructorButton.setOnAction(e -> {
                 showInstructorPage(primaryStage, user);
                 primaryStage.close(); // Close the selector after selection
@@ -463,6 +714,7 @@ public class Username_GUI extends Application {
 
         if (roleManager.isStudent()) {
             Button studentButton = new Button("Student");
+            studentButton.getStyleClass().add("primary-button"); // Add button style
             studentButton.setOnAction(e -> {
                 showStudentPage(primaryStage, user);
                 primaryStage.close(); // Close the selector after selection
@@ -472,10 +724,18 @@ public class Username_GUI extends Application {
             GridPane.setHgrow(studentButton, Priority.ALWAYS);
         }
 
-        Scene roleScene = new Scene(roleSelector, 300, 150); // Set size depending on the content
+        Scene roleScene = new Scene(roleSelector, 300, 200); // Set size depending on the content
+        roleScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
         primaryStage.setTitle("Role Selection");
         primaryStage.setScene(roleScene);
         primaryStage.show(); // Display the stage with role options
+
+        // Fade transition for the role selector pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), roleSelector);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
     }
+
 
 }
