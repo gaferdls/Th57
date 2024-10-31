@@ -338,7 +338,7 @@ public class Username_GUI extends Application {
         alert.showAndWait();
     }
 
-    private void showAdminPage(Stage primaryStage) {
+    private void showAdminPage(Stage primaryStage, User user) {
         GridPane adminPane = new GridPane();
         adminPane.setPadding(new Insets(20));
         adminPane.setVgap(15);
@@ -363,7 +363,7 @@ public class Username_GUI extends Application {
 
             // Assign each button's action to navigate to its respective scene
             int index = i;
-            buttons[i].setOnAction(e -> handleButtonNavigation(buttonLabels[index], primaryStage));
+            buttons[i].setOnAction(e -> handleButtonNavigation(buttonLabels[index], primaryStage, user));
         }
 
         // Scene setup
@@ -380,10 +380,10 @@ public class Username_GUI extends Application {
     }
 
     // Method to handle navigation based on button label
-    private void handleButtonNavigation(String label, Stage primaryStage) {
+    private void handleButtonNavigation(String label, Stage primaryStage,User user) {
         switch (label) {
             case "Articles":
-                showArticlesPage(primaryStage);
+                showArticlesPage(primaryStage,user);
                 break;
             case "Invite":
                 showInvitePage(primaryStage);
@@ -401,7 +401,7 @@ public class Username_GUI extends Application {
                 showRolesPage(primaryStage);
                 break;
             case "Logout":
-                showLogoutPage(primaryStage);
+                start(primaryStage);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected label: " + label);
@@ -409,8 +409,72 @@ public class Username_GUI extends Application {
     }
 
     // Placeholder methods for each button's page
-    private void showArticlesPage(Stage primaryStage) {
-        // Set up the Articles page scene and show it
+    private void showArticlesPage(Stage primaryStage, User user) {
+        GridPane showarticlePane = new GridPane();
+        showarticlePane.setPadding(new Insets(20));
+        showarticlePane.setVgap(15);
+        showarticlePane.setHgap(10);
+        showarticlePane.setAlignment(Pos.CENTER);
+
+        String[] buttonLabels = {"Create", "Update", "View", "Delete", "Back up", "Restore", "Back"};
+        Button[] buttons = new Button[buttonLabels.length];
+        String[] tooltips = {
+                "Create Articles", "Update Articles", "View Articles", "Delete Articles",
+                "Back up Articles", "Restore Articles", "Back to the menu"
+        };
+
+        // Set up buttons with tooltips and individual actions
+        for (int i = 0; i < buttonLabels.length; i++) {
+            buttons[i] = new Button(buttonLabels[i]);
+            buttons[i].getStyleClass().add(i == buttonLabels.length - 1 ? "secondary-button" : "primary-button"); // Last button is Logout
+            buttons[i].setTooltip(new Tooltip(tooltips[i]));
+            showarticlePane.add(buttons[i], i % 2, i / 2);
+            GridPane.setHgrow(buttons[i], Priority.ALWAYS);
+            buttons[i].setMaxWidth(Double.MAX_VALUE);
+
+            // Assign each button's action to navigate to its respective scene
+            int index = i;
+            buttons[i].setOnAction(e -> handleArticleNavigation(buttonLabels[index], primaryStage, user));
+        }
+
+        // Scene setup
+        Scene setUpScene = new Scene(showarticlePane, 450, 450);
+        setUpScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(setUpScene);
+        primaryStage.show();
+
+        // Fade transition
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), showarticlePane);
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
+    }
+    private void handleArticleNavigation(String label, Stage primaryStage, User user) {
+        switch (label) {
+            case "Create":
+                //
+                break;
+            case "Update":
+                //
+                break;
+            case "View":
+                //
+                break;
+            case "Delete":
+                //
+                break;
+            case "Back up":
+                //
+                break;
+            case "Restore":
+                //
+                break;
+            case "Back":
+                showAdminPage(primaryStage, user);
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected label: " + label);
+        }
     }
 
     private void showInvitePage(Stage primaryStage) {
@@ -431,10 +495,6 @@ public class Username_GUI extends Application {
 
     private void showRolesPage(Stage primaryStage) {
         // Set up the Roles page scene and show it
-    }
-
-    private void showLogoutPage(Stage primaryStage) {
-        // Set up the Logout page scene and show it
     }
 
     private void handleButtonAction(Button button, Stage primaryStage) {
@@ -726,7 +786,7 @@ public class Username_GUI extends Application {
         // Directly redirect if only one role is present
         if (roleCount == 1) {
             if (roleManager.isAdmin()) {
-                showAdminPage(primaryStage);
+                showAdminPage(primaryStage,user);
                 return;
             }
             if (roleManager.isInstructor()) {
@@ -756,7 +816,7 @@ public class Username_GUI extends Application {
             Button adminButton = new Button("Admin");
             adminButton.getStyleClass().add("primary-button"); // Add button style
             adminButton.setOnAction(e -> {
-                showAdminPage(primaryStage);// Close the selector after selection
+                showAdminPage(primaryStage, user);// Close the selector after selection
             });
             roleSelector.add(adminButton, 0, row++);
             adminButton.setMaxWidth(Double.MAX_VALUE);
