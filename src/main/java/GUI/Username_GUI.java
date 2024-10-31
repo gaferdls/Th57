@@ -40,14 +40,14 @@ public class Username_GUI extends Application {
         loginPane.setAlignment(Pos.CENTER);    // Center the grid
 
         // Labels and input fields
-        Label userLabel = new Label("Email:");
+        Label userLabel = new Label("Username:");
         userLabel.getStyleClass().add("label-text");
 
         Label passwordLabel = new Label("Password:");
         passwordLabel.getStyleClass().add("label-text");
 
         TextField emailField = new TextField();
-        emailField.setPromptText("Enter your email");  // Placeholder for hint text
+        emailField.setPromptText("Enter your username");  // Placeholder for hint text
         emailField.getStyleClass().add("input-field");
 
         PasswordField passwordField = new PasswordField();
@@ -612,6 +612,58 @@ public class Username_GUI extends Application {
         fadeTransition.play();
     }
 
+    private void backupArticlesScreen(Stage primaryStage, User user) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+
+        Label text = new Label("Filename: ");
+        TextField filenameField = new TextField();
+        Button submit = new Button("submit");
+
+        pane.add(text, 0, 0);
+        pane.add(filenameField, 1, 0);
+        pane.add(submit, 0, 1);
+
+        submit.setOnAction(e -> {
+            String filename = filenameField.getText();
+            boolean did = Database.db.backupToFile(filename);
+            showAlert(did ? "Backup successful" : "Backup failed");
+            showArticlesPage(primaryStage, user);
+        });
+
+        Scene scene = new Scene(pane, 400, 400);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("backup articles");
+        primaryStage.show();
+
+    }
+
+    private void restoreArticlesScreen(Stage primaryStage, User user) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+
+        Label text = new Label("Filename: ");
+        TextField filenameField = new TextField();
+        Button submit = new Button("submit");
+
+        pane.add(text, 0, 0);
+        pane.add(filenameField, 1, 0);
+        pane.add(submit, 0, 1);
+
+        submit.setOnAction(e -> {
+            String filename = filenameField.getText();
+            boolean did = Database.db.restoreFromFile(filename);
+            showAlert(did ? "Restore successful" : "Restore failed");
+            showArticlesPage(primaryStage, user);
+        });
+
+        Scene scene = new Scene(pane, 400, 400);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("restore articles");
+        primaryStage.show();
+    }
 
 
     private void handleArticleNavigation(String label, Stage primaryStage, User user) {
@@ -633,9 +685,11 @@ public class Username_GUI extends Application {
                 break;
             case "Back up":
                 //
+                backupArticlesScreen(primaryStage, user);
                 break;
             case "Restore":
                 //
+                restoreArticlesScreen(primaryStage, user);
                 break;
             case "Back":
                 showAdminPage(primaryStage, user);

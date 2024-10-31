@@ -13,7 +13,7 @@ import java.time.Instant;
 public class Database {
 
 	private static Database instance;
-	private static DatabaseHelper db;
+	public static DatabaseHelper db;
 
 	// Initialize the database
 	public static void init() {
