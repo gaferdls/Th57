@@ -340,37 +340,101 @@ public class Username_GUI extends Application {
 
     private void showAdminPage(Stage primaryStage) {
         GridPane adminPane = new GridPane();
-        adminPane.setPadding(new Insets(20)); // Increased padding for a cleaner look
-        adminPane.setVgap(15);                // More space between rows
-        adminPane.setHgap(10);                // Space between columns
-        adminPane.setAlignment(Pos.CENTER);   // Center the content
+        adminPane.setPadding(new Insets(20));
+        adminPane.setVgap(15);
+        adminPane.setHgap(10);
+        adminPane.setAlignment(Pos.CENTER);
 
-        // Array of button labels for easier management
         String[] buttonLabels = {"Articles", "Invite", "Reset", "Delete", "List", "Roles", "Logout"};
         Button[] buttons = new Button[buttonLabels.length];
+        String[] tooltips = {
+                "Manage Articles", "Invite Users", "Reset Settings", "Delete Records",
+                "List All Entries", "Manage Roles", "Logout from Admin"
+        };
 
-        // Create buttons with styles and add to the grid
+        // Set up buttons with tooltips and individual actions
         for (int i = 0; i < buttonLabels.length; i++) {
             buttons[i] = new Button(buttonLabels[i]);
             buttons[i].getStyleClass().add(i == buttonLabels.length - 1 ? "secondary-button" : "primary-button"); // Last button is Logout
-            adminPane.add(buttons[i], i % 2, i / 2); // Arrange buttons in two columns
+            buttons[i].setTooltip(new Tooltip(tooltips[i]));
+            adminPane.add(buttons[i], i % 2, i / 2);
             GridPane.setHgrow(buttons[i], Priority.ALWAYS);
-            buttons[i].setMaxWidth(Double.MAX_VALUE); // Make buttons stretch
-            int index = i; // Final variable for the lambda expression
-            buttons[i].setOnAction(e -> handleButtonAction(buttons[index], primaryStage)); // Set button actions
+            buttons[i].setMaxWidth(Double.MAX_VALUE);
+
+            // Assign each button's action to navigate to its respective scene
+            int index = i;
+            buttons[i].setOnAction(e -> handleButtonNavigation(buttonLabels[index], primaryStage));
         }
 
         // Scene setup
-        Scene setUpScene = new Scene(adminPane, 400, 400);
-        setUpScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
+        Scene setUpScene = new Scene(adminPane, 450, 450);
+        setUpScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(setUpScene);
-        primaryStage.show(); // Ensure the stage is shown
+        primaryStage.show();
 
-        // Fade transition for the admin pane
+        // Fade transition
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), adminPane);
-        fadeTransition.setFromValue(0); // Start fully transparent
-        fadeTransition.setToValue(1);    // End fully opaque
-        fadeTransition.play();            // Start the transition
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
+    }
+
+    // Method to handle navigation based on button label
+    private void handleButtonNavigation(String label, Stage primaryStage) {
+        switch (label) {
+            case "Articles":
+                showArticlesPage(primaryStage);
+                break;
+            case "Invite":
+                showInvitePage(primaryStage);
+                break;
+            case "Reset":
+                showResetPage(primaryStage);
+                break;
+            case "Delete":
+                showDeletePage(primaryStage);
+                break;
+            case "List":
+                showListPage(primaryStage);
+                break;
+            case "Roles":
+                showRolesPage(primaryStage);
+                break;
+            case "Logout":
+                showLogoutPage(primaryStage);
+                break;
+            default:
+                throw new IllegalArgumentException("Unexpected label: " + label);
+        }
+    }
+
+    // Placeholder methods for each button's page
+    private void showArticlesPage(Stage primaryStage) {
+        // Set up the Articles page scene and show it
+    }
+
+    private void showInvitePage(Stage primaryStage) {
+        // Set up the Invite page scene and show it
+    }
+
+    private void showResetPage(Stage primaryStage) {
+        // Set up the Reset page scene and show it
+    }
+
+    private void showDeletePage(Stage primaryStage) {
+        // Set up the Delete page scene and show it
+    }
+
+    private void showListPage(Stage primaryStage) {
+        // Set up the List page scene and show it
+    }
+
+    private void showRolesPage(Stage primaryStage) {
+        // Set up the Roles page scene and show it
+    }
+
+    private void showLogoutPage(Stage primaryStage) {
+        // Set up the Logout page scene and show it
     }
 
     private void handleButtonAction(Button button, Stage primaryStage) {
@@ -692,8 +756,7 @@ public class Username_GUI extends Application {
             Button adminButton = new Button("Admin");
             adminButton.getStyleClass().add("primary-button"); // Add button style
             adminButton.setOnAction(e -> {
-                showAdminPage(primaryStage);
-                primaryStage.close(); // Close the selector after selection
+                showAdminPage(primaryStage);// Close the selector after selection
             });
             roleSelector.add(adminButton, 0, row++);
             adminButton.setMaxWidth(Double.MAX_VALUE);
