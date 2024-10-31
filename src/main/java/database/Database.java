@@ -2,7 +2,10 @@ package database;
 
 import util.Role;
 import util.User;
+import util.Article;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.Instant;
@@ -18,6 +21,12 @@ public class Database {
 		try {
 			db.connectToDatabase();
 			System.out.println("connected to database!");
+			Article article = new Article("Expert", "Eclipse", "EclipseTut", "How to set up eclipse", "body");
+			//db.addToArticleDatabase(article);
+			db.searchArticlesByGroupingID("Eclipse");
+
+
+
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -31,6 +40,26 @@ public class Database {
 			return false;
 		}
 		return true;
+	}
+	public static ArrayList<Article> allArticles() {
+		ArrayList<Article> articles = new ArrayList<>(); // Create a new ArrayList to hold articles
+
+
+		articles = db.getAllArticles(); // Retrieve articles from the database
+
+
+		return articles; // Return the ArrayList, even if it's empty
+	}
+
+
+	public static void addArticle(Article article){
+		try {
+			db.addToArticleDatabase(article);
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+		}
 	}
 
 

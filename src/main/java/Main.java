@@ -6,6 +6,7 @@ public class Main {
         try {
             Database.init();
             displayAllUsers();
+
             Username_GUI.main(args);
         } catch (Exception e) {
             System.out.println("whoops");

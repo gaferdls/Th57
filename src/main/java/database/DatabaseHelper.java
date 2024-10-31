@@ -1,5 +1,9 @@
 package database;
 import util.User;
+import util.Article;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.sql.*;
 
@@ -28,6 +32,7 @@ public class DatabaseHelper {
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
             statement = connection.createStatement();
             createTables();  // Create the necessary tables if they don't exist
+            createArticlesTables();
         } catch (ClassNotFoundException e) {
             System.err.println("JDBC Driver not found: " + e.getMessage());
         }
@@ -51,6 +56,99 @@ public class DatabaseHelper {
                 + "instructor BIT)";
         statement.execute(userTable);
     }
+    public void updateArticle(){
+
+    }
+
+    public void deleteArticle(){
+
+    }
+
+    public ArrayList<Article> getAllArticles(){
+        ArrayList<Article> articles = new ArrayList<>();
+        String sql = "SELECT level, groupingID, title, short, body FROM articles";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // Create an Article object for each row in the ResultSet
+                Article article = new Article(
+                        rs.getString("level"),
+                        rs.getString("groupingID"),
+                        rs.getString("title"),
+                        rs.getString("short"),
+                        rs.getString("body")
+                );
+                articles.add(article); // Add article to the ArrayList
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving articles: " + e.getMessage());
+
+        }
+
+        return articles; // Return the populated ArrayList
+    }
+
+
+
+
+    public List<Article> searchArticlesByGroupingID(String groupingID) throws SQLException {
+        List<Article> articles = new ArrayList<>();
+        String sql = "SELECT level, groupingID, title, short, body FROM articles WHERE groupingID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, groupingID);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // Create an Article object for each row in the ResultSet
+                Article article = new Article(
+                        rs.getString("level"),
+                        rs.getString("groupingID"),
+                        rs.getString("title"),
+                        rs.getString("short"),
+                        rs.getString("body")
+                );
+                articles.add(article);
+            }
+
+            for (Article article : articles) {
+                System.out.println(article.getShortDescription());
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving articles: " + e.getMessage());
+            throw e;
+        }
+
+        return articles;
+    }
+
+
+    public void addToArticleDatabase(Article article) throws SQLException {
+        // SQL query to insert a new article
+        String sql = "INSERT INTO articles (level, groupingID, title, short, body) VALUES (?, ?, ?, ?, ?)";
+
+        // Using try-with-resources to ensure proper resource management
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            // Set the parameters for the prepared statement
+            pstmt.setString(1, article.getLevel());
+            pstmt.setString(2, article.getGroupId());
+            pstmt.setString(3, article.getTitle());
+            pstmt.setString(4, article.getShortDescription());
+            pstmt.setString(5, article.getBody());
+
+            // Execute the insert operation
+            pstmt.executeUpdate();
+            System.out.println("Article added successfully!");
+        } catch (SQLException e) {
+            // Handle SQL exceptions
+            System.err.println("Error adding article: " + e.getMessage());
+            throw e; // Optionally rethrow the exception after logging it
+        }
+    }
+
+    
 
 
     /**
@@ -175,6 +273,19 @@ public class DatabaseHelper {
             System.out.print(", roles: " + admin + student + instructor);
         }
     }
+    private void createArticlesTables() throws SQLException {
+        String articlesTable = "CREATE TABLE IF NOT EXISTS articles ("
+                + "id BIGINT PRIMARY KEY AUTO_INCREMENT, " // Correct placement of AUTO_INCREMENT
+                + "groupingID VARCHAR(255), "
+                + "level VARCHAR(255), " // Added missing comma
+                + "title VARCHAR(255), "
+                + "short VARCHAR(255), "
+                + "body VARCHAR(255)" // Added missing comma
+                + ");";
+
+        statement.execute(articlesTable);
+    }
+
 
     public char[] getUserPassword(String email) throws SQLException {
         String sql = "SELECT password FROM users WHERE email='" + email + "'";
@@ -218,7 +329,13 @@ public class DatabaseHelper {
     }
 
 
+    public void DisplayArticles() throws SQLException {
 
+        String sql = "SELECT * FROM articles";
+        Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery(sql);
+
+    }
 
 
     public User getUserInformationFromUsername(String username) {

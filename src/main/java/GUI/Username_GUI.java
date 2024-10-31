@@ -3,6 +3,7 @@ package GUI;
 import database.Database;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,10 +13,14 @@ import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.PrimitiveIterator;
 
+import util.Article;
 import util.User;
 
 public class Username_GUI extends Application {
@@ -408,6 +413,117 @@ public class Username_GUI extends Application {
         }
     }
 
+    private void addArticlesPage(Stage primaryStage, User user){
+        GridPane grid = new GridPane();
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+        // Level Selector
+        Label levelLabel = new Label("Level:");
+        ComboBox<String> levelSelector = new ComboBox<>();
+        levelSelector.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
+
+        // Grouping Identifier
+        Label groupLabel = new Label("Grouping Identifier:");
+        TextField groupField = new TextField();
+
+        // Title
+        Label titleLabel = new Label("Title:");
+        TextField titleField = new TextField();
+
+        // Short Description
+        Label descLabel = new Label("Short Description:");
+        TextField descField = new TextField();
+
+        // Body
+        Label bodyLabel = new Label("Body:");
+        TextArea bodyArea = new TextArea();
+        bodyArea.setWrapText(true);
+        bodyArea.setPrefRowCount(10);
+
+        // Add components to GridPane
+        grid.add(levelLabel, 0, 0);
+        grid.add(levelSelector, 1, 0);
+        grid.add(groupLabel, 0, 1);
+        grid.add(groupField, 1, 1);
+        grid.add(titleLabel, 0, 2);
+        grid.add(titleField, 1, 2);
+        grid.add(descLabel, 0, 3);
+        grid.add(descField, 1, 3);
+        grid.add(bodyLabel, 0, 4);
+        grid.add(bodyArea, 1, 4);
+
+        // Submit button
+        Button submitButton = new Button("Submit");
+        submitButton.setOnAction(e -> {
+            // Get values as strings
+            String level = levelSelector.getValue();
+            String groupId = groupField.getText();
+            String title = titleField.getText();
+            String shortDescription = descField.getText();
+            String body = bodyArea.getText();
+            Article article = new Article(level, groupId, title, shortDescription, body);
+            Database.addArticle(article);
+            // Print values (or store them as needed)
+            System.out.println("Level: " + level);
+            System.out.println("Grouping Identifier: " + groupId);
+            System.out.println("Title: " + title);
+            System.out.println("Short Description: " + shortDescription);
+            System.out.println("Body: " + body);
+            showArticlesPage(primaryStage, user);
+        });
+        grid.add(submitButton, 1, 5);
+
+        // Back button
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));
+        grid.add(backButton, 0, 5);
+        // Scene setup
+        Scene scene = new Scene(grid, 400, 400);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Help System Entry");
+        primaryStage.show();
+
+
+    }
+
+    private void viewArticlesPage(Stage primaryStage, User user) {
+        // Create a new layout to display the articles
+        VBox vbox = new VBox();
+        vbox.setSpacing(10); // Set spacing between elements
+        vbox.setPadding(new Insets(20)); // Set padding around the VBox
+
+        // Create a title for the page
+        Label titleLabel = new Label("Articles");
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+
+        // Create a list to hold articles
+        ArrayList<Article> articles = new ArrayList<>();
+
+
+        articles = Database.allArticles();
+
+        ListView<String> listView = new ListView<>();
+        for (Article article : articles) {
+            String displayText = article.getTitle() + " - " + article.getShortDescription();
+            listView.getItems().add(displayText);
+        }
+
+        // Create a back button
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user)); // Method to return to admin page
+
+        // Add all elements to the VBox
+        vbox.getChildren().addAll(titleLabel, listView, backButton);
+
+        // Create a new Scene and set it to the Stage
+        Scene scene = new Scene(vbox, 400, 300); // Set width and height as needed
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("View Articles");
+        primaryStage.show();
+    }
+
+
     // Placeholder methods for each button's page
     private void showArticlesPage(Stage primaryStage, User user) {
         GridPane showarticlePane = new GridPane();
@@ -453,12 +569,14 @@ public class Username_GUI extends Application {
         switch (label) {
             case "Create":
                 //
+                addArticlesPage(primaryStage, user);
                 break;
             case "Update":
                 //
                 break;
             case "View":
                 //
+                viewArticlesPage(primaryStage, user);
                 break;
             case "Delete":
                 //
@@ -538,6 +656,77 @@ public class Username_GUI extends Application {
                 break;
         }
     }
+    private void articleChoices(Stage primaryStage){
+        GridPane instructorPane = new GridPane();
+        instructorPane.setPadding(new Insets(20));
+        instructorPane.setVgap(15);
+        instructorPane.setHgap(10);
+        instructorPane.setAlignment(Pos.CENTER); // Center the content
+
+        // Create buttons with styles
+        Button createArticlesButton = new Button("Create Article");
+        Button updateArticleButton = new Button("Update Article");
+        Button deleteArticleButton = new Button("Delete Article");
+        Button listArticlesButton = new Button("List Articles");
+        Button logoutButton = new Button("Logout");
+
+        // Add styles to buttons
+        createArticlesButton.getStyleClass().add("primary-button");
+        updateArticleButton.getStyleClass().add("primary-button");
+        deleteArticleButton.getStyleClass().add("primary-button");
+        listArticlesButton.getStyleClass().add("primary-button");
+        logoutButton.getStyleClass().add("secondary-button");
+
+        // Adding buttons to the grid
+        instructorPane.add(createArticlesButton, 0, 1);
+        instructorPane.add(updateArticleButton, 0, 2);
+        instructorPane.add(deleteArticleButton, 0, 3);
+        instructorPane.add(listArticlesButton, 0, 4);
+        instructorPane.add(logoutButton, 0, 5); // Logout button
+
+        // Configure buttons to expand to fill space
+        for (Button button : new Button[]{createArticlesButton, updateArticleButton, deleteArticleButton, listArticlesButton, logoutButton}) {
+            button.setMaxWidth(Double.MAX_VALUE);
+            GridPane.setHgrow(button, Priority.ALWAYS);
+        }
+
+        Scene instructorScene = new Scene(instructorPane, 400, 400);
+        instructorScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
+        primaryStage.setScene(instructorScene);
+        primaryStage.show(); // Ensure the stage is shown
+
+        // Fade transition for the instructor pane
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), instructorPane);
+        fadeTransition.setFromValue(0); // Start fully transparent
+        fadeTransition.setToValue(1);    // End fully opaque
+        fadeTransition.play();            // Start the transition
+
+        // Button actions with scale transition
+        createArticlesButton.setOnAction(e -> handleInstructorButtonAction(createArticlesButton));
+        updateArticleButton.setOnAction(e -> handleInstructorButtonAction(updateArticleButton));
+        deleteArticleButton.setOnAction(e -> handleInstructorButtonAction(deleteArticleButton));
+        listArticlesButton.setOnAction(e -> handleInstructorButtonAction(listArticlesButton));
+        logoutButton.setOnAction(e -> {
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), logoutButton);
+            scaleTransition.setFromX(1);
+            scaleTransition.setFromY(1);
+            scaleTransition.setToX(1.1); // Scale up
+            scaleTransition.setToY(1.1);  // Scale up
+            scaleTransition.setOnFinished(event -> start(primaryStage)); // Start login screen
+            scaleTransition.play(); // Start the scale transition
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     private void showInstructorPage(Stage primaryStage, User user) {
         GridPane instructorPane = new GridPane();
