@@ -2,6 +2,10 @@ package database;
 import util.User;
 import util.Article;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +66,53 @@ public class DatabaseHelper {
 
     public void deleteArticle(){
 
+    }
+
+    public boolean backupToFile(String filename) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename, false));
+            for (Article article : getAllArticles()) {
+                writer.write(String.join(";",
+                        new String(article.getTitle()),
+                        new String(article.getGroupId()),
+                        new String(article.getShortDescription()),
+                        new String(article.getKeywords()),
+                        new String(article.getBody()),
+                        new String(article.getReferences()),
+                        new String(article.getLevel())
+                ));
+                writer.newLine();
+            }
+            writer.flush();
+            System.out.println("Backup completed successfully to " + filename);
+            return true;
+        } catch (Exception e) {
+            System.out.println("failed to backup to " + filename);
+            return false;
+        }
+    }
+
+    public boolean restoreFromFile(String filename) {
+        try {
+            String sql = "DELETE FROM articles";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.executeUpdate();
+
+            BufferedReader reader = new BufferedReader(new FileReader(filename));
+            String line;
+            while((line = reader.readLine()) != null) {
+                String[] parts = line.split(";", 7);
+                if (parts.length == 7) {
+                    System.out.println("restoring article " + parts[0]);
+                    addToArticleDatabase(new Article(parts[6], parts[1], parts[0], parts[2], parts[4], parts[3], parts[5]));
+                }
+            }
+            System.out.println("restored from file " + filename);
+            return true;
+        } catch (Exception e) {
+            System.out.println("failed to restore from " + filename);
+            return false;
+        }
     }
 
     public ArrayList<Article> getAllArticles(){
