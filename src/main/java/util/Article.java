@@ -8,15 +8,25 @@ public class Article {
     private String body;
     private boolean beginner;
     private boolean intermediate;
+    private String references, keywords;
 
     // Constructor
-    public Article(String level, String groupId, String title, String shortDescription, String body) {
+    public Article(String level, String groupId, String title, String shortDescription, String body, String keywords, String references) {
         this.level = level;
         this.groupId = groupId;
         this.title = title;
         this.shortDescription = shortDescription;
         this.body = body;
+        this.keywords = keywords;
+        this.references = references;
+    }
 
+    public String getReferences() {
+        return references;
+    }
+
+    public String getKeywords() {
+        return keywords;
     }
 
     // Getters
@@ -44,11 +54,13 @@ public class Article {
     @Override
     public String toString() {
         return "Article{" +
-                "level='" + level + '\'' +
-                ", groupId='" + groupId + '\'' +
-                ", title='" + title + '\'' +
-                ", shortDescription='" + shortDescription + '\'' +
+                "keywords='" + keywords + '\'' +
+                ", references='" + references + '\'' +
                 ", body='" + body + '\'' +
+                ", shortDescription='" + shortDescription + '\'' +
+                ", title='" + title + '\'' +
+                ", groupId='" + groupId + '\'' +
+                ", level='" + level + '\'' +
                 '}';
     }
 }
