@@ -533,6 +533,17 @@ public class Username_GUI extends Application {
         bodyArea.setWrapText(true);
         bodyArea.setPrefRowCount(10);
 
+        //keywords
+        Label keywordsLabel = new Label("Keywords:");
+        TextArea keywordsArea = new TextArea();
+        bodyArea.setWrapText(true);
+        bodyArea.setPrefRowCount(10);
+        //references
+        Label refsLabel = new Label("References:");
+        TextArea refsArea = new TextArea();
+        bodyArea.setWrapText(true);
+        bodyArea.setPrefRowCount(10);
+
 
         // Add components to GridPane
         grid.add(levelLabel, 0, 0);
@@ -545,6 +556,10 @@ public class Username_GUI extends Application {
         grid.add(descField, 1, 3);
         grid.add(bodyLabel, 0, 4);
         grid.add(bodyArea, 1, 4);
+        grid.add(keywordsLabel, 0, 5);
+        grid.add(keywordsArea, 1, 5);
+        grid.add(refsLabel, 0, 6);
+        grid.add(refsLabel, 1, 6);
 
 
         // Submit button
@@ -556,7 +571,9 @@ public class Username_GUI extends Application {
             String title = titleField.getText();
             String shortDescription = descField.getText();
             String body = bodyArea.getText();
-            Article article = new Article(level, groupId, title, shortDescription, body);
+            String keywords = keywordsArea.getText();
+            String refs = refsArea.getText();
+            Article article = new Article(level, groupId, title, shortDescription, body, keywords, refs);
             Database.addArticle(article);
             // Print values (or store them as needed)
             System.out.println("Level: " + level);

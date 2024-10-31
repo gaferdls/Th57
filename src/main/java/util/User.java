@@ -1,8 +1,6 @@
 package util;
 
-import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class User {

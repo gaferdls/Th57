@@ -21,7 +21,7 @@ public class Database {
 		try {
 			db.connectToDatabase();
 			System.out.println("connected to database!");
-			Article article = new Article("Expert", "Eclipse", "EclipseTut", "How to set up eclipse", "body");
+			Article article = new Article("Expert", "Eclipse", "EclipseTut", "How to set up eclipse", "body", "coding", "carter");
 			//db.addToArticleDatabase(article);
 			db.searchArticlesByGroupingID("Eclipse");
 
