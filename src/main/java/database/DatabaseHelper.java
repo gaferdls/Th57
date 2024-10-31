@@ -192,6 +192,8 @@ public class DatabaseHelper {
             pstmt.setString(3, article.getTitle());
             pstmt.setString(4, article.getShortDescription());
             pstmt.setString(5, article.getBody());
+            pstmt.setString(6, article.getKeywords());
+            pstmt.setString(7, article.getReferences());
 
             // Execute the insert operation
             pstmt.executeUpdate();
