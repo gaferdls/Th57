@@ -497,48 +497,6 @@ public class Username_GUI extends Application {
         // Set up the Roles page scene and show it
     }
 
-    private void handleButtonAction(Button button, Stage primaryStage) {
-        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), button);
-        scaleTransition.setFromX(1);
-        scaleTransition.setFromY(1);
-        scaleTransition.setToX(1.1); // Scale up
-        scaleTransition.setToY(1.1);  // Scale up
-        scaleTransition.setOnFinished(event -> {
-            ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), button);
-            revertScale.setFromX(1.1);
-            revertScale.setFromY(1.1);
-            revertScale.setToX(1);
-            revertScale.setToY(1);
-            revertScale.play();
-        });
-        scaleTransition.play(); // Start the scale transition
-
-        // Handle button actions with a switch statement
-        switch (button.getText()) {
-            case "Articles":
-                // Logic for articles
-                break;
-            case "Invite":
-                // Logic for invite
-                break;
-            case "Reset":
-                // Logic for reset
-                break;
-            case "Delete":
-                // Logic for delete
-                break;
-            case "List":
-                // Logic for list
-                break;
-            case "Roles":
-                // Logic for roles
-                break;
-            case "Logout":
-                start(primaryStage); // Redirect to login
-                break;
-        }
-    }
-
     private void showInstructorPage(Stage primaryStage, User user) {
         GridPane instructorPane = new GridPane();
         instructorPane.setPadding(new Insets(20));
@@ -790,7 +748,7 @@ public class Username_GUI extends Application {
                 return;
             }
             if (roleManager.isInstructor()) {
-                showInstructorPage(primaryStage, user);
+                showArticlesPage(primaryStage,user);
                 return;
             }
             if (roleManager.isStudent()) {
@@ -827,7 +785,7 @@ public class Username_GUI extends Application {
             Button instructorButton = new Button("Instructor");
             instructorButton.getStyleClass().add("primary-button"); // Add button style
             instructorButton.setOnAction(e -> {
-                showInstructorPage(primaryStage, user);
+                showArticlesPage(primaryStage,user);
                 primaryStage.close(); // Close the selector after selection
             });
             roleSelector.add(instructorButton, 0, row++);
