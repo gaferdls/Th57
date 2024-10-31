@@ -1,5 +1,9 @@
 package GUI;
 
+
+import java.util.ArrayList;
+import javafx.scene.layout.VBox;
+import util.Article;
 import database.Database;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -449,16 +453,151 @@ public class Username_GUI extends Application {
         fadeTransition.setToValue(1);
         fadeTransition.play();
     }
+
+    private void viewArticlesPage(Stage primaryStage, User user) {
+        // Create a new layout to display the articles
+        VBox vbox = new VBox();
+        vbox.setSpacing(10); // Set spacing between elements
+        vbox.setPadding(new Insets(20)); // Set padding around the VBox
+
+
+        // Create a title for the page
+        Label titleLabel = new Label("Articles");
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+
+
+        // Create a list to hold articles
+        ArrayList<Article> articles = new ArrayList<>();
+
+
+
+
+        articles = Database.allArticles();
+
+
+        ListView<String> listView = new ListView<>();
+        for (Article article : articles) {
+            String displayText = article.getTitle() + " - " + article.getShortDescription();
+            listView.getItems().add(displayText);
+        }
+
+
+        // Create a back button
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user)); // Method to return to admin page
+
+
+        // Add all elements to the VBox
+        vbox.getChildren().addAll(titleLabel, listView, backButton);
+
+
+        // Create a new Scene and set it to the Stage
+        Scene scene = new Scene(vbox, 400, 300); // Set width and height as needed
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("View Articles");
+        primaryStage.show();
+    }
+
+
+
+    private void addArticlesPage(Stage primaryStage, User user){
+        GridPane grid = new GridPane();
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+
+        // Level Selector
+        Label levelLabel = new Label("Level:");
+        ComboBox<String> levelSelector = new ComboBox<>();
+        levelSelector.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
+
+
+        // Grouping Identifier
+        Label groupLabel = new Label("Grouping Identifier:");
+        TextField groupField = new TextField();
+
+
+        // Title
+        Label titleLabel = new Label("Title:");
+        TextField titleField = new TextField();
+
+
+        // Short Description
+        Label descLabel = new Label("Short Description:");
+        TextField descField = new TextField();
+
+
+        // Body
+        Label bodyLabel = new Label("Body:");
+        TextArea bodyArea = new TextArea();
+        bodyArea.setWrapText(true);
+        bodyArea.setPrefRowCount(10);
+
+
+        // Add components to GridPane
+        grid.add(levelLabel, 0, 0);
+        grid.add(levelSelector, 1, 0);
+        grid.add(groupLabel, 0, 1);
+        grid.add(groupField, 1, 1);
+        grid.add(titleLabel, 0, 2);
+        grid.add(titleField, 1, 2);
+        grid.add(descLabel, 0, 3);
+        grid.add(descField, 1, 3);
+        grid.add(bodyLabel, 0, 4);
+        grid.add(bodyArea, 1, 4);
+
+
+        // Submit button
+        Button submitButton = new Button("Submit");
+        submitButton.setOnAction(e -> {
+            // Get values as strings
+            String level = levelSelector.getValue();
+            String groupId = groupField.getText();
+            String title = titleField.getText();
+            String shortDescription = descField.getText();
+            String body = bodyArea.getText();
+            Article article = new Article(level, groupId, title, shortDescription, body);
+            Database.addArticle(article);
+            // Print values (or store them as needed)
+            System.out.println("Level: " + level);
+            System.out.println("Grouping Identifier: " + groupId);
+            System.out.println("Title: " + title);
+            System.out.println("Short Description: " + shortDescription);
+            System.out.println("Body: " + body);
+            showArticlesPage(primaryStage, user);
+        });
+        grid.add(submitButton, 1, 5);
+
+
+        // Back button
+        Button backButton = new Button("Back");
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));
+        grid.add(backButton, 0, 5);
+        // Scene setup
+        Scene scene = new Scene(grid, 400, 400);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Help System Entry");
+        primaryStage.show();
+
+
+
+
+    }
+
+
     private void handleArticleNavigation(String label, Stage primaryStage, User user) {
         switch (label) {
             case "Create":
                 //
+                addArticlesPage(primaryStage, user);
+
                 break;
             case "Update":
                 //
                 break;
             case "View":
                 //
+                viewArticlesPage(primaryStage, user);
                 break;
             case "Delete":
                 //
