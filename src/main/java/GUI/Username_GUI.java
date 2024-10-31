@@ -24,7 +24,7 @@ import util.User;
 
 public class Username_GUI extends Application {
 
-    
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -455,77 +455,86 @@ public class Username_GUI extends Application {
     }
 
     private void viewArticlesPage(Stage primaryStage, User user) {
-        // Create a new layout to display the articles
+        // Create a VBox layout with spacing and padding
         VBox vbox = new VBox();
-        vbox.setSpacing(10); // Set spacing between elements
-        vbox.setPadding(new Insets(20)); // Set padding around the VBox
+        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(20));
+        vbox.setAlignment(Pos.CENTER);
 
-
-        // Create a title for the page
+        // Title Label with enhanced styling
         Label titleLabel = new Label("Articles");
-        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
-
-        // Create a list to hold articles
-        ArrayList<Article> articles = new ArrayList<>();
-
-
-
-
-        articles = Database.allArticles();
-
-
+        // Fetch and display articles
+        ArrayList<Article> articles = Database.allArticles();
         ListView<String> listView = new ListView<>();
         for (Article article : articles) {
             String displayText = article.getTitle() + " - " + article.getShortDescription();
             listView.getItems().add(displayText);
         }
+        listView.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ced4da;");
+        listView.setPrefHeight(200);
 
-
-        // Create a back button
+        // Back button styling
         Button backButton = new Button("Back");
-        backButton.setOnAction(e -> showArticlesPage(primaryStage, user)); // Method to return to admin page
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setMaxWidth(Double.MAX_VALUE);
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));
 
+        // Apply fade-in animations
+        FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
+        titleFade.setFromValue(0);
+        titleFade.setToValue(1);
+        titleFade.play();
 
-        // Add all elements to the VBox
+        FadeTransition listFade = new FadeTransition(Duration.seconds(1), listView);
+        listFade.setFromValue(0);
+        listFade.setToValue(1);
+        listFade.play();
+
+        FadeTransition buttonFade = new FadeTransition(Duration.seconds(1), backButton);
+        buttonFade.setFromValue(0);
+        buttonFade.setToValue(1);
+        buttonFade.play();
+
+        // Add elements to VBox and set up the scene
         vbox.getChildren().addAll(titleLabel, listView, backButton);
-
-
-        // Create a new Scene and set it to the Stage
-        Scene scene = new Scene(vbox, 400, 300); // Set width and height as needed
+        Scene scene = new Scene(vbox, 450, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("View Articles");
         primaryStage.show();
+
+        // Fade transition for the entire VBox
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), vbox);
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
     }
 
-
-
-    private void addArticlesPage(Stage primaryStage, User user){
+    private void addArticlesPage(Stage primaryStage, User user) {
         GridPane grid = new GridPane();
-        grid.setVgap(10);
+        grid.setPadding(new Insets(20));
+        grid.setVgap(15);
         grid.setHgap(10);
-
+        grid.setAlignment(Pos.CENTER);
 
         // Level Selector
         Label levelLabel = new Label("Level:");
         ComboBox<String> levelSelector = new ComboBox<>();
         levelSelector.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert");
 
-
         // Grouping Identifier
         Label groupLabel = new Label("Grouping Identifier:");
         TextField groupField = new TextField();
-
 
         // Title
         Label titleLabel = new Label("Title:");
         TextField titleField = new TextField();
 
-
         // Short Description
         Label descLabel = new Label("Short Description:");
         TextField descField = new TextField();
-
 
         // Body
         Label bodyLabel = new Label("Body:");
@@ -533,17 +542,17 @@ public class Username_GUI extends Application {
         bodyArea.setWrapText(true);
         bodyArea.setPrefRowCount(10);
 
-        //keywords
+        // Keywords
         Label keywordsLabel = new Label("Keywords:");
         TextArea keywordsArea = new TextArea();
-        bodyArea.setWrapText(true);
-        bodyArea.setPrefRowCount(10);
-        //references
+        keywordsArea.setWrapText(true);
+        keywordsArea.setPrefRowCount(10);
+
+        // References
         Label refsLabel = new Label("References:");
         TextArea refsArea = new TextArea();
-        bodyArea.setWrapText(true);
-        bodyArea.setPrefRowCount(10);
-
+        refsArea.setWrapText(true);
+        refsArea.setPrefRowCount(10);
 
         // Add components to GridPane
         grid.add(levelLabel, 0, 0);
@@ -561,9 +570,10 @@ public class Username_GUI extends Application {
         grid.add(refsLabel, 0, 6);
         grid.add(refsArea, 1, 6);
 
-
         // Submit button
         Button submitButton = new Button("Submit");
+        submitButton.getStyleClass().add("primary-button");
+        submitButton.setMaxWidth(Double.MAX_VALUE);
         submitButton.setOnAction(e -> {
             // Get values as strings
             String level = levelSelector.getValue();
@@ -575,56 +585,33 @@ public class Username_GUI extends Application {
             String refs = refsArea.getText();
             Article article = new Article(level, groupId, title, shortDescription, body, keywords, refs);
             Database.addArticle(article);
-            // Print values (or store them as needed)
-            System.out.println("Level: " + level);
-            System.out.println("Grouping Identifier: " + groupId);
-            System.out.println("Title: " + title);
-            System.out.println("Short Description: " + shortDescription);
-            System.out.println("Body: " + body);
             showArticlesPage(primaryStage, user);
         });
-        grid.add(submitButton, 1, 5);
-
+        grid.add(submitButton, 1, 7);
+        GridPane.setHgrow(submitButton, Priority.ALWAYS);
 
         // Back button
         Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setMaxWidth(Double.MAX_VALUE);
         backButton.setOnAction(e -> showArticlesPage(primaryStage, user));
-        grid.add(backButton, 0, 5);
+        grid.add(backButton, 0, 7);
+        GridPane.setHgrow(backButton, Priority.ALWAYS);
+
         // Scene setup
-        Scene scene = new Scene(grid, 400, 400);
+        Scene scene = new Scene(grid, 700, 500);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("Help System Entry");
         primaryStage.show();
 
+        // Fade transition
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), grid);
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
     }
 
-    private void backupArticlesScreen(Stage primaryStage) {
-        GridPane pane = new GridPane();
-        pane.setVgap(10);
-        pane.setHgap(10);
-
-        Label text = new Label("Filename: ");
-        TextField filenameField = new TextField();
-
-        pane.add(text, 0, 0);
-        pane.add(filenameField, 1, 0);
-
-        String filename = filenameField.getText();
-    }
-
-    private void restoreArticlesScreen(Stage primaryStage) {
-        GridPane pane = new GridPane();
-        pane.setVgap(10);
-        pane.setHgap(10);
-
-        Label text = new Label("Filename: ");
-        TextField filenameField = new TextField();
-
-        pane.add(text, 0, 0);
-        pane.add(filenameField, 1, 0);
-
-        String filename = filenameField.getText();
-    }
 
 
     private void handleArticleNavigation(String label, Stage primaryStage, User user) {

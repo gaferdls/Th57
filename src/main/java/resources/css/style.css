@@ -1,69 +1,81 @@
-/* style.css */
-
 /* Root styles */
 .root {
-    -fx-font-family: "Segoe UI", sans-serif; /* Font style */
-    -fx-background-color: #f7f9fc;          /* Light background color */
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: #f5f5f5; /* Light background for the entire scene */
 }
 
-/* Label styles */
-.label-text {
-    -fx-font-size: 14px;                     /* Font size for labels */
-    -fx-text-fill: #333;                     /* Text color */
-    -fx-font-weight: bold;                   /* Bold font weight */
+/* Label styling */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
 }
 
-/* Input field styles */
-.input-field {
-    -fx-background-color: #ffffff;           /* White background */
-    -fx-background-radius: 8;                /* Rounded corners */
-    -fx-border-color: #cccccc;               /* Light gray border */
-    -fx-border-radius: 8;                    /* Rounded borders */
-    -fx-padding: 10;                         /* Padding inside the field */
-    -fx-font-size: 14px;                     /* Font size */
+/* Input field styling */
+.input-field, .text-field, .text-area {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
 }
 
-/* Combo box styles */
+.text-area {
+    -fx-pref-row-count: 5;
+}
+
+/* Combo box styling */
 .combo-box {
-    -fx-background-color: #ffffff;           /* White background */
-    -fx-background-radius: 8;                /* Rounded corners */
-    -fx-border-color: #cccccc;               /* Light gray border */
-    -fx-border-radius: 8;                    /* Rounded borders */
-    -fx-font-size: 14px;                     /* Font size */
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+    -fx-font-size: 14px;
 }
 
-/* Button styles */
+.combo-box .arrow {
+    -fx-background-color: #007bff;
+}
+
+/* Primary button styling */
 .primary-button {
-    -fx-background-color: #4CAF50;           /* Green background */
-    -fx-text-fill: white;                    /* White text */
-    -fx-font-weight: bold;                   /* Bold text */
-    -fx-background-radius: 8;                /* Rounded corners */
-    -fx-cursor: hand;                        /* Hand cursor on hover */
-    -fx-padding: 10 20;                      /* Padding around text */
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
 }
 
 .primary-button:hover {
-    -fx-background-color: #45a049;           /* Darker green on hover */
+    -fx-background-color: #0056b3;
 }
 
+/* Secondary button styling */
 .secondary-button {
-    -fx-background-color: #2196F3;           /* Blue background */
-    -fx-text-fill: white;                    /* White text */
-    -fx-font-weight: bold;                   /* Bold text */
-    -fx-background-radius: 8;                /* Rounded corners */
-    -fx-cursor: hand;                        /* Hand cursor on hover */
-    -fx-padding: 10 20;                      /* Padding around text */
+    -fx-background-color: #6c757d;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px 20px;
+    -fx-cursor: hand;
 }
 
 .secondary-button:hover {
-    -fx-background-color: #1976D2;           /* Darker blue on hover */
+    -fx-background-color: #5a6268;
 }
 
-/* Alert styles */
+/* ListView styling */
+.list-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 5px;
+}
+
+/* Alert styling */
 .alert {
-    -fx-font-size: 14px;                     /* Font size for alerts */
-    -fx-text-fill: #333;                     /* Text color */
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
 }
-
-/* Optional styles for other UI components can be added here */
-
