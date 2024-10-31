@@ -559,7 +559,7 @@ public class Username_GUI extends Application {
         grid.add(keywordsLabel, 0, 5);
         grid.add(keywordsArea, 1, 5);
         grid.add(refsLabel, 0, 6);
-        grid.add(refsLabel, 1, 6);
+        grid.add(refsArea, 1, 6);
 
 
         // Submit button
@@ -596,9 +596,34 @@ public class Username_GUI extends Application {
         primaryStage.setTitle("Help System Entry");
         primaryStage.show();
 
+    }
 
+    private void backupArticlesScreen(Stage primaryStage) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
 
+        Label text = new Label("Filename: ");
+        TextField filenameField = new TextField();
 
+        pane.add(text, 0, 0);
+        pane.add(filenameField, 1, 0);
+
+        String filename = filenameField.getText();
+    }
+
+    private void restoreArticlesScreen(Stage primaryStage) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+
+        Label text = new Label("Filename: ");
+        TextField filenameField = new TextField();
+
+        pane.add(text, 0, 0);
+        pane.add(filenameField, 1, 0);
+
+        String filename = filenameField.getText();
     }
 
 
