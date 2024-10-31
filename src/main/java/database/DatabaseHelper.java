@@ -66,7 +66,7 @@ public class DatabaseHelper {
 
     public ArrayList<Article> getAllArticles(){
         ArrayList<Article> articles = new ArrayList<>();
-        String sql = "SELECT level, groupingID, title, short, body FROM articles";
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references FROM articles";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
@@ -78,7 +78,9 @@ public class DatabaseHelper {
                         rs.getString("groupingID"),
                         rs.getString("title"),
                         rs.getString("short"),
-                        rs.getString("body")
+                        rs.getString("body"),
+                        rs.getString("keywords"),
+                        rs.getString("references")
                 );
                 articles.add(article); // Add article to the ArrayList
             }
@@ -95,7 +97,7 @@ public class DatabaseHelper {
 
     public List<Article> searchArticlesByGroupingID(String groupingID) throws SQLException {
         List<Article> articles = new ArrayList<>();
-        String sql = "SELECT level, groupingID, title, short, body FROM articles WHERE groupingID = ?";
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references FROM articles WHERE groupingID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, groupingID);
@@ -108,7 +110,9 @@ public class DatabaseHelper {
                         rs.getString("groupingID"),
                         rs.getString("title"),
                         rs.getString("short"),
-                        rs.getString("body")
+                        rs.getString("body"),
+                        rs.getString("keywords"),
+                        rs.getString("references")
                 );
                 articles.add(article);
             }
@@ -127,7 +131,7 @@ public class DatabaseHelper {
 
     public void addToArticleDatabase(Article article) throws SQLException {
         // SQL query to insert a new article
-        String sql = "INSERT INTO articles (level, groupingID, title, short, body) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO articles (level, groupingID, title, short, body, keywords, references) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         // Using try-with-resources to ensure proper resource management
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -280,7 +284,9 @@ public class DatabaseHelper {
                 + "level VARCHAR(255), " // Added missing comma
                 + "title VARCHAR(255), "
                 + "short VARCHAR(255), "
-                + "body VARCHAR(255)" // Added missing comma
+                + "body VARCHAR(255), "
+                + "keywords VARCHAR(255), "
+                + "references VARCHAR(255)"// Added missing comma
                 + ");";
 
         statement.execute(articlesTable);
