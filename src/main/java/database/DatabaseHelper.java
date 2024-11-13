@@ -57,7 +57,8 @@ public class DatabaseHelper {
                 + "level VARCHAR(255), "
                 + "admin BIT, "
                 + "student BIT, "
-                + "instructor BIT)";
+                + "instructor BIT, "
+                + "groups VARCHAR(255))";
         statement.execute(userTable);
     }
     public void updateArticle(){
@@ -79,7 +80,8 @@ public class DatabaseHelper {
                         new String(article.getKeywords()),
                         new String(article.getBody()),
                         new String(article.getReferences()),
-                        new String(article.getLevel())
+                        new String(article.getLevel()),
+                        new String(article.getGroups())
                 ));
                 writer.newLine();
             }
@@ -101,10 +103,10 @@ public class DatabaseHelper {
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line;
             while((line = reader.readLine()) != null) {
-                String[] parts = line.split(";", 7);
-                if (parts.length == 7) {
+                String[] parts = line.split(";", 8);
+                if (parts.length == 8) {
                     System.out.println("restoring article " + parts[0]);
-                    addToArticleDatabase(new Article(parts[6], parts[1], parts[0], parts[2], parts[4], parts[3], parts[5]));
+                    addToArticleDatabase(new Article(parts[6], parts[1], parts[0], parts[2], parts[4], parts[3], parts[5], parts[7]));
                 }
             }
             System.out.println("restored from file " + filename);
@@ -117,7 +119,7 @@ public class DatabaseHelper {
 
     public ArrayList<Article> getAllArticles(){
         ArrayList<Article> articles = new ArrayList<>();
-        String sql = "SELECT level, groupingID, title, short, body, keywords, references FROM articles";
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references, groups FROM articles";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             ResultSet rs = pstmt.executeQuery();
@@ -131,7 +133,8 @@ public class DatabaseHelper {
                         rs.getString("short"),
                         rs.getString("body"),
                         rs.getString("keywords"),
-                        rs.getString("references")
+                        rs.getString("references"),
+                        rs.getString("groups")
                 );
                 articles.add(article); // Add article to the ArrayList
             }
@@ -148,7 +151,7 @@ public class DatabaseHelper {
 
     public List<Article> searchArticlesByGroupingID(String groupingID) throws SQLException {
         List<Article> articles = new ArrayList<>();
-        String sql = "SELECT level, groupingID, title, short, body, keywords, references FROM articles WHERE groupingID = ?";
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references, groups FROM articles WHERE groupingID = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, groupingID);
@@ -163,7 +166,8 @@ public class DatabaseHelper {
                         rs.getString("short"),
                         rs.getString("body"),
                         rs.getString("keywords"),
-                        rs.getString("references")
+                        rs.getString("references"),
+                        rs.getString("groups")
                 );
                 articles.add(article);
             }
@@ -182,7 +186,7 @@ public class DatabaseHelper {
 
     public void addToArticleDatabase(Article article) throws SQLException {
         // SQL query to insert a new article
-        String sql = "INSERT INTO articles (level, groupingID, title, short, body, keywords, references) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO articles (level, groupingID, title, short, body, keywords, references, groups) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         // Using try-with-resources to ensure proper resource management
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
@@ -194,6 +198,7 @@ public class DatabaseHelper {
             pstmt.setString(5, article.getBody());
             pstmt.setString(6, article.getKeywords());
             pstmt.setString(7, article.getReferences());
+            pstmt.setString(8, article.getGroups());
 
             // Execute the insert operation
             pstmt.executeUpdate();
@@ -227,14 +232,12 @@ public class DatabaseHelper {
      * @param email
      * @param password
      * @param isOneTimePassword
-     * @param expirationTime The expiration time for the one time password
-     * @param expirationDate The expiration date for the one time password
-     * @param name
+     * @param expirationTime
      * @param level How experienced the user is  (0 = beginner, 1 = intermediate, 2 = advanced, 3 = expert)
      * @throws SQLException
      */
-    public void register(String email, String firstName, String middleName, String lastName, String preferredName, char[] password, boolean isOneTimePassword, Time expirationTime, String username, String level, boolean admin, boolean student, boolean instructor) throws SQLException {
-        String insertUser = "INSERT INTO users (email, firstName, middleName, lastName, preferredName, password, onetimepassword, expirationtime, username, level, admin, student, instructor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public void register(String email, String firstName, String middleName, String lastName, String preferredName, char[] password, boolean isOneTimePassword, Time expirationTime, String username, String level, boolean admin, boolean student, boolean instructor, String groups) throws SQLException {
+        String insertUser = "INSERT INTO users (email, firstName, middleName, lastName, preferredName, password, onetimepassword, expirationtime, username, level, admin, student, instructor, groups) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertUser)) {
             pstmt.setString(1, email);
             pstmt.setString(2, firstName);
@@ -249,6 +252,7 @@ public class DatabaseHelper {
             pstmt.setBoolean(11, admin);
             pstmt.setBoolean(12, student);
             pstmt.setBoolean(13, instructor);
+            pstmt.setString(14, groups);
             pstmt.executeUpdate();
         }
     }
@@ -273,7 +277,6 @@ public class DatabaseHelper {
 
     /**
      * Checks if an email is already registered in the database.
-     * @param email
      * @return
      */
     public boolean doesUserExist(String username) {
@@ -339,7 +342,8 @@ public class DatabaseHelper {
                 + "short VARCHAR(255), "
                 + "body VARCHAR(255), "
                 + "keywords VARCHAR(255), "
-                + "references VARCHAR(255)"// Added missing comma
+                + "references VARCHAR(255), "// Added missing comma
+                + "groups VARCHAR(255)"
                 + ");";
 
         statement.execute(articlesTable);
@@ -364,7 +368,7 @@ public class DatabaseHelper {
     }
 
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET email = ?, username = ?, firstName = ?, middleName = ?, lastName = ?, admin = ?, student = ?, instructor = ?, level = ?, password = ? WHERE username = ?";
+        String sql = "UPDATE users SET email = ?, username = ?, firstName = ?, middleName = ?, lastName = ?, admin = ?, student = ?, instructor = ?, level = ?, password = ?, groups = ? WHERE username = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, user.getEmail()); // Include the email update
             pstmt.setString(2, user.getUsername());
@@ -377,6 +381,7 @@ public class DatabaseHelper {
             pstmt.setString(9, user.getSkillLevel());
             pstmt.setString(10, String.valueOf(user.getPassword()));  // Ensure the password is being updated
             pstmt.setString(11, user.getUsername());  // Assuming username is used for identification
+            pstmt.setString(12, user.getGroups());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -419,7 +424,8 @@ public class DatabaseHelper {
                 boolean admin = rs.getBoolean("admin");
                 boolean student = rs.getBoolean("student");
                 boolean instructor = rs.getBoolean("instructor");
-                return new User(username, firstName, middleName, lastName, preferredName, email, password, otp, otpTime, level, admin, student, instructor);
+                String groups = rs.getString("groups");
+                return new User(username, firstName, middleName, lastName, preferredName, email, password, otp, otpTime, level, admin, student, instructor, groups);
             }
         } catch (SQLException e) {
             System.out.println("could not find user for " + username);

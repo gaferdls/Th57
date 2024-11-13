@@ -30,7 +30,7 @@ public class AdminPage {
         Role role = inviteRoleBox.getValue();
         String oneTimeCode = generateOneTimeCode();
 
-        User newUser = new User(username, "", "", "", "", "", new char[0], true, null, "Intermediate", false, false, false);
+        User newUser = new User(username, "", "", "", "", "", new char[0], true, null, "Intermediate", false, false, false, null);
 
         // assign the user to a role
         if (role.equals(Role.ADMIN)) newUser.setAdmin(true);

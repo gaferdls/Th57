@@ -202,12 +202,12 @@ public class Username_GUI extends Application {
                 showAlert("Passwords do not match!");
             } else {
                 if (Database.isEmpty()) {
-                    User newUser = new User(username, null, null, null, null, null, password, false, null, null, true, false, false);
+                    User newUser = new User(username, null, null, null, null, null, password, false, null, null, true, false, false, null);
                     Database.addUser(newUser);
                     showAlert("Sign up successful! You are now registered.");
                     start(primaryStage);
                 } else {
-                    User newUser = new User(username, null, null, null, null, null, password, false, null, null, false, true, false);
+                    User newUser = new User(username, null, null, null, null, null, password, false, null, null, false, true, false, null);
                     Database.addUser(newUser);
                     showAlert("Sign up successful! You are now registered.");
                     start(primaryStage);
@@ -304,6 +304,7 @@ public class Username_GUI extends Application {
                 user.setLastName(lastNameField.getText());
                 user.setPreferredName(preferredNameField.getText());
                 user.setSkillLevel(skillBox.getValue());
+                user.setGroups("none");
 
                 // Debugging before the update
                 boolean updated = Database.updateUser(user);
@@ -554,6 +555,11 @@ public class Username_GUI extends Application {
         refsArea.setWrapText(true);
         refsArea.setPrefRowCount(10);
 
+        Label groupsLabel = new Label("Groups");
+        TextArea groupsArea = new TextArea();
+        groupsArea.setWrapText(true);
+        groupsArea.setPrefRowCount(10);
+
         // Add components to GridPane
         grid.add(levelLabel, 0, 0);
         grid.add(levelSelector, 1, 0);
@@ -569,6 +575,8 @@ public class Username_GUI extends Application {
         grid.add(keywordsArea, 1, 5);
         grid.add(refsLabel, 0, 6);
         grid.add(refsArea, 1, 6);
+        grid.add(groupsLabel, 0, 7);
+        grid.add(groupsArea, 1, 7);
 
         // Submit button
         Button submitButton = new Button("Submit");
@@ -583,11 +591,12 @@ public class Username_GUI extends Application {
             String body = bodyArea.getText();
             String keywords = keywordsArea.getText();
             String refs = refsArea.getText();
-            Article article = new Article(level, groupId, title, shortDescription, body, keywords, refs);
+            String groups = groupsArea.getText();
+            Article article = new Article(level, groupId, title, shortDescription, body, keywords, refs, groups);
             Database.addArticle(article);
             showArticlesPage(primaryStage, user);
         });
-        grid.add(submitButton, 1, 7);
+        grid.add(submitButton, 1, 8);
         GridPane.setHgrow(submitButton, Priority.ALWAYS);
 
         // Back button
@@ -595,11 +604,11 @@ public class Username_GUI extends Application {
         backButton.getStyleClass().add("secondary-button");
         backButton.setMaxWidth(Double.MAX_VALUE);
         backButton.setOnAction(e -> showArticlesPage(primaryStage, user));
-        grid.add(backButton, 0, 7);
+        grid.add(backButton, 0, 8);
         GridPane.setHgrow(backButton, Priority.ALWAYS);
 
         // Scene setup
-        Scene scene = new Scene(grid, 700, 500);
+        Scene scene = new Scene(grid, 800, 600);
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("Help System Entry");
@@ -926,6 +935,7 @@ public class Username_GUI extends Application {
             } else {
                 user.setPassword(confirmPassword);
                 user.setIsOneTimePassword(false);
+                user.setGroups("none");
                 boolean updated = Database.updateUser(user);
                 if (updated) {
                     showAlert("Password updated successfully");

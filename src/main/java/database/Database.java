@@ -21,7 +21,7 @@ public class Database {
 		try {
 			db.connectToDatabase();
 			System.out.println("connected to database!");
-			Article article = new Article("Expert", "Eclipse", "EclipseTut", "How to set up eclipse", "body", "coding", "carter");
+			Article article = new Article("Expert", "Eclipse", "EclipseTut", "How to set up eclipse", "body", "coding", "carter", "g");
 			//db.addToArticleDatabase(article);
 			db.searchArticlesByGroupingID("Eclipse");
 
@@ -35,7 +35,7 @@ public class Database {
 
 	public static boolean inviteUser(String username, Role role, char[] oneTimeCode) {
 		try {
-			db.register(username,"", "", "", "", oneTimeCode, true, new Time(Time.from(Instant.now()).getTime()), "", "Intermediate", false, false, false);
+			db.register(username,"", "", "", "", oneTimeCode, true, new Time(Time.from(Instant.now()).getTime()), "", "Intermediate", false, false, false, null);
 		} catch (SQLException e) {
 			return false;
 		}
@@ -75,7 +75,7 @@ public class Database {
 
 	public static boolean addUser(User user) {
 		try {
-			db.register(user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getPreferredName(), user.getPassword(), user.isOneTimePassword(), null, user.getUsername(), user.getSkillLevel(), user.isAdmin(), user.isStudent(), user.isInstructor());
+			db.register(user.getEmail(), user.getFirstName(), user.getMiddleName(), user.getLastName(), user.getPreferredName(), user.getPassword(), user.isOneTimePassword(), null, user.getUsername(), user.getSkillLevel(), user.isAdmin(), user.isStudent(), user.isInstructor(), user.getGroups());
 			System.out.println("added user " + user.getUsername());
 			db.displayUsers();
 		} catch (SQLException e) {

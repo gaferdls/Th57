@@ -8,10 +8,10 @@ public class Article {
     private String body;
     private boolean beginner;
     private boolean intermediate;
-    private String references, keywords;
+    private String references, keywords, groups;
 
     // Constructor
-    public Article(String level, String groupId, String title, String shortDescription, String body, String keywords, String references) {
+    public Article(String level, String groupId, String title, String shortDescription, String body, String keywords, String references, String groups) {
         this.level = level;
         this.groupId = groupId;
         this.title = title;
@@ -19,6 +19,7 @@ public class Article {
         this.body = body;
         this.keywords = keywords;
         this.references = references;
+        this.groups = groups;
     }
 
     public String getReferences() {
@@ -27,6 +28,10 @@ public class Article {
 
     public String getKeywords() {
         return keywords;
+    }
+
+    public String getGroups() {
+        return groups;
     }
 
     // Getters

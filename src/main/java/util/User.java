@@ -12,9 +12,9 @@ public class User {
 	private boolean isOneTimePassword;
 	private Time passwordExpiration;
 	private boolean isStudent, isInstructor;
-	String firstName, middleName, lastName, preferredName;
+	String firstName, middleName, lastName, preferredName, groups;
 
-	public User(String username, String firstName, String middleName, String lastName, String preferredName, String email, char[] password, boolean isOneTimePassword, Time passwordExpiration, String skillLevel, boolean isAdmin, boolean isStudent, boolean isInstructor) {
+	public User(String username, String firstName, String middleName, String lastName, String preferredName, String email, char[] password, boolean isOneTimePassword, Time passwordExpiration, String skillLevel, boolean isAdmin, boolean isStudent, boolean isInstructor, String groups) {
 		this.username = username;
 		this.email = email;
 		this.password = password;
@@ -27,10 +27,19 @@ public class User {
 		this.middleName = middleName;
 		this.lastName = lastName;
 		this.preferredName = preferredName;
+		this.groups = groups;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getGroups() {
+		return groups;
+	}
+
+	public void setGroups(String groups) {
+		this.groups = groups;
 	}
 
 	public String getUsername() {
