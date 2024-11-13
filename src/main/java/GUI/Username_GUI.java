@@ -831,13 +831,23 @@ public class Username_GUI extends Application {
         studentPane.setHgap(10);
         studentPane.setAlignment(Pos.CENTER); // Center the content
 
-        // Create a logout button with styles
+        // Create buttons for Articles, Help, and Logout
+        Button articlesButton = new Button("Articles");
+        articlesButton.getStyleClass().add("primary-button"); // Assume a style class
+        articlesButton.setMaxWidth(Double.MAX_VALUE);
+
+        Button helpButton = new Button("Help");
+        helpButton.getStyleClass().add("primary-button"); // Assume the same style as the Articles button
+        helpButton.setMaxWidth(Double.MAX_VALUE);
+
         Button logoutButton = new Button("Logout");
         logoutButton.getStyleClass().add("secondary-button"); // Style for the logout button
         logoutButton.setMaxWidth(Double.MAX_VALUE); // Ensure the button expands
 
-        // Adding buttons to the grid
-        studentPane.add(logoutButton, 0, 0);
+        // Adding buttons to the grid in the desired order
+        studentPane.add(articlesButton, 0, 0);
+        studentPane.add(helpButton, 0, 1);
+        studentPane.add(logoutButton, 0, 2);
 
         // Scene setup
         Scene studentScene = new Scene(studentPane, 400, 400);
@@ -851,7 +861,17 @@ public class Username_GUI extends Application {
         fadeTransition.setToValue(1);    // End fully opaque
         fadeTransition.play();            // Start the transition
 
-        // Button action with scale transition
+        // Define actions for Articles, Help, and Logout buttons
+        articlesButton.setOnAction(e -> {
+            showGroupsPage(primaryStage, user);
+            System.out.println("Articles button clicked");
+        });
+
+        helpButton.setOnAction(e -> {
+            // Add the action for the Help button here
+            System.out.println("Help button clicked");
+        });
+
         logoutButton.setOnAction(e -> {
             ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), logoutButton);
             scaleTransition.setFromX(1);
@@ -862,6 +882,7 @@ public class Username_GUI extends Application {
             scaleTransition.play(); // Start the scale transition
         });
     }
+
 
 
     private void showResetPasswordPage(Stage primaryStage, User user) {
@@ -1048,6 +1069,76 @@ public class Username_GUI extends Application {
         fadeTransition.setFromValue(0); // Start fully transparent
         fadeTransition.setToValue(1);    // End fully opaque
         fadeTransition.play();            // Start the transition
+    }
+    private void showGroupsPage(Stage primaryStage, User user) {
+        // Create a VBox layout with spacing and padding
+        VBox vbox = new VBox();
+        vbox.setSpacing(10);
+        vbox.setPadding(new Insets(20));
+        vbox.setAlignment(Pos.CENTER);
+
+        // Title Label with enhanced styling
+        Label titleLabel = new Label("User Groups");
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;");
+
+        // Fetch and display groups that the user is part of
+        String groupsString = user.getGroups(); // Get the comma-separated groups string
+        ListView<String> groupsListView = new ListView<>();
+        if (groupsString != null && !groupsString.isEmpty()) {
+            String[] groupsArray = groupsString.split(","); // Split by comma
+            for (String group : groupsArray) {
+                groupsListView.getItems().add(group.trim()); // Trim any extra whitespace
+            }
+        }
+        groupsListView.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ced4da;");
+        groupsListView.setPrefHeight(200);
+
+        // Level selection dropdown
+        Label levelLabel = new Label("Select Level:");
+        ComboBox<String> levelComboBox = new ComboBox<>();
+        levelComboBox.getItems().addAll("Beginner", "Intermediate", "Advanced", "Expert", "All");
+        levelComboBox.setValue("All"); // Default value
+
+        // Back button styling
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setMaxWidth(Double.MAX_VALUE);
+        backButton.setOnAction(e -> showRolePage(primaryStage, user)); // Assuming this navigates back to the main page
+
+        // Apply fade-in animations
+        FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
+        titleFade.setFromValue(0);
+        titleFade.setToValue(1);
+        titleFade.play();
+
+        FadeTransition groupsFade = new FadeTransition(Duration.seconds(1), groupsListView);
+        groupsFade.setFromValue(0);
+        groupsFade.setToValue(1);
+        groupsFade.play();
+
+        FadeTransition levelFade = new FadeTransition(Duration.seconds(1), levelComboBox);
+        levelFade.setFromValue(0);
+        levelFade.setToValue(1);
+        levelFade.play();
+
+        FadeTransition buttonFade = new FadeTransition(Duration.seconds(1), backButton);
+        buttonFade.setFromValue(0);
+        buttonFade.setToValue(1);
+        buttonFade.play();
+
+        // Add elements to VBox and set up the scene
+        vbox.getChildren().addAll(titleLabel, groupsListView, levelLabel, levelComboBox, backButton);
+        Scene scene = new Scene(vbox, 450, 500); // Adjusted height to accommodate new elements
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("View Groups");
+        primaryStage.show();
+
+        // Fade transition for the entire VBox
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), vbox);
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
     }
 
 

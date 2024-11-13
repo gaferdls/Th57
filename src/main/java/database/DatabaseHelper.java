@@ -380,8 +380,8 @@ public class DatabaseHelper {
             pstmt.setBoolean(8, user.isInstructor());
             pstmt.setString(9, user.getSkillLevel());
             pstmt.setString(10, String.valueOf(user.getPassword()));  // Ensure the password is being updated
-            pstmt.setString(12, user.getUsername());  // Assuming username is used for identification
-            pstmt.setString(11, user.getGroups());
+            pstmt.setString(11, user.getGroups());  // Assuming username is used for identification
+            pstmt.setString(12, user.getUsername());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -448,5 +448,6 @@ public class DatabaseHelper {
             se.printStackTrace();
         }
     }
+
 
 }
