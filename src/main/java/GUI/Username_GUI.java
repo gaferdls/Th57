@@ -3,6 +3,7 @@ package GUI;
 
 import java.util.ArrayList;
 import javafx.scene.layout.VBox;
+import org.h2.command.ddl.GrantRevoke;
 import util.Article;
 import database.Database;
 import javafx.application.Application;
@@ -701,7 +702,9 @@ public class Username_GUI extends Application {
                 restoreArticlesScreen(primaryStage, user);
                 break;
             case "Back":
-                showAdminPage(primaryStage, user);
+                if (user.isAdmin())
+                    showAdminPage(primaryStage, user);
+                else showInstructorPage(primaryStage, user);
                 break;
             default:
                 throw new IllegalArgumentException("Unexpected label: " + label);
@@ -729,100 +732,44 @@ public class Username_GUI extends Application {
     }
 
     private void showInstructorPage(Stage primaryStage, User user) {
-        GridPane instructorPane = new GridPane();
-        instructorPane.setPadding(new Insets(20));
-        instructorPane.setVgap(15);
-        instructorPane.setHgap(10);
-        instructorPane.setAlignment(Pos.CENTER); // Center the content
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(20));
+        pane.setVgap(15);
+        pane.setHgap(10);
+        pane.setAlignment(Pos.CENTER);
 
-        // Create buttons with styles
-        Button createArticlesButton = new Button("Create Article");
-        Button updateArticleButton = new Button("Update Article");
-        Button deleteArticleButton = new Button("Delete Article");
-        Button listArticlesButton = new Button("List Articles");
+        Button articlesButton = new Button("Articles");
+        Button groupsButton = new Button("Groups");
+        Button helpButton = new Button("Help");
         Button logoutButton = new Button("Logout");
 
-        // Add styles to buttons
-        createArticlesButton.getStyleClass().add("primary-button");
-        updateArticleButton.getStyleClass().add("primary-button");
-        deleteArticleButton.getStyleClass().add("primary-button");
-        listArticlesButton.getStyleClass().add("primary-button");
-        logoutButton.getStyleClass().add("secondary-button");
+        articlesButton.getStyleClass().add("primary-button");
+        articlesButton.setMaxWidth(Double.MAX_VALUE);
 
-        // Adding buttons to the grid
-        instructorPane.add(createArticlesButton, 0, 1);
-        instructorPane.add(updateArticleButton, 0, 2);
-        instructorPane.add(deleteArticleButton, 0, 3);
-        instructorPane.add(listArticlesButton, 0, 4);
-        instructorPane.add(logoutButton, 0, 5); // Logout button
+        groupsButton.getStyleClass().add("primary-button");
+        groupsButton.setMaxWidth(Double.MAX_VALUE);
 
-        // Configure buttons to expand to fill space
-        for (Button button : new Button[]{createArticlesButton, updateArticleButton, deleteArticleButton, listArticlesButton, logoutButton}) {
-            button.setMaxWidth(Double.MAX_VALUE);
-            GridPane.setHgrow(button, Priority.ALWAYS);
-        }
+        helpButton.getStyleClass().add("primary-button");
+        helpButton.setMaxWidth(Double.MAX_VALUE);
 
-        Scene instructorScene = new Scene(instructorPane, 400, 400);
-        instructorScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm()); // Load CSS styles
-        primaryStage.setScene(instructorScene);
-        primaryStage.show(); // Ensure the stage is shown
+        logoutButton.getStyleClass().add("secondary-button"); // Style for the logout button
+        logoutButton.setMaxWidth(Double.MAX_VALUE);
 
-        // Fade transition for the instructor pane
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), instructorPane);
-        fadeTransition.setFromValue(0); // Start fully transparent
-        fadeTransition.setToValue(1);    // End fully opaque
-        fadeTransition.play();            // Start the transition
+        pane.add(articlesButton, 0, 0);
+        pane.add(groupsButton, 0, 1);
+        pane.add(helpButton, 0, 2);
+        pane.add(logoutButton, 0, 3);
 
-        // Button actions with scale transition
-        createArticlesButton.setOnAction(e -> handleInstructorButtonAction(createArticlesButton));
-        updateArticleButton.setOnAction(e -> handleInstructorButtonAction(updateArticleButton));
-        deleteArticleButton.setOnAction(e -> handleInstructorButtonAction(deleteArticleButton));
-        listArticlesButton.setOnAction(e -> handleInstructorButtonAction(listArticlesButton));
-        logoutButton.setOnAction(e -> {
-            ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), logoutButton);
-            scaleTransition.setFromX(1);
-            scaleTransition.setFromY(1);
-            scaleTransition.setToX(1.1); // Scale up
-            scaleTransition.setToY(1.1);  // Scale up
-            scaleTransition.setOnFinished(event -> start(primaryStage)); // Start login screen
-            scaleTransition.play(); // Start the scale transition
-        });
+        Scene scene = new Scene(pane, 400, 600);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+
+        articlesButton.setOnAction(e -> showArticlesPage(primaryStage, user));
+//        groupsButton.setOnAction(e -> showGroupsPage(primaryStage, user));
+        helpButton.setOnAction(e -> showAlert("Ask your admin for assistance"));
+        logoutButton.setOnAction(e -> start(primaryStage));
+
+        primaryStage.setScene(scene);
     }
-
-    // Handles the button actions with a scale transition
-    private void handleInstructorButtonAction(Button button) {
-        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.2), button);
-        scaleTransition.setFromX(1);
-        scaleTransition.setFromY(1);
-        scaleTransition.setToX(1.1); // Scale up
-        scaleTransition.setToY(1.1);  // Scale up
-        scaleTransition.setOnFinished(event -> {
-            ScaleTransition revertScale = new ScaleTransition(Duration.seconds(0.2), button);
-            revertScale.setFromX(1.1);
-            revertScale.setFromY(1.1);
-            revertScale.setToX(1);
-            revertScale.setToY(1);
-            revertScale.play();
-        });
-        scaleTransition.play(); // Start the scale transition
-
-        // Add logic for each button action here
-        switch (button.getText()) {
-            case "Create Article":
-                // Logic for creating an article
-                break;
-            case "Update Article":
-                // Logic for updating an article
-                break;
-            case "Delete Article":
-                // Logic for deleting an article
-                break;
-            case "List Articles":
-                // Logic for listing all articles
-                break;
-        }
-    }
-
 
     private void showStudentPage(Stage primaryStage, User user) {
         GridPane studentPane = new GridPane();
@@ -984,7 +931,7 @@ public class Username_GUI extends Application {
                 return;
             }
             if (roleManager.isStudent()) {
-                showStudentPage(primaryStage, user);
+                showInstructorPage(primaryStage, user);
                 return;
             }
         }
