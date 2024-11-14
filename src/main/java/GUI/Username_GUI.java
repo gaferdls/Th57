@@ -34,6 +34,9 @@ public class Username_GUI extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("User Authentication");
 
+        primaryStage.setMinWidth(300);
+        primaryStage.setMinHeight(400);
+
         GridPane loginPane = new GridPane();
         loginPane.setPadding(new Insets(20));  // More padding for a cleaner look
         loginPane.setVgap(15);                 // Increased spacing for better layout
@@ -129,7 +132,6 @@ public class Username_GUI extends Application {
             showSetUpPage(primaryStage);
         });
     }
-
 
     private void showSetUpPage(Stage primaryStage) {
         GridPane setUpPane = new GridPane();
@@ -257,8 +259,11 @@ public class Username_GUI extends Application {
         Label firstNameLabel = new Label("First Name:");
         TextField firstNameField = new TextField(user.getFirstName());
 
+        // Label for Middle Name
         Label middleNameLabel = new Label("Middle Name:");
         TextField middleNameField = new TextField(user.getMiddleName());
+        Label optionalLabel = new Label("(optional)");
+        middleNameField.setPromptText("(optional)");
 
         Label lastNameLabel = new Label("Last Name:");
         TextField lastNameField = new TextField(user.getLastName());
@@ -330,7 +335,6 @@ public class Username_GUI extends Application {
     private boolean validateInput(TextField emailField, TextField firstNameField, TextField middleNameField, TextField lastNameField, TextField preferredNameField, ComboBox<String> skillBox) {
         return !emailField.getText().trim().isEmpty() &&
                 !firstNameField.getText().trim().isEmpty() &&
-                !middleNameField.getText().trim().isEmpty() &&
                 !lastNameField.getText().trim().isEmpty() &&
                 !preferredNameField.getText().trim().isEmpty() &&
                 skillBox.getValue() != null;
