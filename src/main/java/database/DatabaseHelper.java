@@ -27,6 +27,7 @@ public class DatabaseHelper {
 
     /**
      * Initialize a connection to the database.
+     *
      * @throws SQLException
      */
     public void connectToDatabase() throws SQLException {
@@ -61,11 +62,12 @@ public class DatabaseHelper {
                 + "groups VARCHAR(255))";
         statement.execute(userTable);
     }
-    public void updateArticle(){
+
+    public void updateArticle() {
 
     }
 
-    public void deleteArticle(){
+    public void deleteArticle() {
 
     }
 
@@ -102,7 +104,7 @@ public class DatabaseHelper {
 
             BufferedReader reader = new BufferedReader(new FileReader(filename));
             String line;
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";", 8);
                 if (parts.length == 8) {
                     System.out.println("restoring article " + parts[0]);
@@ -117,7 +119,7 @@ public class DatabaseHelper {
         }
     }
 
-    public ArrayList<Article> getAllArticles(){
+    public ArrayList<Article> getAllArticles() {
         ArrayList<Article> articles = new ArrayList<>();
         String sql = "SELECT level, groupingID, title, short, body, keywords, references, groups FROM articles";
 
@@ -145,8 +147,6 @@ public class DatabaseHelper {
 
         return articles; // Return the populated ArrayList
     }
-
-
 
 
     public List<Article> searchArticlesByGroupingID(String groupingID) throws SQLException {
@@ -210,11 +210,10 @@ public class DatabaseHelper {
         }
     }
 
-    
-
 
     /**
      * Check if a database is empty.
+     *
      * @return true if there are no registered users in the database.
      * @throws SQLException
      */
@@ -229,11 +228,12 @@ public class DatabaseHelper {
 
     /**
      * Register a new user in the database
+     *
      * @param email
      * @param password
      * @param isOneTimePassword
      * @param expirationTime
-     * @param level How experienced the user is  (0 = beginner, 1 = intermediate, 2 = advanced, 3 = expert)
+     * @param level             How experienced the user is  (0 = beginner, 1 = intermediate, 2 = advanced, 3 = expert)
      * @throws SQLException
      */
     public void register(String email, String firstName, String middleName, String lastName, String preferredName, char[] password, boolean isOneTimePassword, Time expirationTime, String username, String level, boolean admin, boolean student, boolean instructor, String groups) throws SQLException {
@@ -259,6 +259,7 @@ public class DatabaseHelper {
 
     /**
      * Log in as a user.
+     *
      * @param email
      * @param password
      * @return true if the login was successful
@@ -277,6 +278,7 @@ public class DatabaseHelper {
 
     /**
      * Checks if an email is already registered in the database.
+     *
      * @return
      */
     public boolean doesUserExist(String username) {
@@ -296,17 +298,18 @@ public class DatabaseHelper {
 
     /**
      * Lists information about all users registered in the database.
+     *
      * @throws SQLException
      */
-    public void displayUsers() throws SQLException{
+    public void displayUsers() throws SQLException {
         String sql = "SELECT * FROM users";
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
 
-        while(rs.next()) {
+        while (rs.next()) {
             // Retrieve by column name
-            int id  = rs.getInt("id");
-            String  email = rs.getString("email");
+            int id = rs.getInt("id");
+            String email = rs.getString("email");
             String firstName = rs.getString("firstName");
             String middleName = rs.getString("middleName");
             String lastName = rs.getString("lastName");
@@ -333,6 +336,7 @@ public class DatabaseHelper {
             System.out.print(", roles: " + admin + student + instructor);
         }
     }
+
     private void createArticlesTables() throws SQLException {
         String articlesTable = "CREATE TABLE IF NOT EXISTS articles ("
                 + "id BIGINT PRIMARY KEY AUTO_INCREMENT, " // Correct placement of AUTO_INCREMENT
@@ -409,8 +413,8 @@ public class DatabaseHelper {
             Statement stmt = connection.createStatement();
             rs = stmt.executeQuery(sql);
             if (rs.next()) {
-                int id  = rs.getInt("id");
-                String  email = rs.getString("email");
+                int id = rs.getInt("id");
+                String email = rs.getString("email");
                 String firstName = rs.getString("firstName");
                 String middleName = rs.getString("middleName");
                 String lastName = rs.getString("lastName");
@@ -437,17 +441,70 @@ public class DatabaseHelper {
      * End the connection to the database
      */
     public void closeConnection() {
-        try{
-            if(statement!=null) statement.close();
-        } catch(SQLException se2) {
+        try {
+            if (statement != null) statement.close();
+        } catch (SQLException se2) {
             se2.printStackTrace();
         }
         try {
-            if(connection!=null) connection.close();
-        } catch(SQLException se){
+            if (connection != null) connection.close();
+        } catch (SQLException se) {
             se.printStackTrace();
         }
     }
 
 
+    public void deleteUser(String username) throws SQLException {
+        String sql = "DELETE FROM users WHERE username = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("User successfully deleted: " + username);
+            } else {
+                System.out.println("No user found with username: " + username);
+                throw new SQLException("User not found");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting user: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public ArrayList<User> getAllUsers() throws SQLException {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                User user = new User(
+                        rs.getString("username"),
+                        rs.getString("firstName"),
+                        rs.getString("middleName"),
+                        rs.getString("lastName"),
+                        rs.getString("preferredName"),
+                        rs.getString("email"),
+                        rs.getString("password").toCharArray(),
+                        rs.getBoolean("onetimepassword"),
+                        rs.getTime("expirationtime"),
+                        rs.getString("level"),
+                        rs.getBoolean("admin"),
+                        rs.getBoolean("student"),
+                        rs.getBoolean("instructor"),
+                        rs.getString("groups")
+                );
+                users.add(user);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving users: " + e.getMessage());
+            throw e;
+        }
+
+        return users;
+    }
 }

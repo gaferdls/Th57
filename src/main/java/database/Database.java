@@ -106,4 +106,26 @@ public class Database {
 	}
 
 
+	public static void deleteUser(User user) {
+		try {
+			if (user != null && user.getUsername() != null) {
+				db.deleteUser(user.getUsername());
+				System.out.println("Successfully deleted user: " + user.getUsername());
+			} else {
+				System.out.println("Cannot delete: Invalid user object");
+			}
+		} catch (SQLException e) {
+			System.out.println("Error deleting user: " + e.getMessage());
+		}
+	}
+
+	public static ArrayList<User> getAllUsers() {
+		ArrayList<User> users = new ArrayList<>();
+		try {
+			users = db.getAllUsers();
+		} catch (SQLException e) {
+			System.out.println("Error retrieving users: " + e.getMessage());
+		}
+		return users;
+	}
 }

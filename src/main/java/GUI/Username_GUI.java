@@ -630,14 +630,21 @@ public class Username_GUI extends Application {
         GridPane pane = new GridPane();
         pane.setVgap(10);
         pane.setHgap(10);
+        pane.setPadding(new Insets(20));
+        pane.setAlignment(Pos.CENTER);
 
         Label text = new Label("Filename: ");
         TextField filenameField = new TextField();
         Button submit = new Button("submit");
+        Button backButton = new Button("Back");  // New back button
 
         pane.add(text, 0, 0);
         pane.add(filenameField, 1, 0);
         pane.add(submit, 0, 1);
+        pane.add(backButton, 1, 1);  // Add back button to grid
+
+        submit.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button");  // Style the back button
 
         submit.setOnAction(e -> {
             String filename = filenameField.getText();
@@ -646,25 +653,34 @@ public class Username_GUI extends Application {
             showArticlesPage(primaryStage, user);
         });
 
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));  // Back button action
+
         Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("backup articles");
         primaryStage.show();
-
     }
 
-    private void restoreArticlesScreen(Stage primaryStage, User user) {
+    private void restoreArticlesScreen(Stage primaryStage, User user) { //Restore Article functionalities and GUI
         GridPane pane = new GridPane();
         pane.setVgap(10);
         pane.setHgap(10);
+        pane.setPadding(new Insets(20));
+        pane.setAlignment(Pos.CENTER);
 
         Label text = new Label("Filename: ");
         TextField filenameField = new TextField();
-        Button submit = new Button("submit");
+        Button submit = new Button("Submit");
+        Button backButton = new Button("Back");
 
         pane.add(text, 0, 0);
         pane.add(filenameField, 1, 0);
         pane.add(submit, 0, 1);
+        pane.add(backButton, 1, 1);  // Add back button to grid
+
+        submit.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button");  // Style the back button
 
         submit.setOnAction(e -> {
             String filename = filenameField.getText();
@@ -673,7 +689,10 @@ public class Username_GUI extends Application {
             showArticlesPage(primaryStage, user);
         });
 
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));  // Back button action
+
         Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("restore articles");
         primaryStage.show();
@@ -716,23 +735,255 @@ public class Username_GUI extends Application {
     }
 
     private void showInvitePage(Stage primaryStage) {
-        // Set up the Invite page scene and show it
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(20));
+        pane.setVgap(15);
+        pane.setHgap(10);
+        pane.setAlignment(Pos.CENTER);
+
+        // Email input
+        Label emailLabel = new Label("Email:");
+        TextField emailField = new TextField();
+        emailField.setPromptText("Enter email address");
+
+        // Role selection
+        Label roleLabel = new Label("Role:");
+        ComboBox<String> roleBox = new ComboBox<>();
+        roleBox.getItems().addAll("Student", "Instructor");
+        roleBox.setValue("Student");
+
+        // Buttons
+        Button inviteButton = new Button("Send Invite");
+        Button backButton = new Button("Back");
+
+        inviteButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button");
+
+        // Layout
+        pane.add(emailLabel, 0, 0);
+        pane.add(emailField, 1, 0);
+        pane.add(roleLabel, 0, 1);
+        pane.add(roleBox, 1, 1);
+        pane.add(inviteButton, 0, 2);
+        pane.add(backButton, 1, 2);
+
+        // Button actions
+        inviteButton.setOnAction(e -> {
+            String email = emailField.getText().trim();
+            if (email.isEmpty()) {
+                showAlert("Please enter an email address");
+            } else {
+                // Add invite logic here
+                showAlert("Invite sent to " + email);
+            }
+        });
+
+        backButton.setOnAction(e -> showAdminPage(primaryStage, null));
+
+        Scene scene = new Scene(pane, 400, 300);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private void showResetPage(Stage primaryStage) {
-        // Set up the Reset page scene and show it
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(20));
+        pane.setVgap(15);
+        pane.setHgap(10);
+        pane.setAlignment(Pos.CENTER);
+
+        // Username input
+        Label usernameLabel = new Label("Username:");
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Enter username");
+
+        // Buttons
+        Button resetButton = new Button("Reset Password");
+        Button backButton = new Button("Back");
+
+        resetButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button");
+
+        // Layout
+        pane.add(usernameLabel, 0, 0);
+        pane.add(usernameField, 1, 0);
+        pane.add(resetButton, 0, 1);
+        pane.add(backButton, 1, 1);
+
+        // Button actions
+        resetButton.setOnAction(e -> {
+            String username = usernameField.getText().trim();
+            if (username.isEmpty()) {
+                showAlert("Please enter a username");
+            } else {
+                User user = Database.findUserByUsername(username);
+                if (user != null) {
+                    // Add reset logic here
+                    showAlert("Password reset for " + username);
+                } else {
+                    showAlert("User not found");
+                }
+            }
+        });
+
+        backButton.setOnAction(e -> showAdminPage(primaryStage, null));
+
+        Scene scene = new Scene(pane, 400, 300);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private void showDeletePage(Stage primaryStage) {
-        // Set up the Delete page scene and show it
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(20));
+        pane.setVgap(15);
+        pane.setHgap(10);
+        pane.setAlignment(Pos.CENTER);
+
+        // Username input
+        Label usernameLabel = new Label("Username:");
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Enter username to delete");
+
+        // Confirmation checkbox
+        CheckBox confirmBox = new CheckBox("I confirm this deletion");
+
+        // Buttons
+        Button deleteButton = new Button("Delete User");
+        Button backButton = new Button("Back");
+
+        deleteButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button");
+
+        // Layout
+        pane.add(usernameLabel, 0, 0);
+        pane.add(usernameField, 1, 0);
+        pane.add(confirmBox, 1, 1);
+        pane.add(deleteButton, 0, 2);
+        pane.add(backButton, 1, 2);
+
+        // Button actions
+        deleteButton.setOnAction(e -> {
+            if (!confirmBox.isSelected()) {
+                showAlert("Please confirm the deletion");
+                return;
+            }
+            String username = usernameField.getText().trim();
+            if (username.isEmpty()) {
+                showAlert("Please enter a username");
+            } else {
+                User user = Database.findUserByUsername(username);
+                if (user != null) {
+                    Database.deleteUser(user);
+                    showAlert("User " + username + " has been deleted");
+                } else {
+                    showAlert("User not found");
+                }
+            }
+        });
+
+        backButton.setOnAction(e -> showAdminPage(primaryStage, null));
+
+        Scene scene = new Scene(pane, 400, 300);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private void showListPage(Stage primaryStage) {
-        // Set up the List page scene and show it
+        VBox vbox = new VBox(15);
+        vbox.setPadding(new Insets(20));
+        vbox.setAlignment(Pos.CENTER);
+
+        // Title
+        Label titleLabel = new Label("User List");
+        titleLabel.setStyle("-fx-font-size: 18; -fx-font-weight: bold;");
+
+        // User list view
+        ListView<String> userListView = new ListView<>();
+        ArrayList<User> users = Database.getAllUsers();
+        for (User user : users) {
+            userListView.getItems().add(String.format("%s - %s",
+                    user.getUsername(),
+                    user.isAdmin() ? "Admin" : (user.isInstructor() ? "Instructor" : "Student")));
+        }
+
+        // Back button
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+
+        // Layout
+        vbox.getChildren().addAll(titleLabel, userListView, backButton);
+
+        // Button action
+        backButton.setOnAction(e -> showAdminPage(primaryStage, null));
+
+        Scene scene = new Scene(vbox, 500, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private void showRolesPage(Stage primaryStage) {
-        // Set up the Roles page scene and show it
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(20));
+        pane.setVgap(15);
+        pane.setHgap(10);
+        pane.setAlignment(Pos.CENTER);
+
+        // Username input
+        Label usernameLabel = new Label("Username:");
+        TextField usernameField = new TextField();
+        usernameField.setPromptText("Enter username");
+
+        // Role checkboxes
+        CheckBox adminBox = new CheckBox("Admin");
+        CheckBox instructorBox = new CheckBox("Instructor");
+        CheckBox studentBox = new CheckBox("Student");
+
+        // Buttons
+        Button updateButton = new Button("Update Roles");
+        Button backButton = new Button("Back");
+
+        updateButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button");
+
+        // Layout
+        pane.add(usernameLabel, 0, 0);
+        pane.add(usernameField, 1, 0);
+        pane.add(adminBox, 1, 1);
+        pane.add(instructorBox, 1, 2);
+        pane.add(studentBox, 1, 3);
+        pane.add(updateButton, 0, 4);
+        pane.add(backButton, 1, 4);
+
+        // Button actions
+        updateButton.setOnAction(e -> {
+            String username = usernameField.getText().trim();
+            if (username.isEmpty()) {
+                showAlert("Please enter a username");
+            } else {
+                User user = Database.findUserByUsername(username);
+                if (user != null) {
+                    user.setAdmin(adminBox.isSelected());
+                    user.setInstructor(instructorBox.isSelected());
+                    user.setStudent(studentBox.isSelected());
+                    Database.updateUser(user);
+                    showAlert("Roles updated for " + username);
+                } else {
+                    showAlert("User not found");
+                }
+            }
+        });
+
+        backButton.setOnAction(e -> showAdminPage(primaryStage, null));
+
+        Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 
     private void showInstructorPage(Stage primaryStage, User user) {
