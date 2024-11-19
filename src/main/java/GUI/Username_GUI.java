@@ -107,7 +107,7 @@ public class Username_GUI extends Application {
             if (Database.hasUser(email)) {
                 showSigninPage(primaryStage, email, password);
             } else {
-                showAlert("Username not found");
+                showAlert("   Username not found. \nTry Signing Up instead! :)");
                 start(primaryStage);
             }
         });
