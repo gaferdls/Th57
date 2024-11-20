@@ -1015,11 +1015,11 @@ public class Username_GUI extends Application {
         pane.add(helpButton, 0, 2);
         pane.add(logoutButton, 0, 3);
 
-        Scene scene = new Scene(pane, 400, 600);
+        Scene scene = new Scene(pane, 300, 300);
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
 
         articlesButton.setOnAction(e -> showArticlesPage(primaryStage, user));
-//        groupsButton.setOnAction(e -> showGroupsPage(primaryStage, user));
+        groupsButton.setOnAction(e -> showSetupGroups(primaryStage, user));
         helpButton.setOnAction(e -> showAlert("Ask your admin for assistance"));
         logoutButton.setOnAction(e -> start(primaryStage));
 
@@ -1203,11 +1203,11 @@ public class Username_GUI extends Application {
                 return;
             }
             if (roleManager.isInstructor()) {
-                showArticlesPage(primaryStage,user);
+                showInstructorPage(primaryStage,user);
                 return;
             }
             if (roleManager.isStudent()) {
-                showInstructorPage(primaryStage, user);
+                showStudentPage(primaryStage, user);
                 return;
             }
         }
@@ -1240,8 +1240,8 @@ public class Username_GUI extends Application {
             Button instructorButton = new Button("Instructor");
             instructorButton.getStyleClass().add("primary-button"); // Add button style
             instructorButton.setOnAction(e -> {
-                showArticlesPage(primaryStage,user);
-                primaryStage.close(); // Close the selector after selection
+                System.out.println("Is here!!");
+                showInstructorPage(primaryStage,user);
             });
             roleSelector.add(instructorButton, 0, row++);
             instructorButton.setMaxWidth(Double.MAX_VALUE);
@@ -1253,7 +1253,6 @@ public class Username_GUI extends Application {
             studentButton.getStyleClass().add("primary-button"); // Add button style
             studentButton.setOnAction(e -> {
                 showStudentPage(primaryStage, user);
-                primaryStage.close(); // Close the selector after selection
             });
             roleSelector.add(studentButton, 0, row++);
             studentButton.setMaxWidth(Double.MAX_VALUE);
@@ -1342,6 +1341,82 @@ public class Username_GUI extends Application {
         fadeTransition.setToValue(1);
         fadeTransition.play();
     }
+    private void showSetupGroups(Stage primaryStage, User user) {
+        // Create a VBox layout with spacing and padding
+        VBox vbox = new VBox();
+        vbox.setSpacing(15);
+        vbox.setPadding(new Insets(20));
+        vbox.setAlignment(Pos.CENTER);
 
+        // Title Label with enhanced styling
+        Label titleLabel = new Label("Manage Groups");
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
+        // Create button with styling and action
+        Button createButton = new Button("Create");
+        createButton.getStyleClass().add("primary-button");
+        createButton.setMaxWidth(Double.MAX_VALUE);
+       // createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
+
+        // Edit button with styling and action
+        Button editButton = new Button("Edit");
+        editButton.getStyleClass().add("primary-button");
+        editButton.setMaxWidth(Double.MAX_VALUE);
+      //  editButton.setOnAction(e -> handleEditGroup(primaryStage, user)); // Define handleEditGroup method
+
+        // Delete button with styling and action
+        Button deleteButton = new Button("Delete");
+        deleteButton.getStyleClass().add("primary-button");
+        deleteButton.setMaxWidth(Double.MAX_VALUE);
+       // deleteButton.setOnAction(e -> handleDeleteGroup(primaryStage, user)); // Define handleDeleteGroup method
+
+        // Back button with styling and action
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setMaxWidth(Double.MAX_VALUE);
+        backButton.setOnAction(e -> showInstructorPage(primaryStage, user)); // Define showMainPage method for navigation
+
+        // Apply fade-in animations to buttons and title
+        FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
+        titleFade.setFromValue(0);
+        titleFade.setToValue(1);
+        titleFade.play();
+
+        FadeTransition createFade = new FadeTransition(Duration.seconds(1), createButton);
+        createFade.setFromValue(0);
+        createFade.setToValue(1);
+        createFade.play();
+
+        FadeTransition editFade = new FadeTransition(Duration.seconds(1), editButton);
+        editFade.setFromValue(0);
+        editFade.setToValue(1);
+        editFade.play();
+
+        FadeTransition deleteFade = new FadeTransition(Duration.seconds(1), deleteButton);
+        deleteFade.setFromValue(0);
+        deleteFade.setToValue(1);
+        deleteFade.play();
+
+        FadeTransition backFade = new FadeTransition(Duration.seconds(1), backButton);
+        backFade.setFromValue(0);
+        backFade.setToValue(1);
+        backFade.play();
+
+        // Add elements to VBox and set up the scene
+        vbox.getChildren().addAll(titleLabel, createButton, editButton, deleteButton, backButton);
+        Scene scene = new Scene(vbox, 300, 400); // Adjusted height for additional button
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Group Management");
+        primaryStage.show();
+
+        // Fade transition for the entire VBox
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), vbox);
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
+    }
+    private void handleCreateGroup(primaryStage, user){
+
+    }
 }
