@@ -1416,7 +1416,7 @@ public class Username_GUI extends Application {
         fadeTransition.setToValue(1);
         fadeTransition.play();
     }
-    private void handleCreateGroup(primaryStage, user){
-
-    }
+//    private void handleCreateGroup(primaryStage, user){
+//
+//    }
 }
