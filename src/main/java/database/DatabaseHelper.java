@@ -736,4 +736,32 @@ public class DatabaseHelper {
             throw e;
         }
     }
+
+    public boolean updateArticleByTitle(Article article, String title_) {
+        // Updated SQL query based on the articles table schema
+        String sql = "UPDATE articles SET groupingID = ?, level = ?, title = ?, short = ?, body = ?, keywords = ?, references = ?, groups = ? WHERE title = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            // Set parameters in the query
+            pstmt.setString(1, article.getGroupId());
+            pstmt.setString(2, article.getLevel());
+            pstmt.setString(3, article.getTitle());
+            pstmt.setString(4, article.getShortDescription()); // Assuming getter for 'short'
+            pstmt.setString(5, article.getBody());
+            pstmt.setString(6, article.getKeywords());
+            pstmt.setString(7, article.getReferences());       // Assuming getter for 'references'
+            pstmt.setString(8, article.getGroups());
+            pstmt.setString(9, title_); // Use the provided title for the WHERE clause
+
+            // Execute the update query
+            int affectedRows = pstmt.executeUpdate();
+
+            // Return true if at least one row was updated
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            // Log and handle the exception
+            System.err.println("Error updating article: " + e.getMessage());
+            return false;
+        }
+    }
 }

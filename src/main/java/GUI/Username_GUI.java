@@ -3,6 +3,7 @@ package GUI;
 import javafx.scene.text.TextAlignment;
 import util.HelpMessage;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
@@ -735,6 +736,7 @@ public class Username_GUI extends Application {
                 break;
             case "Update":
                 //
+                updateArticlesPage(primaryStage, user);
                 break;
             case "View":
                 //
@@ -1735,6 +1737,148 @@ public class Username_GUI extends Application {
         Scene scene = new Scene(HelpPane, 400, 300);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Help Page");
+        primaryStage.show();
+    }
+
+    private void showEditForm(Stage primaryStage, User user, Article article) {
+        GridPane editPane = new GridPane();
+        editPane.setVgap(10);
+        editPane.setHgap(10);
+        editPane.setPadding(new Insets(20));
+        editPane.setAlignment(Pos.CENTER);
+
+        // Form fields to edit article
+        Label groupingIdLabel = new Label("Grouping ID:");
+        TextField groupingIdField = new TextField(article.getGroupId());
+
+        Label levelLabel = new Label("Level:");
+        TextField levelField = new TextField(article.getLevel());
+
+        Label shortDescLabel = new Label("Short Description:");
+        TextField shortDescField = new TextField(article.getShortDescription());
+
+        Label bodyLabel = new Label("Body:");
+        TextArea bodyArea = new TextArea(article.getBody());
+        bodyArea.setPrefRowCount(5);
+
+        Label keywordsLabel = new Label("Keywords:");
+        TextField keywordsField = new TextField(article.getKeywords());
+
+        Label referencesLabel = new Label("References:");
+        TextField referencesField = new TextField(article.getReferences());
+
+        Label groupsLabel = new Label("Groups:");
+        TextField groupsField = new TextField(article.getGroups());
+
+        Button updateButton = new Button("Update");
+        Button cancelButton = new Button("Cancel");
+
+        // Add fields to the grid
+        editPane.add(groupingIdLabel, 0, 0);
+        editPane.add(groupingIdField, 1, 0);
+
+        editPane.add(levelLabel, 0, 1);
+        editPane.add(levelField, 1, 1);
+
+        editPane.add(shortDescLabel, 0, 2);
+        editPane.add(shortDescField, 1, 2);
+
+        editPane.add(bodyLabel, 0, 3);
+        editPane.add(bodyArea, 1, 3);
+
+        editPane.add(keywordsLabel, 0, 4);
+        editPane.add(keywordsField, 1, 4);
+
+        editPane.add(referencesLabel, 0, 5);
+        editPane.add(referencesField, 1, 5);
+
+        editPane.add(groupsLabel, 0, 6);
+        editPane.add(groupsField, 1, 6);
+
+        editPane.add(updateButton, 0, 7);
+        editPane.add(cancelButton, 1, 7);
+
+        updateButton.getStyleClass().add("primary-button");
+        cancelButton.getStyleClass().add("secondary-button");
+
+        updateButton.setOnAction(e -> {
+            // Update article fields
+            article.setGroupId(groupingIdField.getText());
+            article.setLevel(levelField.getText());
+            article.setShortDescription(shortDescField.getText());
+            article.setBody(bodyArea.getText());
+            article.setKeywords(keywordsField.getText());
+            article.setReferences(referencesField.getText());
+            article.setGroups(groupsField.getText());
+
+            boolean updated = Database.db.updateArticleByTitle(article, article.getTitle());
+
+            if (updated) {
+                showAlert("Article updated successfully!");
+                showArticlesPage(primaryStage, user); // Go back to the articles page
+            } else {
+                showAlert("Failed to update article.");
+            }
+
+
+        });
+
+        cancelButton.setOnAction(e -> updateArticlesPage(primaryStage, user)); // Cancel and go back
+
+        Scene editScene = new Scene(editPane, 600, 600);
+        editScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(editScene);
+        primaryStage.setTitle("Edit Article");
+        primaryStage.show();
+    }
+
+
+
+
+    private void updateArticlesPage(Stage primaryStage, User user) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+        pane.setPadding(new Insets(20));
+        pane.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Article Title:");
+        TextField titleField = new TextField();
+        Button searchButton = new Button("Search");
+        Button backButton = new Button("Back");
+
+        // Add search fields
+        pane.add(titleLabel, 0, 0);
+        pane.add(titleField, 1, 0);
+        pane.add(searchButton, 0, 1);
+        pane.add(backButton, 1, 1);  // Add back button to grid
+
+        searchButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button"); // Style the back button
+        searchButton.setOnAction(e -> {
+            String title = titleField.getText();
+
+            try {
+                Article fetchedArticle = Database.db.getArticleByTitle(title);
+
+                if (fetchedArticle != null) {
+                    showEditForm(primaryStage, user, fetchedArticle);
+                } else {
+                    showAlert("No article found with the title: " + title);
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error retrieving article: " + ex.getMessage());
+                showAlert("An error occurred while retrieving the article.");
+            }
+        });
+
+
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));  // Back button action
+
+        Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Update Articles");
         primaryStage.show();
     }
 }
