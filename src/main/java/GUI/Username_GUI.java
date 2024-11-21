@@ -2,6 +2,10 @@ package GUI;
 
 
 import java.util.ArrayList;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.h2.command.ddl.GrantRevoke;
 import util.Article;
@@ -1356,7 +1360,7 @@ public class Username_GUI extends Application {
         Button createButton = new Button("Create");
         createButton.getStyleClass().add("primary-button");
         createButton.setMaxWidth(Double.MAX_VALUE);
-       // createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
+        createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
 
         // Edit button with styling and action
         Button editButton = new Button("Edit");
@@ -1416,7 +1420,137 @@ public class Username_GUI extends Application {
         fadeTransition.setToValue(1);
         fadeTransition.play();
     }
-    private void handleCreateGroup(primaryStage, user){
+    private void handleCreateGroup(Stage primaryStage, User user) {
+        GridPane createGroupGrid = new GridPane();
+        createGroupGrid.setAlignment(Pos.CENTER);
+        createGroupGrid.setHgap(10);
+        createGroupGrid.setVgap(10);
+        createGroupGrid.setPadding(new Insets(20));
 
+        Label titleLabel = new Label("Manage Groups");
+        titleLabel.getStyleClass().add("label");
+        TextField groupNameField = new TextField();
+        groupNameField.getStyleClass().add("text-field");
+        Button nextButton = new Button("Next");
+        nextButton.getStyleClass().add("primary-button");
+
+        createGroupGrid.add(titleLabel, 0, 0);
+        createGroupGrid.add(new Label("Group Name:"), 0, 1);
+        createGroupGrid.add(groupNameField, 1, 1);
+        createGroupGrid.add(nextButton, 1, 2);
+
+        nextButton.setOnAction(e -> {
+            String groupName = groupNameField.getText();
+            createGroupGrid.getChildren().clear();
+            showUserSelection(createGroupGrid, primaryStage, user, groupName);
+        });
+
+        Scene scene = new Scene(createGroupGrid, 500, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(1), createGroupGrid);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
     }
+
+    private void showUserSelection(GridPane grid, Stage primaryStage, User user, String groupName) {
+        Label selectUsersLabel = new Label("Select Users (click on names to toggle selection):");
+        selectUsersLabel.getStyleClass().add("label");
+        grid.add(selectUsersLabel, 0, 0);
+
+        ListView<String> userListView = new ListView<>();
+        userListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        configureListViewForToggleSelection(userListView); // Configure ListView for toggle selection
+
+        try {
+            ArrayList<User> users = Database.getAllUsers();
+            for (User usr : users) {
+                userListView.getItems().add(usr.getUsername());
+            }
+        } catch (Exception ex) {
+            System.err.println("Error fetching users: " + ex.getMessage());
+        }
+
+        grid.add(userListView, 0, 1, 2, 1);
+
+        Button nextButton = new Button("Next: Select Articles");
+        nextButton.getStyleClass().add("primary-button");
+        grid.add(nextButton, 1, 2);
+
+        nextButton.setOnAction(e -> {
+            for (int i = 0; i < userListView.getSelectionModel().getSelectedItems().size(); i++) {
+                User selected = Database.findUserByUsername(userListView.getSelectionModel().getSelectedItems().get(i));
+                String updateGroup = selected.getGroups() + ", " + groupName;
+                selected.setGroups(updateGroup);
+            }
+            grid.getChildren().clear();
+            selectArticles(primaryStage, user, grid, groupName);
+        });
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(1), grid);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+    }
+
+    private void selectArticles(Stage primaryStage, User user, GridPane grid, String groupName) {
+        Label titleLabel = new Label("Articles");
+        titleLabel.getStyleClass().add("label");
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;");
+
+        ListView<String> articleListView = new ListView<>();
+        articleListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        configureListViewForToggleSelection(articleListView); // Configure ListView for toggle selection
+
+        try {
+            ArrayList<Article> articles = Database.allArticles();
+            for (Article article : articles) {
+                articleListView.getItems().add(article.getTitle() + " - " + article.getShortDescription());
+            }
+        } catch (Exception ex) {
+            System.err.println("Error fetching articles: " + ex.getMessage());
+        }
+
+        grid.add(titleLabel, 0, 0);
+        grid.add(articleListView, 0, 1, 2, 1);
+
+        Button finishButton = new Button("Finish Selection");
+        finishButton.getStyleClass().add("primary-button");
+        grid.add(finishButton, 1, 2);
+        finishButton.setOnAction(e -> {
+            for (int i = 0; i < articleListView.getSelectionModel().getSelectedItems().size(); i++) {
+                User selected = Database.findUserByUsername(articleListView.getSelectionModel().getSelectedItems().get(i));
+                String updateGroup = selected.getGroups() + ", " + groupName;
+                selected.setGroups(updateGroup);
+            }
+        });
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(1), grid);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+    }
+
+    private void configureListViewForToggleSelection(ListView<String> listView) {
+        listView.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            cell.textProperty().bind(cell.itemProperty());
+            cell.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                if (!cell.isEmpty()) {
+                    int index = cell.getIndex();
+                    if (listView.getSelectionModel().getSelectedIndices().contains(index)) {
+                        listView.getSelectionModel().clearSelection(index);
+                    } else {
+                        listView.getSelectionModel().select(index);
+                    }
+                    event.consume();
+                }
+            });
+            return cell;
+        });
+    }
+
 }
