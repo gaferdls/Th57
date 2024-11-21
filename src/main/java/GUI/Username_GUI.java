@@ -1483,12 +1483,74 @@ public class Username_GUI extends Application {
         primaryStage.setTitle("Group Management");
         primaryStage.show();
     }
+
     private void handleEditGroup(Stage primaryStage, User user) {
 
     }
-    private void handleDeleteGroup(Stage primaryStage, User user) {
 
+    private void handleDeleteGroup(Stage primaryStage, User user) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+        pane.setPadding(new Insets(20));
+        pane.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Group Name:");
+        TextField titleField = new TextField();
+        Button searchButton = new Button("Search");
+        Button backButton = new Button("Back");
+
+        // Add search fields
+        pane.add(titleLabel, 0, 0);
+        pane.add(titleField, 1, 0);
+        pane.add(searchButton, 0, 1);
+        pane.add(backButton, 1, 1);  // Add back button to grid
+
+        searchButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button"); // Style the back button
+        searchButton.setOnAction(e -> {
+            String title = titleField.getText();
+
+            try {
+                for (Article a : Database.db.getAllArticles()) {
+                    String[] groups = a.getGroups().split(",");
+                    String newGroups = "";
+                    for (String s : groups) {
+                        if (!s.equals(title)) {
+                            if (!newGroups.isEmpty()) newGroups += ", ";
+                            newGroups += s;
+                        }
+                    }
+                    a.setGroups(newGroups);
+                    Database.db.updateArticle(a);
+                }
+                for (User a : Database.db.getAllUsers()) {
+                    String[] groups = a.getGroups().split(",");
+                    String newGroups = "";
+                    for (String s : groups) {
+                        if (!s.equals(title)) {
+                            if (!newGroups.isEmpty()) newGroups += ", ";
+                            newGroups += s;
+                        }
+                    }
+                    a.setGroups(newGroups);
+                    Database.db.updateUser(a);
+                }
+            } catch (Exception ex) {
+                System.out.println("bad");
+            }
+        });
+
+
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));  // Back button action
+
+        Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Delete Group");
+        primaryStage.show();
     }
+
     private void applyFadeTransition(Node node, double durationSeconds) {
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(durationSeconds), node);
         fadeTransition.setFromValue(0);
@@ -1569,8 +1631,9 @@ public class Username_GUI extends Application {
             admin.setGroups(allGroups + "," + groupName);
             for (int i = 0; i < userListView.getSelectionModel().getSelectedItems().size(); i++) {
                 User selected = Database.findUserByUsername(userListView.getSelectionModel().getSelectedItems().get(i));
-                    String updateGroup = selected.getGroups() + ", " + groupName;
-                    selected.setGroups(updateGroup);
+                if (selected.getGroups().contains(groupName)) continue;
+                String updateGroup = selected.getGroups() + ", " + groupName;
+                selected.setGroups(updateGroup);
 
             }
             grid.getChildren().clear();
@@ -1610,9 +1673,15 @@ public class Username_GUI extends Application {
         finishButton.setOnAction(e -> {
             for (int i = 0; i < articleListView.getSelectionModel().getSelectedItems().size(); i++) {
 
-                System.out.print(articleListView.getSelectionModel().getSelectedItems().get(i));
+                try {
+                    Article a = Database.db.getArticleByTitle(articleListView.getSelectionModel().getSelectedItems().get(i).split(" - ")[0]);
+                    Database.updateArticle(a);
+                } catch (SQLException ex) {
+                    System.out.println("oops");
+                }
+
                 //String updateGroup = selected.getGroups() + ", " + groupName;
-               showUserSelection(grid, primaryStage, user, groupName);
+                showUserSelection(grid, primaryStage, user, groupName);
             }
             showRolePage(primaryStage, user);
         });
@@ -1929,7 +1998,7 @@ public class Username_GUI extends Application {
         Scene scene = new Scene(pane, 400, 400);
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Update Articles");
+        primaryStage.setTitle("Delete Articles");
         primaryStage.show();
     }
 }
