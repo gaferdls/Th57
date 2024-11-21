@@ -1360,7 +1360,7 @@ public class Username_GUI extends Application {
         Button createButton = new Button("Create");
         createButton.getStyleClass().add("primary-button");
         createButton.setMaxWidth(Double.MAX_VALUE);
-        createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
+       // createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
 
         // Edit button with styling and action
         Button editButton = new Button("Edit");

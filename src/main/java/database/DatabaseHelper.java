@@ -340,14 +340,14 @@ public class DatabaseHelper {
     private void createArticlesTables() throws SQLException {
         String articlesTable = "CREATE TABLE IF NOT EXISTS articles ("
                 + "id BIGINT PRIMARY KEY AUTO_INCREMENT, " // Correct placement of AUTO_INCREMENT
-                + "groupingID VARCHAR(255), "
-                + "level VARCHAR(255), " // Added missing comma
-                + "title VARCHAR(255), "
-                + "short VARCHAR(255), "
-                + "body VARCHAR(255), "
-                + "keywords VARCHAR(255), "
-                + "references VARCHAR(255), "// Added missing comma
-                + "groups VARCHAR(255)"
+                + "groupingID VARCHAR(4000), "
+                + "level VARCHAR(4000), " // Added missing comma
+                + "title VARCHAR(4000), "
+                + "short VARCHAR(4000), "
+                + "body VARCHAR(4000), "
+                + "keywords VARCHAR(4000), "
+                + "references VARCHAR(4000), "// Added missing comma
+                + "groups VARCHAR(4000)"
                 + ");";
 
         statement.execute(articlesTable);
