@@ -507,4 +507,14 @@ public class DatabaseHelper {
 
         return users;
     }
+
+    public boolean clearDatabase() {
+        try {
+            connection.createStatement().executeQuery("FROM users DELETE *");
+            connection.createStatement().executeQuery("FROM articles DELETE *");
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }

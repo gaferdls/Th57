@@ -2,6 +2,7 @@ package util;
 
 import java.sql.Time;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class User {
 	private String username;
@@ -163,5 +164,12 @@ public class User {
 				", lastName='" + lastName + '\'' +
 				", preferredName='" + preferredName + '\'' +
 				'}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return isAdmin == user.isAdmin && isOneTimePassword == user.isOneTimePassword && isStudent == user.isStudent && isInstructor == user.isInstructor && Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.deepEquals(password, user.password) && Objects.equals(skillLevel, user.skillLevel) && Objects.equals(passwordExpiration, user.passwordExpiration) && Objects.equals(firstName, user.firstName) && Objects.equals(middleName, user.middleName) && Objects.equals(lastName, user.lastName) && Objects.equals(preferredName, user.preferredName) && Objects.equals(groups, user.groups);
 	}
 }

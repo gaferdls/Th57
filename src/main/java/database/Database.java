@@ -128,4 +128,15 @@ public class Database {
 		}
 		return users;
 	}
+
+	public static void close() {
+		if (db != null) {
+			db.closeConnection();
+			db = null;
+		}
+	}
+
+	public static boolean clearDatabase() {
+		return db.clearDatabase();
+	}
 }

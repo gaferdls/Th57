@@ -1,13 +1,13 @@
 package util;
 
+import java.util.Objects;
+
 public class Article {
     private String level;
     private String groupId;
     private String title;
     private String shortDescription;
     private String body;
-    private boolean beginner;
-    private boolean intermediate;
     private String references, keywords, groups;
 
     // Constructor
@@ -67,5 +67,12 @@ public class Article {
                 ", groupId='" + groupId + '\'' +
                 ", level='" + level + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Article article = (Article) o;
+        return Objects.equals(level, article.level) && Objects.equals(groupId, article.groupId) && Objects.equals(title, article.title) && Objects.equals(shortDescription, article.shortDescription) && Objects.equals(body, article.body) && Objects.equals(references, article.references) && Objects.equals(keywords, article.keywords) && Objects.equals(groups, article.groups);
     }
 }
