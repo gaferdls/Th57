@@ -1,10 +1,15 @@
 package GUI;
 
-
+import util.HelpMessage;
+import java.awt.*;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.h2.command.ddl.GrantRevoke;
@@ -990,6 +995,43 @@ public class Username_GUI extends Application {
         primaryStage.show();
     }
 
+    private void helpMessages(Stage primaryStage, User user){
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(20));
+        pane.setVgap(15);
+        pane.setHgap(10);
+        pane.setAlignment(Pos.CENTER);
+        Button submitHelp = new Button("Submit");
+        Button backButton = new Button("Back");
+        ChoiceBox<String> messageTypes = new ChoiceBox<>();
+        pane.add(backButton, 0 ,0);
+        TextField message = new TextField();
+
+        pane.add(message, 1, 2);
+        pane.add(messageTypes, 1, 1);
+        pane.add(submitHelp, 1, 3);
+
+        messageTypes.getItems().addAll("Generic", "Specific");
+
+        HelpMessage request = new HelpMessage(messageTypes.getValue(), message.getText());
+
+        submitHelp.setOnAction(e ->
+                {
+                    System.out.print("Submitted Request!");
+
+
+                }
+
+
+
+        );
+        backButton.setOnAction(e-> showStudentPage(primaryStage, user));
+
+        Scene scene = new Scene(pane, 400, 400);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
     private void showInstructorPage(Stage primaryStage, User user) {
         GridPane pane = new GridPane();
         pane.setPadding(new Insets(20));
@@ -1042,7 +1084,7 @@ public class Username_GUI extends Application {
         articlesButton.getStyleClass().add("primary-button"); // Assume a style class
         articlesButton.setMaxWidth(Double.MAX_VALUE);
 
-        Button helpButton = new Button("Help");
+        Button helpButton = new Button("Help Request");
         helpButton.getStyleClass().add("primary-button"); // Assume the same style as the Articles button
         helpButton.setMaxWidth(Double.MAX_VALUE);
 
@@ -1076,6 +1118,7 @@ public class Username_GUI extends Application {
         helpButton.setOnAction(e -> {
             // Add the action for the Help button here
             System.out.println("Help button clicked");
+            helpMessages(primaryStage, user);
         });
 
         logoutButton.setOnAction(e -> {

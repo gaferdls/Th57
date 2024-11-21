@@ -1,4 +1,5 @@
 package database;
+import util.HelpMessage;
 import util.User;
 import util.Article;
 
@@ -37,11 +38,44 @@ public class DatabaseHelper {
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
             statement = connection.createStatement();
             createTables();  // Create the necessary tables if they don't exist
+            createRequestTables(); // table for student messages
             createArticlesTables();
         } catch (ClassNotFoundException e) {
             System.err.println("JDBC Driver not found: " + e.getMessage());
         }
     }
+
+    private void createRequestTables() throws SQLException{
+
+        String requestTable = "CREATE TABLE IF NOT EXISTS requests ("
+                + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                + "type VARCHAR(255), "
+                + "body VARCHAR(1000)";
+
+        statement.execute(requestTable);
+
+    }
+
+    public void addRequest(HelpMessage message) throws SQLException{
+        String sql = "INSERT INTO requests (type, body) VALUES (?, ?)";
+
+        // Using try-with-resources to ensure proper resource management
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            // Set the parameters for the prepared statement
+            pstmt.setString(1, message.getType());
+            pstmt.setString(2, message.getBody());
+
+            // Execute the insert operation
+            pstmt.executeUpdate();
+            System.out.println("Message added successfully!");
+        } catch (SQLException e) {
+            // Handle SQL exceptions
+            System.err.println("Error adding message: " + e.getMessage());
+            throw e; // Optionally rethrow the exception after logging it
+        }
+    }
+
+
 
     private void createTables() throws SQLException {
         String userTable = "CREATE TABLE IF NOT EXISTS users ("
