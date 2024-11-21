@@ -498,6 +498,23 @@ public class Username_GUI extends Application {
         backButton.setMaxWidth(Double.MAX_VALUE);
         backButton.setOnAction(e -> showArticlesPage(primaryStage, user));
 
+        // Search bar
+        TextField search = new TextField();
+        search.setPromptText("Search...");
+        search.getStyleClass().add("secondary_button");
+        search.setMaxWidth(Double.MAX_VALUE);
+        search.setOnKeyPressed(e -> {
+            listView.getItems().clear();
+            for (Article a : articles) {
+                if (!a.getTitle().contains(search.getText()) ||
+                        !a.getAbstract().contains(search.getText())) {
+                    continue;
+                }
+                String displayText = a.getTitle() + " - " + a.getShortDescription();
+                listView.getItems().add(displayText);
+            }
+        });
+
         // Apply fade-in animations
         FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
         titleFade.setFromValue(0);
@@ -515,7 +532,7 @@ public class Username_GUI extends Application {
         buttonFade.play();
 
         // Add elements to VBox and set up the scene
-        vbox.getChildren().addAll(titleLabel, listView, backButton);
+        vbox.getChildren().addAll(titleLabel, search, listView, backButton);
         Scene scene = new Scene(vbox, 450, 400);
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
