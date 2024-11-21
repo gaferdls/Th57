@@ -5,7 +5,25 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>ASU CSE 360 group project</name>
   <description>ASU CSE 360 group project</description>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.11.3</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
@@ -17,6 +35,7 @@
       <version>2.1.214</version>
     </dependency>
   </dependencies>
+
   <build>
     <plugins>
       <plugin>
