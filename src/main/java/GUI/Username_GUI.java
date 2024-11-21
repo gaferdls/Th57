@@ -995,41 +995,61 @@ public class Username_GUI extends Application {
         primaryStage.show();
     }
 
-    private void helpMessages(Stage primaryStage, User user){
+    private void helpMessages(Stage primaryStage, User user) {
         GridPane pane = new GridPane();
         pane.setPadding(new Insets(20));
         pane.setVgap(15);
         pane.setHgap(10);
         pane.setAlignment(Pos.CENTER);
-        Button submitHelp = new Button("Submit");
-        Button backButton = new Button("Back");
-        ChoiceBox<String> messageTypes = new ChoiceBox<>();
-        pane.add(backButton, 0 ,0);
-        TextField message = new TextField();
 
-        pane.add(message, 1, 2);
+        // Create UI Components
+        Button submitHelp = new Button("Submit");
+        submitHelp.getStyleClass().add("primary-button"); // Applying primary button style
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button"); // Applying secondary button style
+        ChoiceBox<String> messageTypes = new ChoiceBox<>();
+        TextField message = new TextField();
+        message.setPromptText("Type your help message here...");
+
+        // Setup ChoiceBox items
+        messageTypes.getItems().addAll("Generic", "Specific");
+        messageTypes.setValue("Generic"); // Set a default value
+
+        // Adding components to the GridPane
+        pane.add(backButton, 0, 0);
+        pane.add(new Label("Select Message Type:"), 0, 1);
         pane.add(messageTypes, 1, 1);
+        pane.add(new Label("Enter Message:"), 0, 2);
+        pane.add(message, 1, 2);
         pane.add(submitHelp, 1, 3);
 
-        messageTypes.getItems().addAll("Generic", "Specific");
+        // Submit Help Request
+        submitHelp.setOnAction(e -> {
+            HelpMessage request = new HelpMessage(messageTypes.getValue(), message.getText());
+            Database.addRequest(request);
+            message.clear(); // Clear the text field after submission
+            messageTypes.setValue("Generic"); // Reset the choice box to default
+        });
 
-        HelpMessage request = new HelpMessage(messageTypes.getValue(), message.getText());
+        // Back button action to return to the student page
+        backButton.setOnAction(e -> showStudentPage(primaryStage, user));
 
-        submitHelp.setOnAction(e ->
-                {
-                    Database.addRequest(request);
-
-                }
-
-
-
-        );
-        backButton.setOnAction(e-> showStudentPage(primaryStage, user));
-
+        // Scene and Stage Setup
         Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Help Messages");
+
+        // Apply fade-in effect
+        FadeTransition fade = new FadeTransition(Duration.seconds(1), pane);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+
         primaryStage.show();
     }
+
+
 
     private void showInstructorPage(Stage primaryStage, User user) {
         GridPane pane = new GridPane();
