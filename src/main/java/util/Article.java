@@ -55,6 +55,38 @@ public class Article {
         return body;
     }
 
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public void setReferences(String references) {
+        this.references = references;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
+    public void setGroups(String groups) {
+        this.groups = groups;
+    }
+
     // Optionally, you can add a toString method for easy printing
     @Override
     public String toString() {

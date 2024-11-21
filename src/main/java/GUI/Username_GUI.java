@@ -1,8 +1,10 @@
 package GUI;
 
+import javafx.scene.Node;
 import javafx.scene.text.TextAlignment;
 import util.HelpMessage;
 import java.awt.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
@@ -497,6 +499,23 @@ public class Username_GUI extends Application {
         backButton.setMaxWidth(Double.MAX_VALUE);
         backButton.setOnAction(e -> showArticlesPage(primaryStage, user));
 
+        // Search bar
+        TextField search = new TextField();
+        search.setPromptText("Search...");
+        search.getStyleClass().add("secondary_button");
+        search.setMaxWidth(Double.MAX_VALUE);
+        search.setOnKeyPressed(e -> {
+            listView.getItems().clear();
+            for (Article a : articles) {
+                if (!a.getTitle().contains(search.getText()) ||
+                        !a.getAbstract().contains(search.getText())) {
+                    continue;
+                }
+                String displayText = a.getTitle() + " - " + a.getShortDescription();
+                listView.getItems().add(displayText);
+            }
+        });
+
         // Apply fade-in animations
         FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
         titleFade.setFromValue(0);
@@ -514,7 +533,7 @@ public class Username_GUI extends Application {
         buttonFade.play();
 
         // Add elements to VBox and set up the scene
-        vbox.getChildren().addAll(titleLabel, listView, backButton);
+        vbox.getChildren().addAll(titleLabel, search, listView, backButton);
         Scene scene = new Scene(vbox, 450, 400);
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
@@ -718,6 +737,7 @@ public class Username_GUI extends Application {
                 break;
             case "Update":
                 //
+                updateArticlesPage(primaryStage, user);
                 break;
             case "View":
                 //
@@ -725,6 +745,7 @@ public class Username_GUI extends Application {
                 break;
             case "Delete":
                 //
+                deleteArticlesPage(primaryStage, user);
                 break;
             case "Back up":
                 //
@@ -1086,7 +1107,7 @@ public class Username_GUI extends Application {
 
         articlesButton.setOnAction(e -> showArticlesPage(primaryStage, user));
         groupsButton.setOnAction(e -> showSetupGroups(primaryStage, user));
-        helpButton.setOnAction(e -> instructorHelpMessages(primaryStage, user));
+        helpButton.setOnAction(e -> showInstructorHelpPage(primaryStage, user));
 
         logoutButton.setOnAction(e -> start(primaryStage));
 
@@ -1411,79 +1432,65 @@ public class Username_GUI extends Application {
     }
     private void showSetupGroups(Stage primaryStage, User user) {
         // Create a VBox layout with spacing and padding
-        VBox vbox = new VBox();
-        vbox.setSpacing(15);
+        VBox vbox = new VBox(15);
         vbox.setPadding(new Insets(20));
         vbox.setAlignment(Pos.CENTER);
 
         // Title Label with enhanced styling
         Label titleLabel = new Label("Manage Groups");
-        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
         // Create button with styling and action
         Button createButton = new Button("Create");
         createButton.getStyleClass().add("primary-button");
         createButton.setMaxWidth(Double.MAX_VALUE);
-        createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
+        createButton.setOnAction(e -> handleCreateGroup(primaryStage, user));
 
         // Edit button with styling and action
         Button editButton = new Button("Edit");
         editButton.getStyleClass().add("primary-button");
         editButton.setMaxWidth(Double.MAX_VALUE);
-      //  editButton.setOnAction(e -> handleEditGroup(primaryStage, user)); // Define handleEditGroup method
+        // Uncomment and define handleEditGroup when ready
+        // editButton.setOnAction(e -> handleEditGroup(primaryStage, user));
 
         // Delete button with styling and action
         Button deleteButton = new Button("Delete");
         deleteButton.getStyleClass().add("primary-button");
         deleteButton.setMaxWidth(Double.MAX_VALUE);
-       // deleteButton.setOnAction(e -> handleDeleteGroup(primaryStage, user)); // Define handleDeleteGroup method
+        // Uncomment and define handleDeleteGroup when ready
+        // deleteButton.setOnAction(e -> handleDeleteGroup(primaryStage, user));
 
         // Back button with styling and action
         Button backButton = new Button("Back");
         backButton.getStyleClass().add("secondary-button");
         backButton.setMaxWidth(Double.MAX_VALUE);
-        backButton.setOnAction(e -> showInstructorPage(primaryStage, user)); // Define showMainPage method for navigation
+        backButton.setOnAction(e -> showInstructorPage(primaryStage, user));
 
-        // Apply fade-in animations to buttons and title
-        FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
-        titleFade.setFromValue(0);
-        titleFade.setToValue(1);
-        titleFade.play();
+        // Apply fade-in animations to each component
+        applyFadeTransition(titleLabel, 1.0);
+        applyFadeTransition(createButton, 1.0);
+        applyFadeTransition(editButton, 1.0);
+        applyFadeTransition(deleteButton, 1.0);
+        applyFadeTransition(backButton, 1.0);
 
-        FadeTransition createFade = new FadeTransition(Duration.seconds(1), createButton);
-        createFade.setFromValue(0);
-        createFade.setToValue(1);
-        createFade.play();
-
-        FadeTransition editFade = new FadeTransition(Duration.seconds(1), editButton);
-        editFade.setFromValue(0);
-        editFade.setToValue(1);
-        editFade.play();
-
-        FadeTransition deleteFade = new FadeTransition(Duration.seconds(1), deleteButton);
-        deleteFade.setFromValue(0);
-        deleteFade.setToValue(1);
-        deleteFade.play();
-
-        FadeTransition backFade = new FadeTransition(Duration.seconds(1), backButton);
-        backFade.setFromValue(0);
-        backFade.setToValue(1);
-        backFade.play();
-
-        // Add elements to VBox and set up the scene
+        // Add elements to VBox
         vbox.getChildren().addAll(titleLabel, createButton, editButton, deleteButton, backButton);
+
+        // Setup scene and stage
         Scene scene = new Scene(vbox, 300, 400); // Adjusted height for additional button
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("Group Management");
         primaryStage.show();
+    }
 
-        // Fade transition for the entire VBox
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), vbox);
+    private void applyFadeTransition(Node node, double durationSeconds) {
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(durationSeconds), node);
         fadeTransition.setFromValue(0);
         fadeTransition.setToValue(1);
         fadeTransition.play();
     }
+
     private void handleCreateGroup(Stage primaryStage, User user) {
         GridPane createGroupGrid = new GridPane();
         createGroupGrid.setAlignment(Pos.CENTER);
@@ -1498,13 +1505,19 @@ public class Username_GUI extends Application {
         Button nextButton = new Button("Next");
         nextButton.getStyleClass().add("primary-button");
 
-        createGroupGrid.add(titleLabel, 0, 0);
+        // Back button configuration
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setOnAction(e -> showSetupGroups(primaryStage, user)); // This needs to navigate back to the appropriate page
+
+        createGroupGrid.add(titleLabel, 0, 0, 2, 1); // Merge columns for the title
         createGroupGrid.add(new Label("Group Name:"), 0, 1);
         createGroupGrid.add(groupNameField, 1, 1);
-        createGroupGrid.add(nextButton, 1, 2);
+        createGroupGrid.add(nextButton, 0, 2);
+        createGroupGrid.add(backButton, 1, 2); // Place back button next to the next button
 
         nextButton.setOnAction(e -> {
-            String groupName = groupNameField.getText();
+            String groupName = groupNameField.getText(); // Assume groupName is used in the next screen
             createGroupGrid.getChildren().clear();
             showUserSelection(createGroupGrid, primaryStage, user, groupName);
         });
@@ -1514,10 +1527,7 @@ public class Username_GUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        FadeTransition fade = new FadeTransition(Duration.seconds(1), createGroupGrid);
-        fade.setFromValue(0);
-        fade.setToValue(1);
-        fade.play();
+        applyFadeTransition(createGroupGrid, 1.0);  // Use the predefined method for fade transition
     }
 
     private void showUserSelection(GridPane grid, Stage primaryStage, User user, String groupName) {
@@ -1543,6 +1553,10 @@ public class Username_GUI extends Application {
         Button nextButton = new Button("Next: Select Articles");
         nextButton.getStyleClass().add("primary-button");
         grid.add(nextButton, 1, 2);
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        grid.add(backButton, 0, 2);
+        backButton.setOnAction(e -> handleCreateGroup(primaryStage, user));
 
         nextButton.setOnAction(e -> {
             for (int i = 0; i < userListView.getSelectionModel().getSelectedItems().size(); i++) {
@@ -1675,50 +1689,238 @@ public class Username_GUI extends Application {
         primaryStage.show();
     }
 
-    private void instructorHelpMessages(Stage primaryStage, User user) {
-        GridPane pane = new GridPane();
-        pane.setPadding(new Insets(20));
-        pane.setVgap(15);
-        pane.setHgap(10);
-        pane.setAlignment(Pos.CENTER);
+    private void showInstructorHelpPage(Stage primaryStage, User user) {
+        // Create the main layout for the help page
+        GridPane HelpPane = new GridPane();
+        HelpPane.setPadding(new Insets(20));
+        HelpPane.setVgap(15);
+        HelpPane.setHgap(10);
+        HelpPane.setAlignment(Pos.CENTER);
 
-        // Create UI Components
-        Button submitHelp = new Button("Submit");
-        submitHelp.getStyleClass().add("primary-button"); // Applying primary button style
-        Button backButton = new Button("Back");
-        backButton.getStyleClass().add("secondary-button"); // Applying secondary button style
-        TextField message = new TextField();
-        message.setPromptText("Type your help message here...");
+        // Create a label to guide the user
+        Label instructionLabel = new Label("Contact administrator if you need help ");
+        instructionLabel.setWrapText(true); // Wrap text if it overflows
+        instructionLabel.setTextAlignment(TextAlignment.CENTER);
 
-        // Add components to the GridPane
-        pane.add(backButton, 0, 0);
-        pane.add(new Label("Enter Message for Admin:"), 0, 1);
-        pane.add(message, 1, 1);
-        pane.add(submitHelp, 1, 2);
+        // Create buttons
+        Button GenericHelpButton = new Button("Contact admin");
+        GenericHelpButton.getStyleClass().add("secondary-button");
+        GenericHelpButton.setMaxWidth(Double.MAX_VALUE);
 
-        // Submit Help Request
-        submitHelp.setOnAction(e -> {
-            HelpMessage request = new HelpMessage("Generic", message.getText()); // Always set to "Generic"
-            Database.addRequest(request);
-            message.clear(); // Clear the text field after submission
+
+
+        // Create a text field to display when help buttons are pressed
+        TextField InstructorHelpField = new TextField();
+        InstructorHelpField.setPromptText("Enter your help request here");
+        InstructorHelpField.getStyleClass().add("input-field");
+        InstructorHelpField.setVisible(false); // Initially hidden
+
+        // Add event handlers for the buttons
+        GenericHelpButton.setOnAction(e -> {
+            InstructorHelpField.setVisible(true); // Make the text field visible
+            InstructorHelpField.setText(" Describe your issue."); // Set a generic prompt
+            System.out.println(" Help button clicked");
         });
 
-        // Back button action to return to the previous page
-        backButton.setOnAction(e -> showInstructorPage(primaryStage, user)); // Assuming there’s a method for the instructor's page
 
-        // Scene and Stage Setup
-        Scene scene = new Scene(pane, 400, 400);
-        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        // Add components to the layout
+        HelpPane.add(instructionLabel, 0, 0, 2, 1); // Add the instruction label to row 0, spanning 2 columns
+        HelpPane.add(GenericHelpButton, 0, 1); // Add GenericHelpButton to row 1, column
+        HelpPane.add(InstructorHelpField, 0, 3, 2, 1); // Add HelpField to row 3, spanning 2 columns
+
+        // Create a scene and set it on the primary stage
+        Scene scene = new Scene(HelpPane, 400, 300);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Instructor Help Messages");
-
-        // Apply fade-in effect
-        FadeTransition fade = new FadeTransition(Duration.seconds(1), pane);
-        fade.setFromValue(0);
-        fade.setToValue(1);
-        fade.play();
-
+        primaryStage.setTitle("Help Page");
         primaryStage.show();
     }
 
+    private void showEditForm(Stage primaryStage, User user, Article article) {
+        GridPane editPane = new GridPane();
+        editPane.setVgap(10);
+        editPane.setHgap(10);
+        editPane.setPadding(new Insets(20));
+        editPane.setAlignment(Pos.CENTER);
+
+        // Form fields to edit article
+        Label groupingIdLabel = new Label("Grouping ID:");
+        TextField groupingIdField = new TextField(article.getGroupId());
+
+        Label levelLabel = new Label("Level:");
+        TextField levelField = new TextField(article.getLevel());
+
+        Label shortDescLabel = new Label("Short Description:");
+        TextField shortDescField = new TextField(article.getShortDescription());
+
+        Label bodyLabel = new Label("Body:");
+        TextArea bodyArea = new TextArea(article.getBody());
+        bodyArea.setPrefRowCount(5);
+
+        Label keywordsLabel = new Label("Keywords:");
+        TextField keywordsField = new TextField(article.getKeywords());
+
+        Label referencesLabel = new Label("References:");
+        TextField referencesField = new TextField(article.getReferences());
+
+        Label groupsLabel = new Label("Groups:");
+        TextField groupsField = new TextField(article.getGroups());
+
+        Button updateButton = new Button("Update");
+        Button cancelButton = new Button("Cancel");
+
+        // Add fields to the grid
+        editPane.add(groupingIdLabel, 0, 0);
+        editPane.add(groupingIdField, 1, 0);
+
+        editPane.add(levelLabel, 0, 1);
+        editPane.add(levelField, 1, 1);
+
+        editPane.add(shortDescLabel, 0, 2);
+        editPane.add(shortDescField, 1, 2);
+
+        editPane.add(bodyLabel, 0, 3);
+        editPane.add(bodyArea, 1, 3);
+
+        editPane.add(keywordsLabel, 0, 4);
+        editPane.add(keywordsField, 1, 4);
+
+        editPane.add(referencesLabel, 0, 5);
+        editPane.add(referencesField, 1, 5);
+
+        editPane.add(groupsLabel, 0, 6);
+        editPane.add(groupsField, 1, 6);
+
+        editPane.add(updateButton, 0, 7);
+        editPane.add(cancelButton, 1, 7);
+
+        updateButton.getStyleClass().add("primary-button");
+        cancelButton.getStyleClass().add("secondary-button");
+
+        updateButton.setOnAction(e -> {
+            // Update article fields
+            article.setGroupId(groupingIdField.getText());
+            article.setLevel(levelField.getText());
+            article.setShortDescription(shortDescField.getText());
+            article.setBody(bodyArea.getText());
+            article.setKeywords(keywordsField.getText());
+            article.setReferences(referencesField.getText());
+            article.setGroups(groupsField.getText());
+
+            boolean updated = Database.db.updateArticleByTitle(article, article.getTitle());
+
+            if (updated) {
+                showAlert("Article updated successfully!");
+                showArticlesPage(primaryStage, user); // Go back to the articles page
+            } else {
+                showAlert("Failed to update article.");
+            }
+
+
+        });
+
+        cancelButton.setOnAction(e -> updateArticlesPage(primaryStage, user)); // Cancel and go back
+
+        Scene editScene = new Scene(editPane, 600, 600);
+        editScene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(editScene);
+        primaryStage.setTitle("Edit Article");
+        primaryStage.show();
+    }
+
+
+
+
+    private void updateArticlesPage(Stage primaryStage, User user) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+        pane.setPadding(new Insets(20));
+        pane.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Article Title:");
+        TextField titleField = new TextField();
+        Button searchButton = new Button("Search");
+        Button backButton = new Button("Back");
+
+        // Add search fields
+        pane.add(titleLabel, 0, 0);
+        pane.add(titleField, 1, 0);
+        pane.add(searchButton, 0, 1);
+        pane.add(backButton, 1, 1);  // Add back button to grid
+
+        searchButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button"); // Style the back button
+        searchButton.setOnAction(e -> {
+            String title = titleField.getText();
+
+            try {
+                Article fetchedArticle = Database.db.getArticleByTitle(title);
+
+                if (fetchedArticle != null) {
+                    showEditForm(primaryStage, user, fetchedArticle);
+                } else {
+                    showAlert("No article found with the title: " + title);
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error retrieving article: " + ex.getMessage());
+                showAlert("An error occurred while retrieving the article.");
+            }
+        });
+
+
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));  // Back button action
+
+        Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Update Articles");
+        primaryStage.show();
+    }
+
+    private void deleteArticlesPage(Stage primaryStage, User user) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+        pane.setPadding(new Insets(20));
+        pane.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Article Title:");
+        TextField titleField = new TextField();
+        Button searchButton = new Button("Search");
+        Button backButton = new Button("Back");
+
+        // Add search fields
+        pane.add(titleLabel, 0, 0);
+        pane.add(titleField, 1, 0);
+        pane.add(searchButton, 0, 1);
+        pane.add(backButton, 1, 1);  // Add back button to grid
+
+        searchButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button"); // Style the back button
+        searchButton.setOnAction(e -> {
+            String title = titleField.getText();
+
+            try {
+                Article fetchedArticle = Database.db.getArticleByTitle(title);
+
+                if (fetchedArticle != null) {
+                    Database.db.deleteArticle("title");
+                } else {
+                    showAlert("No article found with the title: " + title);
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error retrieving article: " + ex.getMessage());
+                showAlert("An error occurred while retrieving the article.");
+            }
+        });
+
+
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));  // Back button action
+
+        Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Update Articles");
+        primaryStage.show();
+    }
 }
