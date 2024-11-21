@@ -745,6 +745,7 @@ public class Username_GUI extends Application {
                 break;
             case "Delete":
                 //
+                deleteArticlesPage(primaryStage, user);
                 break;
             case "Back up":
                 //
@@ -1857,6 +1858,53 @@ public class Username_GUI extends Application {
 
                 if (fetchedArticle != null) {
                     showEditForm(primaryStage, user, fetchedArticle);
+                } else {
+                    showAlert("No article found with the title: " + title);
+                }
+            } catch (SQLException ex) {
+                System.err.println("Error retrieving article: " + ex.getMessage());
+                showAlert("An error occurred while retrieving the article.");
+            }
+        });
+
+
+        backButton.setOnAction(e -> showArticlesPage(primaryStage, user));  // Back button action
+
+        Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Update Articles");
+        primaryStage.show();
+    }
+
+    private void deleteArticlesPage(Stage primaryStage, User user) {
+        GridPane pane = new GridPane();
+        pane.setVgap(10);
+        pane.setHgap(10);
+        pane.setPadding(new Insets(20));
+        pane.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Article Title:");
+        TextField titleField = new TextField();
+        Button searchButton = new Button("Search");
+        Button backButton = new Button("Back");
+
+        // Add search fields
+        pane.add(titleLabel, 0, 0);
+        pane.add(titleField, 1, 0);
+        pane.add(searchButton, 0, 1);
+        pane.add(backButton, 1, 1);  // Add back button to grid
+
+        searchButton.getStyleClass().add("primary-button");
+        backButton.getStyleClass().add("secondary-button"); // Style the back button
+        searchButton.setOnAction(e -> {
+            String title = titleField.getText();
+
+            try {
+                Article fetchedArticle = Database.db.getArticleByTitle(title);
+
+                if (fetchedArticle != null) {
+                    Database.db.deleteArticle("title");
                 } else {
                     showAlert("No article found with the title: " + title);
                 }

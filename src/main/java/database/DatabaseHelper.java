@@ -471,6 +471,37 @@ public class DatabaseHelper {
         return null;
     }
 
+    public User getUserInformationFromId(int id) {
+        String sql = "SELECT * FROM users WHERE id='" + id + "'";
+        ResultSet rs;
+        try {
+            Statement stmt = connection.createStatement();
+            rs = stmt.executeQuery(sql);
+            if (rs.next()) {
+                String username = rs.getString("username");
+                String email = rs.getString("email");
+                String firstName = rs.getString("firstName");
+                String middleName = rs.getString("middleName");
+                String lastName = rs.getString("lastName");
+                String preferredName = rs.getString("preferredName");
+                char[] password = rs.getString("password").toCharArray();
+                boolean otp = rs.getBoolean("onetimepassword");
+                Time otpTime = rs.getTime("expirationtime");
+//                Date otpDate = rs.getDate("expirationdate");
+//                String name = rs.getString("username");
+                String level = rs.getString("level");
+                boolean admin = rs.getBoolean("admin");
+                boolean student = rs.getBoolean("student");
+                boolean instructor = rs.getBoolean("instructor");
+                String groups = rs.getString("groups");
+                return new User(username, firstName, middleName, lastName, preferredName, email, password, otp, otpTime, level, admin, student, instructor, groups);
+            }
+        } catch (SQLException e) {
+            System.out.println("could not find user for " + id);
+        }
+        return null;
+    }
+
     /**
      * End the connection to the database
      */
