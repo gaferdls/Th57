@@ -627,4 +627,112 @@ public class DatabaseHelper {
             throw e;
         }
     }
+    public void updateArticle(Article article) throws SQLException {
+        String sql = "UPDATE articles SET level = ?, short = ?, body = ?, keywords = ?, " +
+                "references = ?, groups = ? WHERE title = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, article.getLevel());
+            pstmt.setString(2, article.getShortDescription());
+            pstmt.setString(3, article.getBody());
+            pstmt.setString(4, article.getKeywords());
+            pstmt.setString(5, article.getReferences());
+            pstmt.setString(6, article.getGroups());
+            pstmt.setString(7, article.getTitle());
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Article update failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating article: " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public ArrayList<Article> getArticlesByGroup(String groupId) throws SQLException {
+        ArrayList<Article> articles = new ArrayList<>();
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references, groups " +
+                "FROM articles WHERE groupingID = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, groupId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Article article = new Article(
+                        rs.getString("level"),
+                        rs.getString("groupingID"),
+                        rs.getString("title"),
+                        rs.getString("short"),
+                        rs.getString("body"),
+                        rs.getString("keywords"),
+                        rs.getString("references"),
+                        rs.getString("groups")
+                );
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving articles by group: " + e.getMessage());
+            throw e;
+        }
+        return articles;
+    }
+
+    public ArrayList<Article> searchArticlesByKeyword(String keyword) throws SQLException {
+        ArrayList<Article> articles = new ArrayList<>();
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references, groups " +
+                "FROM articles WHERE LOWER(keywords) LIKE LOWER(?)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + keyword.toLowerCase() + "%");
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Article article = new Article(
+                        rs.getString("level"),
+                        rs.getString("groupingID"),
+                        rs.getString("title"),
+                        rs.getString("short"),
+                        rs.getString("body"),
+                        rs.getString("keywords"),
+                        rs.getString("references"),
+                        rs.getString("groups")
+                );
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error searching articles by keyword: " + e.getMessage());
+            throw e;
+        }
+        return articles;
+    }
+
+    public void addUser(User user) throws SQLException {
+        String sql = "INSERT INTO users (username, firstName, middleName, lastName, preferredName, " +
+                "email, password, onetimepassword, expirationtime, level, admin, student, instructor, groups) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, user.getUsername());
+            pstmt.setString(2, user.getFirstName());
+            pstmt.setString(3, user.getMiddleName());
+            pstmt.setString(4, user.getLastName());
+            pstmt.setString(5, user.getPreferredName());
+            pstmt.setString(6, user.getEmail());
+            pstmt.setString(7, String.valueOf(user.getPassword()));
+            pstmt.setBoolean(8, user.isOneTimePassword());
+            //pstmt.setTime(9, user.getExpirationTime());
+            pstmt.setString(10, user.getSkillLevel());
+            pstmt.setBoolean(11, user.isAdmin());
+            pstmt.setBoolean(12, user.isStudent());
+            pstmt.setBoolean(13, user.isInstructor());
+            pstmt.setString(14, user.getGroups());
+
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("Error adding user: " + e.getMessage());
+            throw e;
+        }
+    }
 }
