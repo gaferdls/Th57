@@ -9,6 +9,7 @@ import java.util.List;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.Instant;
+import util.HelpMessage;
 
 public class Database {
 
@@ -29,6 +30,16 @@ public class Database {
 
 
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public static void addRequest(HelpMessage message){
+		try{
+			db.addRequest(message);
+			System.out.println("Request added!");
+		}
+		catch (SQLException e){
 			System.out.println(e.getMessage());
 		}
 	}

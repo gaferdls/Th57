@@ -1017,8 +1017,7 @@ public class Username_GUI extends Application {
 
         submitHelp.setOnAction(e ->
                 {
-                    System.out.print("Submitted Request!");
-
+                    Database.addRequest(request);
 
                 }
 

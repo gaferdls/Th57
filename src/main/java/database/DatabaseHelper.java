@@ -50,13 +50,13 @@ public class DatabaseHelper {
         String requestTable = "CREATE TABLE IF NOT EXISTS requests ("
                 + "id INT AUTO_INCREMENT PRIMARY KEY, "
                 + "type VARCHAR(255), "
-                + "body VARCHAR(1000)";
+                + "body VARCHAR(1000))";
 
         statement.execute(requestTable);
 
     }
 
-    public void addRequest(HelpMessage message) throws SQLException{
+    public void addRequest(HelpMessage message) throws SQLException {
         String sql = "INSERT INTO requests (type, body) VALUES (?, ?)";
 
         // Using try-with-resources to ensure proper resource management
