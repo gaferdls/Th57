@@ -31,7 +31,7 @@ public class TestUsers {
     }
 
     @Test
-    public void testUpdateArticle() {
+    public void testUpdateArticle() throws SQLException {
         Database.init();
         Database.clearDatabase();
 
@@ -55,7 +55,7 @@ public class TestUsers {
     }
 
     @Test
-    public void testGetArticlesByGroup() {
+    public void testGetArticlesByGroup() throws SQLException {
         Database.init();
         Database.clearDatabase();
 
@@ -79,7 +79,7 @@ public class TestUsers {
     }
 
     @Test
-    public void testSearchArticlesByKeyword() {
+    public void testSearchArticlesByKeyword() throws SQLException {
         Database.init();
         Database.clearDatabase();
 
@@ -104,7 +104,7 @@ public class TestUsers {
     }
 
     @Test
-    public void testInvalidArticleOperations() {
+    public void testInvalidArticleOperations() throws SQLException {
         Database.init();
         Database.clearDatabase();
 
