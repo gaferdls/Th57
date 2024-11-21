@@ -1691,47 +1691,48 @@ public class Username_GUI extends Application {
 
     private void showInstructorHelpPage(Stage primaryStage, User user) {
         // Create the main layout for the help page
-        GridPane HelpPane = new GridPane();
-        HelpPane.setPadding(new Insets(20));
-        HelpPane.setVgap(15);
-        HelpPane.setHgap(10);
-        HelpPane.setAlignment(Pos.CENTER);
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(20));
+        pane.setVgap(15);
+        pane.setHgap(10);
+        pane.setAlignment(Pos.CENTER);
 
-        // Create a label to guide the user
-        Label instructionLabel = new Label("Contact administrator if you need help ");
-        instructionLabel.setWrapText(true); // Wrap text if it overflows
-        instructionLabel.setTextAlignment(TextAlignment.CENTER);
+        // Create UI Components
+        Button submitHelp = new Button("Submit");
+        submitHelp.getStyleClass().add("primary-button"); // Applying primary button style
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button"); // Applying secondary button style
+        TextField message = new TextField();
+        message.setPromptText("Type your help message here...");
 
-        // Create buttons
-        Button GenericHelpButton = new Button("Contact admin");
-        GenericHelpButton.getStyleClass().add("secondary-button");
-        GenericHelpButton.setMaxWidth(Double.MAX_VALUE);
+        // Add components to the GridPane
+        pane.add(backButton, 0, 0);
+        pane.add(new Label("Enter Message for Admin:"), 0, 1);
+        pane.add(message, 1, 1);
+        pane.add(submitHelp, 1, 2);
 
-
-
-        // Create a text field to display when help buttons are pressed
-        TextField InstructorHelpField = new TextField();
-        InstructorHelpField.setPromptText("Enter your help request here");
-        InstructorHelpField.getStyleClass().add("input-field");
-        InstructorHelpField.setVisible(false); // Initially hidden
-
-        // Add event handlers for the buttons
-        GenericHelpButton.setOnAction(e -> {
-            InstructorHelpField.setVisible(true); // Make the text field visible
-            InstructorHelpField.setText(" Describe your issue."); // Set a generic prompt
-            System.out.println(" Help button clicked");
+        // Submit Help Request
+        submitHelp.setOnAction(e -> {
+            HelpMessage request = new HelpMessage("Generic", message.getText()); // Always set to "Generic"
+            Database.addRequest(request);
+            message.clear(); // Clear the text field after submission
         });
 
+        // Back button action to return to the previous page
+        backButton.setOnAction(e -> showInstructorPage(primaryStage, user)); // Assuming there’s a method for the instructor's page
 
-        // Add components to the layout
-        HelpPane.add(instructionLabel, 0, 0, 2, 1); // Add the instruction label to row 0, spanning 2 columns
-        HelpPane.add(GenericHelpButton, 0, 1); // Add GenericHelpButton to row 1, column
-        HelpPane.add(InstructorHelpField, 0, 3, 2, 1); // Add HelpField to row 3, spanning 2 columns
-
-        // Create a scene and set it on the primary stage
-        Scene scene = new Scene(HelpPane, 400, 300);
+        // Scene and Stage Setup
+        Scene scene = new Scene(pane, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Help Page");
+        primaryStage.setTitle("Instructor Help Messages");
+
+        // Apply fade-in effect
+        FadeTransition fade = new FadeTransition(Duration.seconds(1), pane);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+
         primaryStage.show();
     }
 
