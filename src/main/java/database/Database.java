@@ -150,4 +150,26 @@ public class Database {
 	public static boolean clearDatabase() {
 		return db.clearDatabase();
 	}
+
+	public static void updateArticle(Article updatedArticle) {
+		try {
+			if (updatedArticle == null) {
+				System.out.println("Cannot update: Article is null");
+				return;
+			}
+
+			// Check if article exists before updating
+			Article existingArticle = db.getArticleByTitle(updatedArticle.getTitle());
+			if (existingArticle == null) {
+				System.out.println("Cannot update: Article not found with title: " + updatedArticle.getTitle());
+				return;
+			}
+
+			db.updateArticle(updatedArticle);
+			System.out.println("Successfully updated article: " + updatedArticle.getTitle());
+
+		} catch (SQLException e) {
+			System.out.println("Error updating article: " + e.getMessage());
+		}
+	}
 }

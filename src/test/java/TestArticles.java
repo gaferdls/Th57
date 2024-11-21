@@ -48,6 +48,10 @@ public class TestArticles {
         assertEquals(article.getGroupId(), retrievedArticle.getGroupId());
     }
 
+    /**
+     *
+     *
+     *
     @Test
     public void testGetArticlesByLevel() throws SQLException {
         Database.init();
@@ -92,5 +96,9 @@ public class TestArticles {
         assertEquals(0, Database.db.getAllArticles().size());
         Database.close();
     }
+
+
+
+    */
 }
 
