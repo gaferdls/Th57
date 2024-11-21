@@ -78,7 +78,9 @@ public class Database {
 		// TODO Auto-generated method stub
 		return db.getUserInformationFromUsername(username);
 	}
-
+	public static User findUserByID(int id){
+		return db.getUserInformationFromId(id);
+	}
 	public static boolean updateUser(User user) {
 		System.out.println("Attempting to update user with email: " + user.getEmail());
 		return db.updateUser(user);
