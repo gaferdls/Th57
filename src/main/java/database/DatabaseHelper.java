@@ -551,4 +551,80 @@ public class DatabaseHelper {
         }
         return true;
     }
+
+    public Article getArticleByTitle(String title) throws SQLException {
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references, groups " +
+                "FROM articles WHERE title = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return new Article(
+                        rs.getString("level"),
+                        rs.getString("groupingID"),
+                        rs.getString("title"),
+                        rs.getString("short"),
+                        rs.getString("body"),
+                        rs.getString("keywords"),
+                        rs.getString("references"),
+                        rs.getString("groups")
+                );
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving article by title: " + e.getMessage());
+            throw e;
+        }
+        return null;
+    }
+
+    public ArrayList<Article> getArticlesByLevel(String level) throws SQLException {
+        ArrayList<Article> articles = new ArrayList<>();
+        String sql = "SELECT level, groupingID, title, short, body, keywords, references, groups " +
+                "FROM articles WHERE level = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, level);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Article article = new Article(
+                        rs.getString("level"),
+                        rs.getString("groupingID"),
+                        rs.getString("title"),
+                        rs.getString("short"),
+                        rs.getString("body"),
+                        rs.getString("keywords"),
+                        rs.getString("references"),
+                        rs.getString("groups")
+                );
+                articles.add(article);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving articles by level: " + e.getMessage());
+            throw e;
+        }
+        return articles;
+    }
+
+    public void deleteArticle(String title) throws SQLException {
+        String sql = "DELETE FROM articles WHERE title = ?";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, title);
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                System.out.println("Article successfully deleted: " + title);
+            } else {
+                System.out.println("No article found with title: " + title);
+                throw new SQLException("Article not found");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting article: " + e.getMessage());
+            throw e;
+        }
+    }
 }

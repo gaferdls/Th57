@@ -1404,7 +1404,7 @@ public class Username_GUI extends Application {
         Button createButton = new Button("Create");
         createButton.getStyleClass().add("primary-button");
         createButton.setMaxWidth(Double.MAX_VALUE);
-       // createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
+        createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
 
         // Edit button with styling and action
         Button editButton = new Button("Edit");
@@ -1566,10 +1566,12 @@ public class Username_GUI extends Application {
         grid.add(finishButton, 1, 2);
         finishButton.setOnAction(e -> {
             for (int i = 0; i < articleListView.getSelectionModel().getSelectedItems().size(); i++) {
-                User selected = Database.findUserByUsername(articleListView.getSelectionModel().getSelectedItems().get(i));
-                String updateGroup = selected.getGroups() + ", " + groupName;
-                selected.setGroups(updateGroup);
+
+                System.out.print(articleListView.getSelectionModel().getSelectedItems().get(i));
+                //String updateGroup = selected.getGroups() + ", " + groupName;
+               // selected.setGroups(updateGroup);
             }
+            showRolePage(primaryStage, user);
         });
 
         FadeTransition fade = new FadeTransition(Duration.seconds(1), grid);
