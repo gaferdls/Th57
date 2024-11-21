@@ -54,6 +54,10 @@ public class TestUsers {
         assertEquals("Intermediate", retrieved.getLevel());
     }
     /**
+     *
+     *
+     *
+     *
     @Test
     public void testGetArticlesByGroup() throws SQLException {
         Database.init();
@@ -150,5 +154,8 @@ public class TestUsers {
 
         Database.close();
     }
+
+
+
     */
 }
