@@ -544,9 +544,10 @@ public class DatabaseHelper {
 
     public boolean clearDatabase() {
         try {
-            connection.createStatement().executeQuery("FROM users DELETE *");
-            connection.createStatement().executeQuery("FROM articles DELETE *");
+            connection.createStatement().executeUpdate("DELETE FROM users");
+            connection.createStatement().executeUpdate("DELETE FROM articles");
         } catch (Exception e) {
+            System.out.println("failed to clear database");
             return false;
         }
         return true;

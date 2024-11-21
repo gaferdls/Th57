@@ -53,11 +53,7 @@ public class TestUsers {
         assertEquals("Updated Body", retrieved.getBody());
         assertEquals("Intermediate", retrieved.getLevel());
     }
-    /**
-     *
-     *
-     *
-     *
+
     @Test
     public void testGetArticlesByGroup() throws SQLException {
         Database.init();
@@ -107,55 +103,4 @@ public class TestUsers {
         assertTrue(javaArticles.stream().anyMatch(a -> a.getTitle().equals("Advanced Java")));
     }
 
-    @Test
-    public void testInvalidArticleOperations() throws SQLException {
-        Database.init();
-        Database.clearDatabase();
-
-        // Test getting non-existent article
-        assertNull(Database.db.getArticleByTitle("NonExistent"));
-
-        // Test deleting non-existent article
-        assertThrows(SQLException.class, () -> {
-            Database.db.deleteArticle("NonExistent");
-        });
-
-        // Test adding duplicate article
-        Article article = new Article("Beginner", "group1", "Duplicate Test",
-                "Abstract", "Body", "test", "refs", "groups");
-        Database.addArticle(article);
-
-        assertThrows(SQLException.class, () -> {
-            Database.addArticle(article);
-        });
-
-        Database.close();
-    }
-
-    @Test
-    public void testArticleValidation() {
-        Database.init();
-        Database.clearDatabase();
-
-        // Test with empty title
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Article("Beginner", "group1", "", "Abstract", "Body", "test", "refs", "groups");
-        });
-
-        // Test with null level
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Article(null, "group1", "Title", "Abstract", "Body", "test", "refs", "groups");
-        });
-
-        // Test with invalid level
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Article("InvalidLevel", "group1", "Title", "Abstract", "Body", "test", "refs", "groups");
-        });
-
-        Database.close();
-    }
-
-
-
-    */
 }
