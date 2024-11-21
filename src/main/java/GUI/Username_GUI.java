@@ -1567,7 +1567,7 @@ public class Username_GUI extends Application {
 
                 System.out.print(articleListView.getSelectionModel().getSelectedItems().get(i));
                 //String updateGroup = selected.getGroups() + ", " + groupName;
-               // selected.setGroups(updateGroup);
+               showUserSelection(grid, primaryStage, user, groupName);
             }
             showRolePage(primaryStage, user);
         });
