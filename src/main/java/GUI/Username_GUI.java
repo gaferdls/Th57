@@ -1483,7 +1483,12 @@ public class Username_GUI extends Application {
         primaryStage.setTitle("Group Management");
         primaryStage.show();
     }
+    private void handleEditGroup(Stage primaryStage, User user) {
 
+    }
+    private void handleDeleteGroup(Stage primaryStage, User user) {
+
+    }
     private void applyFadeTransition(Node node, double durationSeconds) {
         FadeTransition fadeTransition = new FadeTransition(Duration.seconds(durationSeconds), node);
         fadeTransition.setFromValue(0);
@@ -1559,10 +1564,14 @@ public class Username_GUI extends Application {
         backButton.setOnAction(e -> handleCreateGroup(primaryStage, user));
 
         nextButton.setOnAction(e -> {
+            User admin = Database.findUserByID(1);
+            String allGroups = admin.getGroups();
+            admin.setGroups(allGroups + "," + groupName);
             for (int i = 0; i < userListView.getSelectionModel().getSelectedItems().size(); i++) {
                 User selected = Database.findUserByUsername(userListView.getSelectionModel().getSelectedItems().get(i));
-                String updateGroup = selected.getGroups() + ", " + groupName;
-                selected.setGroups(updateGroup);
+                    String updateGroup = selected.getGroups() + ", " + groupName;
+                    selected.setGroups(updateGroup);
+
             }
             grid.getChildren().clear();
             selectArticles(primaryStage, user, grid, groupName);
