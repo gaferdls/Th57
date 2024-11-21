@@ -1652,6 +1652,8 @@ public class Username_GUI extends Application {
             HelpField.setVisible(true); // Make the text field visible
             HelpField.setText("This is for generic help. Describe your issue."); // Set a generic prompt
             System.out.println("Generic Help button clicked");
+
+
         });
 
         SpecificHelpButton.setOnAction(e -> {
