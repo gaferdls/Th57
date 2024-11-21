@@ -1041,7 +1041,7 @@ public class Username_GUI extends Application {
 
         Button articlesButton = new Button("Articles");
         Button groupsButton = new Button("Groups");
-        Button helpButton = new Button("Help");
+        Button helpButton = new Button("Get Help");
         Button logoutButton = new Button("Logout");
 
         articlesButton.getStyleClass().add("primary-button");
@@ -1066,7 +1066,8 @@ public class Username_GUI extends Application {
 
         articlesButton.setOnAction(e -> showArticlesPage(primaryStage, user));
         groupsButton.setOnAction(e -> showSetupGroups(primaryStage, user));
-        helpButton.setOnAction(e -> showAlert("Ask your admin for assistance"));
+        helpButton.setOnAction(e -> showInstructorHelpPage(primaryStage, user));
+
         logoutButton.setOnAction(e -> start(primaryStage));
 
         primaryStage.setScene(scene);
@@ -1650,4 +1651,49 @@ public class Username_GUI extends Application {
         primaryStage.show();
     }
 
+    private void showInstructorHelpPage(Stage primaryStage, User user) {
+        // Create the main layout for the help page
+        GridPane HelpPane = new GridPane();
+        HelpPane.setPadding(new Insets(20));
+        HelpPane.setVgap(15);
+        HelpPane.setHgap(10);
+        HelpPane.setAlignment(Pos.CENTER);
+
+        // Create a label to guide the user
+        Label instructionLabel = new Label("Contact administrator if you need help ");
+        instructionLabel.setWrapText(true); // Wrap text if it overflows
+        instructionLabel.setTextAlignment(TextAlignment.CENTER);
+
+        // Create buttons
+        Button GenericHelpButton = new Button("Contact admin");
+        GenericHelpButton.getStyleClass().add("secondary-button");
+        GenericHelpButton.setMaxWidth(Double.MAX_VALUE);
+
+
+
+        // Create a text field to display when help buttons are pressed
+        TextField InstructorHelpField = new TextField();
+        InstructorHelpField.setPromptText("Enter your help request here");
+        InstructorHelpField.getStyleClass().add("input-field");
+        InstructorHelpField.setVisible(false); // Initially hidden
+
+        // Add event handlers for the buttons
+        GenericHelpButton.setOnAction(e -> {
+            InstructorHelpField.setVisible(true); // Make the text field visible
+            InstructorHelpField.setText(" Describe your issue."); // Set a generic prompt
+            System.out.println(" Help button clicked");
+        });
+
+
+        // Add components to the layout
+        HelpPane.add(instructionLabel, 0, 0, 2, 1); // Add the instruction label to row 0, spanning 2 columns
+        HelpPane.add(GenericHelpButton, 0, 1); // Add GenericHelpButton to row 1, column
+        HelpPane.add(InstructorHelpField, 0, 3, 2, 1); // Add HelpField to row 3, spanning 2 columns
+
+        // Create a scene and set it on the primary stage
+        Scene scene = new Scene(HelpPane, 400, 300);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Help Page");
+        primaryStage.show();
+    }
 }
