@@ -1,5 +1,6 @@
 package GUI;
 
+import javafx.scene.Node;
 import javafx.scene.text.TextAlignment;
 import util.HelpMessage;
 import java.awt.*;
@@ -1430,79 +1431,65 @@ public class Username_GUI extends Application {
     }
     private void showSetupGroups(Stage primaryStage, User user) {
         // Create a VBox layout with spacing and padding
-        VBox vbox = new VBox();
-        vbox.setSpacing(15);
+        VBox vbox = new VBox(15);
         vbox.setPadding(new Insets(20));
         vbox.setAlignment(Pos.CENTER);
 
         // Title Label with enhanced styling
         Label titleLabel = new Label("Manage Groups");
-        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333333;");
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
         // Create button with styling and action
         Button createButton = new Button("Create");
         createButton.getStyleClass().add("primary-button");
         createButton.setMaxWidth(Double.MAX_VALUE);
-        createButton.setOnAction(e -> handleCreateGroup(primaryStage, user)); // Define handleCreateGroup method
+        createButton.setOnAction(e -> handleCreateGroup(primaryStage, user));
 
         // Edit button with styling and action
         Button editButton = new Button("Edit");
         editButton.getStyleClass().add("primary-button");
         editButton.setMaxWidth(Double.MAX_VALUE);
-      //  editButton.setOnAction(e -> handleEditGroup(primaryStage, user)); // Define handleEditGroup method
+        // Uncomment and define handleEditGroup when ready
+        // editButton.setOnAction(e -> handleEditGroup(primaryStage, user));
 
         // Delete button with styling and action
         Button deleteButton = new Button("Delete");
         deleteButton.getStyleClass().add("primary-button");
         deleteButton.setMaxWidth(Double.MAX_VALUE);
-       // deleteButton.setOnAction(e -> handleDeleteGroup(primaryStage, user)); // Define handleDeleteGroup method
+        // Uncomment and define handleDeleteGroup when ready
+        // deleteButton.setOnAction(e -> handleDeleteGroup(primaryStage, user));
 
         // Back button with styling and action
         Button backButton = new Button("Back");
         backButton.getStyleClass().add("secondary-button");
         backButton.setMaxWidth(Double.MAX_VALUE);
-        backButton.setOnAction(e -> showInstructorPage(primaryStage, user)); // Define showMainPage method for navigation
+        backButton.setOnAction(e -> showInstructorPage(primaryStage, user));
 
-        // Apply fade-in animations to buttons and title
-        FadeTransition titleFade = new FadeTransition(Duration.seconds(1), titleLabel);
-        titleFade.setFromValue(0);
-        titleFade.setToValue(1);
-        titleFade.play();
+        // Apply fade-in animations to each component
+        applyFadeTransition(titleLabel, 1.0);
+        applyFadeTransition(createButton, 1.0);
+        applyFadeTransition(editButton, 1.0);
+        applyFadeTransition(deleteButton, 1.0);
+        applyFadeTransition(backButton, 1.0);
 
-        FadeTransition createFade = new FadeTransition(Duration.seconds(1), createButton);
-        createFade.setFromValue(0);
-        createFade.setToValue(1);
-        createFade.play();
-
-        FadeTransition editFade = new FadeTransition(Duration.seconds(1), editButton);
-        editFade.setFromValue(0);
-        editFade.setToValue(1);
-        editFade.play();
-
-        FadeTransition deleteFade = new FadeTransition(Duration.seconds(1), deleteButton);
-        deleteFade.setFromValue(0);
-        deleteFade.setToValue(1);
-        deleteFade.play();
-
-        FadeTransition backFade = new FadeTransition(Duration.seconds(1), backButton);
-        backFade.setFromValue(0);
-        backFade.setToValue(1);
-        backFade.play();
-
-        // Add elements to VBox and set up the scene
+        // Add elements to VBox
         vbox.getChildren().addAll(titleLabel, createButton, editButton, deleteButton, backButton);
+
+        // Setup scene and stage
         Scene scene = new Scene(vbox, 300, 400); // Adjusted height for additional button
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.setTitle("Group Management");
         primaryStage.show();
+    }
 
-        // Fade transition for the entire VBox
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(1), vbox);
+    private void applyFadeTransition(Node node, double durationSeconds) {
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(durationSeconds), node);
         fadeTransition.setFromValue(0);
         fadeTransition.setToValue(1);
         fadeTransition.play();
     }
+
     private void handleCreateGroup(Stage primaryStage, User user) {
         GridPane createGroupGrid = new GridPane();
         createGroupGrid.setAlignment(Pos.CENTER);
@@ -1517,13 +1504,19 @@ public class Username_GUI extends Application {
         Button nextButton = new Button("Next");
         nextButton.getStyleClass().add("primary-button");
 
-        createGroupGrid.add(titleLabel, 0, 0);
+        // Back button configuration
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setOnAction(e -> showSetupGroups(primaryStage, user)); // This needs to navigate back to the appropriate page
+
+        createGroupGrid.add(titleLabel, 0, 0, 2, 1); // Merge columns for the title
         createGroupGrid.add(new Label("Group Name:"), 0, 1);
         createGroupGrid.add(groupNameField, 1, 1);
-        createGroupGrid.add(nextButton, 1, 2);
+        createGroupGrid.add(nextButton, 0, 2);
+        createGroupGrid.add(backButton, 1, 2); // Place back button next to the next button
 
         nextButton.setOnAction(e -> {
-            String groupName = groupNameField.getText();
+            String groupName = groupNameField.getText(); // Assume groupName is used in the next screen
             createGroupGrid.getChildren().clear();
             showUserSelection(createGroupGrid, primaryStage, user, groupName);
         });
@@ -1533,10 +1526,7 @@ public class Username_GUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        FadeTransition fade = new FadeTransition(Duration.seconds(1), createGroupGrid);
-        fade.setFromValue(0);
-        fade.setToValue(1);
-        fade.play();
+        applyFadeTransition(createGroupGrid, 1.0);  // Use the predefined method for fade transition
     }
 
     private void showUserSelection(GridPane grid, Stage primaryStage, User user, String groupName) {
@@ -1562,6 +1552,10 @@ public class Username_GUI extends Application {
         Button nextButton = new Button("Next: Select Articles");
         nextButton.getStyleClass().add("primary-button");
         grid.add(nextButton, 1, 2);
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        grid.add(backButton, 0, 2);
+        backButton.setOnAction(e -> handleCreateGroup(primaryStage, user));
 
         nextButton.setOnAction(e -> {
             for (int i = 0; i < userListView.getSelectionModel().getSelectedItems().size(); i++) {
