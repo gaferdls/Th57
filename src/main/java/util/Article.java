@@ -75,4 +75,8 @@ public class Article {
         Article article = (Article) o;
         return Objects.equals(level, article.level) && Objects.equals(groupId, article.groupId) && Objects.equals(title, article.title) && Objects.equals(shortDescription, article.shortDescription) && Objects.equals(body, article.body) && Objects.equals(references, article.references) && Objects.equals(keywords, article.keywords) && Objects.equals(groups, article.groups);
     }
+
+    public String getAbstract() {
+        return this.shortDescription;
+    }
 }
