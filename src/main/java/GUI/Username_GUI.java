@@ -1450,15 +1450,13 @@ public class Username_GUI extends Application {
         Button editButton = new Button("Edit");
         editButton.getStyleClass().add("primary-button");
         editButton.setMaxWidth(Double.MAX_VALUE);
-        // Uncomment and define handleEditGroup when ready
-        // editButton.setOnAction(e -> handleEditGroup(primaryStage, user));
+        editButton.setOnAction(e -> handleEditGroup(primaryStage, user));
 
         // Delete button with styling and action
         Button deleteButton = new Button("Delete");
         deleteButton.getStyleClass().add("primary-button");
         deleteButton.setMaxWidth(Double.MAX_VALUE);
-        // Uncomment and define handleDeleteGroup when ready
-        // deleteButton.setOnAction(e -> handleDeleteGroup(primaryStage, user));
+        deleteButton.setOnAction(e -> handleDeleteGroup(primaryStage, user));
 
         // Back button with styling and action
         Button backButton = new Button("Back");
@@ -1485,8 +1483,76 @@ public class Username_GUI extends Application {
     }
 
     private void handleEditGroup(Stage primaryStage, User user) {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20));
+
+
+        Label titleLabel = new Label("Edit Groups");
+        titleLabel.getStyleClass().add("label");
+        grid.add(titleLabel, 0, 0, 2, 1);  // Span two columns for alignment
+
+
+        ListView<String> groupListView = new ListView<>();
+        String groupData = Database.findUserByID(1).getGroups();  // Assuming this fetches the groups as a single string
+
+
+        // Check if groupData is not null or empty
+        if (groupData != null && !groupData.isEmpty()) {
+            // Split the string by commas and trim whitespace
+            String[] groupsArray = groupData.split(",");
+            for (String group : groupsArray) {
+                groupListView.getItems().add(group.trim());  // Trim to avoid whitespace issues
+            }
+        } else {
+            System.err.println("No groups found or error fetching groups.");
+        }
+
+
+        grid.add(groupListView, 0, 1, 2, 1);  // Span two columns for the list view
+
+
+        Button editButton = new Button("Edit Selected Group");
+        editButton.getStyleClass().add("primary-button");
+        grid.add(editButton, 1, 2);
+
+
+        editButton.setOnAction(e -> {
+            String selectedGroup = groupListView.getSelectionModel().getSelectedItem();
+            if (selectedGroup != null && !selectedGroup.isEmpty()) {
+                editGroupDetails(primaryStage, user, selectedGroup);
+            }
+        });
+
+
+        Button backButton = new Button("Back");
+        backButton.getStyleClass().add("secondary-button");
+        grid.add(backButton, 0, 2);
+        backButton.setOnAction(e -> {
+            grid.getChildren().clear();
+            showSetupGroups(primaryStage, user);  // Implement this method based on your navigation needs
+        });
+
+
+        Scene scene = new Scene(grid, 500, 400);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Edit Groups");
+        primaryStage.show();
+
+
+        FadeTransition fade = new FadeTransition(Duration.seconds(1), grid);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+    }
+
+    private void editGroupDetails(Stage s, User u, String st) {
 
     }
+
 
     private void handleDeleteGroup(Stage primaryStage, User user) {
         GridPane pane = new GridPane();
