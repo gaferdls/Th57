@@ -1383,6 +1383,13 @@ public class Username_GUI extends Application {
         groupsListView.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ced4da;");
         groupsListView.setPrefHeight(200);
 
+        groupsListView.setOnMouseClicked(event -> {
+            String selectedGroup = groupsListView.getSelectionModel().getSelectedItem();
+            if (selectedGroup != null) {
+                showArticlesForGroup(primaryStage, user, selectedGroup);
+            }
+        });
+
         // Level selection dropdown
         Label levelLabel = new Label("Select Level:");
         ComboBox<String> levelComboBox = new ComboBox<>();
@@ -2067,5 +2074,127 @@ public class Username_GUI extends Application {
         primaryStage.setScene(scene);
         primaryStage.setTitle("Delete Articles");
         primaryStage.show();
+    }
+
+    private void showArticlesForGroup(Stage primaryStage, User user, String groupName) {
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(20));
+        vbox.setAlignment(Pos.CENTER);
+
+        Label titleLabel = new Label("Articles for " + groupName);
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+
+        // Search field
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search articles...");
+
+        // Articles list
+        ListView<String> articlesListView = new ListView<>();
+        ArrayList<Article> articles = Database.allArticles();
+        ObservableList<String> articleItems = FXCollections.observableArrayList();
+
+        // Filter articles by group and populate list
+        for (Article article : articles) {
+            if (article.getGroups().contains(groupName)) {
+                articleItems.add(article.getTitle() + " - " + article.getShortDescription());
+            }
+        }
+        articlesListView.setItems(articleItems);
+
+        // Search functionality
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            articlesListView.getItems().clear();
+            for (Article article : articles) {
+                if (article.getGroups().contains(groupName) &&
+                        (article.getTitle().toLowerCase().contains(newValue.toLowerCase()) ||
+                                article.getShortDescription().toLowerCase().contains(newValue.toLowerCase()))) {
+                    articlesListView.getItems().add(article.getTitle() + " - " + article.getShortDescription());
+                }
+            }
+        });
+
+        // View article details on double click
+        articlesListView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                String selected = articlesListView.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    String title = selected.split(" - ")[0];
+                    try {
+                        Article article = Database.db.getArticleByTitle(title);
+                        showArticleDetails(primaryStage, user, article, groupName);
+                    } catch (SQLException e) {
+                        showAlert("Error loading article details");
+                    }
+                }
+            }
+        });
+
+        Button backButton = new Button("Back to Groups");
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setOnAction(e -> showGroupsPage(primaryStage, user));
+
+        vbox.getChildren().addAll(titleLabel, searchField, articlesListView, backButton);
+
+        Scene scene = new Scene(vbox, 600, 500);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
+    }
+
+    private void showArticleDetails(Stage primaryStage, User user, Article article, String groupName) {
+        ScrollPane scrollPane = new ScrollPane();
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+
+        // Article title
+        Label titleLabel = new Label(article.getTitle());
+        titleLabel.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+        titleLabel.setWrapText(true);
+
+        // Article metadata
+        Label levelLabel = new Label("Level: " + article.getLevel());
+        Label descriptionLabel = new Label(article.getShortDescription());
+        descriptionLabel.setWrapText(true);
+
+        // Article body
+        Label bodyLabel = new Label("Content:");
+        bodyLabel.setStyle("-fx-font-weight: bold;");
+        TextArea bodyArea = new TextArea(article.getBody());
+        bodyArea.setWrapText(true);
+        bodyArea.setEditable(false);
+        bodyArea.setPrefRowCount(10);
+
+        // Keywords and references
+        Label keywordsLabel = new Label("Keywords: " + article.getKeywords());
+        keywordsLabel.setWrapText(true);
+        Label referencesLabel = new Label("References: " + article.getReferences());
+        referencesLabel.setWrapText(true);
+
+        // Navigation buttons
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        Button backButton = new Button("Back to Articles");
+        backButton.getStyleClass().add("secondary-button");
+        backButton.setOnAction(e -> showArticlesForGroup(primaryStage, user, groupName));
+
+        Button newSearchButton = new Button("New Search");
+        newSearchButton.getStyleClass().add("primary-button");
+        newSearchButton.setOnAction(e -> showGroupsPage(primaryStage, user));
+
+        buttonBox.getChildren().addAll(backButton, newSearchButton);
+
+        content.getChildren().addAll(
+                titleLabel, levelLabel, descriptionLabel,
+                bodyLabel, bodyArea, keywordsLabel,
+                referencesLabel, buttonBox
+        );
+
+        scrollPane.setContent(content);
+        scrollPane.setFitToWidth(true);
+
+        Scene scene = new Scene(scrollPane, 700, 600);
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+        primaryStage.setScene(scene);
     }
 }

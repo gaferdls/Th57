@@ -1,23 +1,25 @@
 /* Root styles */
 .root {
     -fx-font-family: "Segoe UI", sans-serif;
-    -fx-background-color: #f5f5f5; /* Light background for the entire scene */
+    -fx-background-color: #ffffff; /* Light background for the entire scene */
+    -fx-text-fill: #000000;
 }
 
 /* Label styling */
 .label {
     -fx-font-size: 14px;
-    -fx-text-fill: #333333;
+    -fx-text-fill: #000000;
     -fx-font-weight: bold;
 }
 
 /* Input field styling */
 .input-field, .text-field, .text-area {
     -fx-background-color: #ffffff;
-    -fx-border-color: #ced4da;
+    -fx-border-color: #cccccc;
     -fx-border-radius: 5px;
     -fx-padding: 8px;
     -fx-font-size: 14px;
+    -fx-text-fill: #000000;
 }
 
 .text-area {
@@ -34,12 +36,12 @@
 }
 
 .combo-box .arrow {
-    -fx-background-color: #007bff;
+    -fx-background-color: pink;
 }
 
 /* Primary button styling */
 .primary-button {
-    -fx-background-color: #007bff;
+    -fx-background-color: pink;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
@@ -49,12 +51,12 @@
 }
 
 .primary-button:hover {
-    -fx-background-color: #0056b3;
+    -fx-background-color: #90a049;
 }
 
 /* Secondary button styling */
 .secondary-button {
-    -fx-background-color: #6c757d;
+    -fx-background-color: #808080;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-background-radius: 8;
@@ -64,7 +66,7 @@
 }
 
 .secondary-button:hover {
-    -fx-background-color: #5a6268;
+    -fx-background-color: #696969;
 }
 
 /* ListView styling */
@@ -78,4 +80,29 @@
 .alert {
     -fx-font-size: 14px;
     -fx-text-fill: #333;
+}
+
+/* Dark mode styles */
+.root.dark-mode {
+    -fx-background-color: #2b2b2b;
+    -fx-text-fill: #ffffff;
+}
+
+.dark-mode .label {
+    -fx-text-fill: #ffffff;
+}
+
+.dark-mode .input-field {
+    -fx-background-color: #3b3b3b;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #555555;
+}
+
+.dark-mode .primary-button {
+    -fx-text-fill: white;
+}
+
+.dark-mode .secondary-button {
+    -fx-background-color: #606060;
+    -fx-text-fill: white;
 }
