@@ -1,6 +1,7 @@
 package GUI;
 
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.text.TextAlignment;
 import util.HelpMessage;
 import java.awt.*;
@@ -2171,7 +2172,7 @@ public class Username_GUI extends Application {
         referencesLabel.setWrapText(true);
 
         // Navigation buttons
-        HBox buttonBox = new HBox(10);
+        VBox buttonBox = new VBox(10);
         buttonBox.setAlignment(Pos.CENTER);
 
         Button backButton = new Button("Back to Articles");
