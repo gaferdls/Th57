@@ -12,6 +12,8 @@ import java.util.List;
 
 import java.sql.*;
 
+import static database.DatabaseEncryption.*;
+
 // Code modified from FirstDatabaseMaven
 public class DatabaseHelper {
 
@@ -95,14 +97,6 @@ public class DatabaseHelper {
                 + "instructor BIT, "
                 + "groups VARCHAR(255))";
         statement.execute(userTable);
-    }
-
-    public void updateArticle() {
-
-    }
-
-    public void deleteArticle() {
-
     }
 
     public boolean backupToFile(String filename) {
@@ -278,7 +272,7 @@ public class DatabaseHelper {
             pstmt.setString(3, middleName);
             pstmt.setString(4, lastName);
             pstmt.setString(5, preferredName);
-            pstmt.setString(6, String.valueOf(password));
+            pstmt.setString(6, encrypt(String.valueOf(password)));
             pstmt.setBoolean(7, isOneTimePassword);
             pstmt.setTime(8, expirationTime);
             pstmt.setString(9, username);
@@ -303,7 +297,7 @@ public class DatabaseHelper {
         String query = "SELECT * FROM users WHERE email = ? AND password = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, email);
-            pstmt.setString(2, String.valueOf(password));
+            pstmt.setString(2, encrypt(String.valueOf(password)));
             try (ResultSet rs = pstmt.executeQuery()) {
                 return rs.next();
             }
@@ -348,7 +342,7 @@ public class DatabaseHelper {
             String middleName = rs.getString("middleName");
             String lastName = rs.getString("lastName");
             String preferredName = rs.getString("preferredName");
-            char[] password = rs.getString("password").toCharArray();
+            char[] password = decrypt(rs.getString("password")).toCharArray();
             boolean otp = rs.getBoolean("onetimepassword");
             Time otpTime = rs.getTime("expirationtime");
 //            Date otpDate = rs.getDate("expirationdate");
@@ -393,14 +387,14 @@ public class DatabaseHelper {
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery(sql);
         if (rs.next()) {
-            return rs.getString("password").toCharArray();
+            return decrypt(rs.getString("password")).toCharArray();
         }
         return new char[0];
     }
 
     public boolean changeUserPassword(String email, char[] newPassword) throws SQLException {
         StringBuilder sql = new StringBuilder();
-        sql.append("UPDATE users SET password = '").append(newPassword).append("' WHERE email = '").append(email).append("'");
+        sql.append("UPDATE users SET password = '").append(encrypt(new String(newPassword))).append("' WHERE email = '").append(email).append("'");
         Statement stmt = connection.createStatement();
         return stmt.executeUpdate(sql.toString()) != 0;
     }
@@ -417,7 +411,7 @@ public class DatabaseHelper {
             pstmt.setBoolean(7, user.isStudent());
             pstmt.setBoolean(8, user.isInstructor());
             pstmt.setString(9, user.getSkillLevel());
-            pstmt.setString(10, String.valueOf(user.getPassword()));  // Ensure the password is being updated
+            pstmt.setString(10, encrypt(String.valueOf(user.getPassword())));  // Ensure the password is being updated
             pstmt.setString(11, user.getGroups());  // Assuming username is used for identification
             pstmt.setString(12, user.getUsername());
 
@@ -453,7 +447,7 @@ public class DatabaseHelper {
                 String middleName = rs.getString("middleName");
                 String lastName = rs.getString("lastName");
                 String preferredName = rs.getString("preferredName");
-                char[] password = rs.getString("password").toCharArray();
+                char[] password = decrypt(rs.getString("password")).toCharArray();
                 boolean otp = rs.getBoolean("onetimepassword");
                 Time otpTime = rs.getTime("expirationtime");
 //                Date otpDate = rs.getDate("expirationdate");
@@ -484,7 +478,7 @@ public class DatabaseHelper {
                 String middleName = rs.getString("middleName");
                 String lastName = rs.getString("lastName");
                 String preferredName = rs.getString("preferredName");
-                char[] password = rs.getString("password").toCharArray();
+                char[] password = decrypt(rs.getString("password")).toCharArray();
                 boolean otp = rs.getBoolean("onetimepassword");
                 Time otpTime = rs.getTime("expirationtime");
 //                Date otpDate = rs.getDate("expirationdate");
@@ -554,7 +548,7 @@ public class DatabaseHelper {
                         rs.getString("lastName"),
                         rs.getString("preferredName"),
                         rs.getString("email"),
-                        rs.getString("password").toCharArray(),
+                        decrypt(rs.getString("password")).toCharArray(),
                         rs.getBoolean("onetimepassword"),
                         rs.getTime("expirationtime"),
                         rs.getString("level"),
@@ -752,7 +746,7 @@ public class DatabaseHelper {
             pstmt.setString(4, user.getLastName());
             pstmt.setString(5, user.getPreferredName());
             pstmt.setString(6, user.getEmail());
-            pstmt.setString(7, String.valueOf(user.getPassword()));
+            pstmt.setString(7, encrypt(String.valueOf(user.getPassword())));
             pstmt.setBoolean(8, user.isOneTimePassword());
             //pstmt.setTime(9, user.getExpirationTime());
             pstmt.setString(10, user.getSkillLevel());

@@ -11,6 +11,8 @@ import java.sql.Time;
 import java.time.Instant;
 import util.HelpMessage;
 
+import static database.DatabaseEncryption.*;
+
 public class Database {
 
 	private static Database instance;
