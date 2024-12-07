@@ -1,17 +1,13 @@
 package database;
 
-import util.Role;
 import util.User;
 import util.Article;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.Instant;
 import util.HelpMessage;
-
-import static database.DatabaseEncryption.*;
 
 public class Database {
 
@@ -46,7 +42,7 @@ public class Database {
 		}
 	}
 
-	public static boolean inviteUser(String username, Role role, char[] oneTimeCode) {
+	public static boolean inviteUser(String username, String role, char[] oneTimeCode) {
 		try {
 			db.register(username,"", "", "", "", oneTimeCode, true, new Time(Time.from(Instant.now()).getTime()), "", "Intermediate", false, false, false, null);
 		} catch (SQLException e) {
